@@ -1,7 +1,7 @@
 # R1 官方 Humanoid AMP / PPO 最小 Smoke
 
 运行日期：2026-11-23（Asia/Seoul）
-阶段状态：**PARTIAL**。AMP 与同环境 PPO 的最小 smoke 均完成，尚未进行长训、独立评估或性能结论。
+阶段状态为 **PARTIAL**。AMP 与同环境 PPO 已完成单次更新 smoke 和 5 次更新短训 smoke。独立评估尚未开始。
 运行主机：RTX 3070 8 GiB，driver `580.178.04`。
 源码基线：官方 Isaac Lab `v2.1.1`，SHA `90b79bb2d44feb8d833f260f2bf37da3487180ba`。
 
@@ -150,8 +150,69 @@ runs/r1_venv_smoke/ppo_20261123T0045+0900_seed42_env4_steps16/
 - 尚未执行独立评估，因此 `success_rate`、跌倒率、速度 MAE、足端滑移和 style metric 均为未测量。
 - 最终独立 venv AMP 的峰值监控显存约 7132 MiB，当前 RTX 3070 8 GiB 上不适合直接复制官方 4096 环境配置。后续短训前要先释放外部 Isaac Sim 进程或把并行环境降到 2，并重新记录峰值。
 
-## 6. 下一步
+## 6. 两环境短训 smoke（2026-11-23）
 
-1. 固定当前版本和 seed，选择低并行度，完成 AMP/PPO 各自的短训练 smoke。
-2. 按实验协议建立独立评估入口，固定初态、seed、episode 数和动作/姿态指标。
-3. 在有独立评估数据前，不报告 AMP/PPO 优劣或运动质量结论。
+运行前项目 Git SHA 为 `9f38f2037274561391eba02db45f57057f7e99d5`，独立 Isaac Lab checkout 为 `90b79bb2d44feb8d833f260f2bf37da3487180ba`，两者工作树均干净。沿用第 4 节的 venv、Kit 运行时和 Walk 动作文件。启动探针复核了 Python 3.10.15、PyTorch 2.5.1+cu118、skrl 1.4.3、Gymnasium 0.29.1、Hydra 1.3.2、NumPy 1.26.0 和 TensorBoard 2.19.0，skrl 来源为 R1 venv。
+
+两组顺序运行，固定同一 Walk 任务、seed 42、2 个 CUDA 并行环境、每次更新 16 步、5 次更新。每组共 80 步/环境，即 160 个环境交互步，约 2.67 秒模拟时间/环境。每次更新记录 TensorBoard 标量，第 80 步保存 checkpoint。两组导出的 `params/env.yaml` 字节一致。
+
+### 复现命令
+
+从项目仓库根目录执行。每组通过独立工作目录保存上游生成的日志。
+
+```bash
+repo="$PWD"
+lab="$(realpath "$repo/../r1/IsaacLab-v2.1.1")"
+run_root="$repo/runs/r1_short_train/$(TZ=Asia/Seoul date +%Y%m%dT%H%M%S%z)_seed42_env2_steps80"
+mkdir -p "$run_root/amp" "$run_root/ppo"
+common=(
+  --task Isaac-Humanoid-AMP-Walk-Direct-v0
+  --num_envs 2 --max_iterations 5 --seed 42 --headless --device cuda:0
+  agent.agent.experiment.write_interval=16
+  agent.agent.experiment.checkpoint_interval=80
+)
+(
+  cd "$run_root/amp"
+  timeout --kill-after=10s 180s "$repo/scripts/r1_python.sh" \
+    "$lab/scripts/reinforcement_learning/skrl/train.py" --algorithm AMP "${common[@]}" > stdout.log 2>&1
+)
+(
+  cd "$run_root/ppo"
+  timeout --kill-after=10s 180s "$repo/scripts/r1_python.sh" \
+    "$repo/scripts/r1_ppo_amp_smoke.py" --algorithm PPO "${common[@]}" > stdout.log 2>&1
+)
+```
+
+### 训练和资源记录
+
+| 算法 | 退出码 | 完成步数/环境 | 用时（含启动/退出） | 吞吐（交互步/s） | 运行前显存 | 采样峰值显存 | 运行后显存 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| AMP | 0 | 80/80 | 18.575 s | 8.61 | 991 MiB | 4393 MiB | 925 MiB |
+| PPO | 0 | 80/80 | 12.110 s | 13.21 | 925 MiB | 3607 MiB | 925 MiB |
+
+显存由 `nvidia-smi` 以 500 ms 间隔采样，AMP 有 37 个样本，PPO 有 24 个样本。数值是 RTX 3070 整卡显存用量。吞吐按 160 个交互步除以进程总用时计算，包含 Kit 启动和退出开销。
+
+| 每环境步数 | AMP Policy loss | AMP Value loss | AMP Discriminator loss | PPO Policy loss | PPO Value loss |
+|---:|---:|---:|---:|---:|---:|
+| 16 | 0.336944 | 3.266759 | 3.519190 | 0.300324 | 3.553840 |
+| 32 | -0.027583 | 1.800663 | 2.927908 | -0.011569 | 2.961762 |
+| 48 | -0.109444 | 1.171814 | 2.583831 | -0.058895 | 3.197326 |
+| 64 | -0.080848 | 1.120824 | 2.312198 | 0.519977 | 2.788157 |
+| 80 | -0.128962 | 2.981960 | 2.427591 | -0.082491 | 1.443087 |
+
+两组记录的瞬时环境奖励均为 1，策略标准差均为 0.055023。Walk 环境每步返回 1，因此 TensorBoard 的回合总环境奖励等于已结束回合的长度。每环境步数 16、32、48、64、80 对应的回合长度均值，AMP 为 16、14、24、21、22，PPO 为 12、17.5、未记录、24.45、未记录。这些是 skrl 的训练日志统计。AMP 在内部使用风格奖励训练，权重为任务 0、风格 1。本次事件文件没有单独记录风格奖励。五次更新的损失、所有已记录标量，以及最终 checkpoint 中的 policy/value/discriminator 参数均通过有限值检查。
+
+训练指标用于确认更新和日志链路。独立评估为 0 次，本轮尚无步态质量、收敛或算法优劣结论。
+
+### 本地日志和 checkpoint
+
+运行根目录为 `runs/r1_short_train/20261123T002939+0900_seed42_env2_steps80/`。其 `amp/` 和 `ppo/` 子目录各有实际命令 `command.txt`、`stdout.log`、`timing.txt`、`exit_code.txt`、`gpu_before.csv`、`gpu_memory.csv` 和 `gpu_after.csv`。各组的 TensorBoard 原始事件、参数 YAML 和最终 checkpoint 位于：
+
+- AMP：`amp/logs/skrl/humanoid_amp_walk/2026-11-23_00-29-47_amp_torch/`，`checkpoints/agent_80.pt` 的 SHA256 为 `5b16ae810a913716526d4e2f99ae35acb46d4643818562bfcddeae19ad98fbaa`。
+- PPO：`ppo/logs/skrl/humanoid_amp_ppo_smoke/2026-11-23_00-30-05_ppo_torch/`，`checkpoints/agent_80.pt` 的 SHA256 为 `608e8e8daf43b82314f65630d9df4c4425af2137d34e0a0cfecab76e8a6a1ae4`。
+
+中断前的 AMP 尝试只有 GPU 采样和空 stdout，无退出码或训练证据。本节仅使用恢复后完整运行的结果。
+
+## 7. 下一步
+
+按实验协议建立独立评估入口，固定初态、seed、episode 数和动作/姿态指标。

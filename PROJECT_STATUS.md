@@ -2,11 +2,11 @@
 
 - **状态：PARTIAL**
 - **日期：2026-11-23**
-- **当前阶段：R1 — 官方 Humanoid AMP/PPO 最小 smoke（已完成，未进入长训）**
-- **R1 运行前 code_sha：`c83f5e9a2465d36eaf8b572be9e489038a771eae`**
-- **真实训练：最终独立 venv 完成 2 次最小 smoke，AMP 与同环境 PPO 各 4 环境、1 iteration、16 steps/env，不能作为收敛结果**
+- **当前阶段为 R1，官方 Humanoid AMP/PPO 两环境短训 smoke 已完成**
+- **运行前项目 SHA 为 `9f38f2037274561391eba02db45f57057f7e99d5`**
+- **本轮训练为 AMP 和同环境 PPO 各 2 环境、5 次更新、160 个环境交互步**
 - **真实评估：0 次**
-- **支持结论：官方 Humanoid AMP 与同环境临时 PPO 入口均已实测启动、完成一次更新并保存 checkpoint。没有 AMP/PPO 性能、独立评估、G1 训练或真机验证结论。**
+- **验证结果为两组均退出码 0、五次更新的损失和最终模型参数均为有限值。独立评估尚未开始。**
 
 ## 本轮完成
 
@@ -24,19 +24,19 @@
 - 保留一次因 sparse checkout 缺少 `isaaclab_mimic` 导致的失败日志，并扩大独立 checkout 的 source 范围后重跑成功。
 - 创建真正独立的 Python 3.10 venv，清除旧 PYTHONPATH，验证运行时不含 anaconda、用户或 ROS site-packages。
 - 在该 venv 中锁定并重跑 AMP/PPO，补齐 `flatdict==4.0.1` 和 `h5py==3.13.0` 后两组均退出码为 0。
+- 在同一 venv 中顺序完成两环境短训，固定 seed 42，逐次导出损失并保存最终 checkpoint。RTX 3070 整卡显存采样峰值为 AMP 4393 MiB、PPO 3607 MiB。
 
 ## 下一步
 
-1. 在释放外部 Isaac Sim 进程或降低并行环境后，固定当前版本开始短训练 smoke。
-2. 建立独立评估入口，固定初态、seed、episode 数和速度/姿态/接触指标。
-3. R2 先确认 G1 USD、专家动作、retarget 数据和许可证，再决定是否使用 `legged_lab` 的 Isaac Lab 2.3.x 路线。未满足前不启动 G1 AMP 训练。
+1. 建立独立评估入口，固定初态、seed、episode 数和姿态/接触指标。
+2. R2 先确认 G1 USD、专家动作、retarget 数据和许可证，再决定是否使用 `legged_lab` 的 Isaac Lab 2.3.x 路线。未满足前不启动 G1 AMP 训练。
 
 ## 阶段记录
 
 | 阶段 | 状态 | 证据 |
 |---|---|---|
 | R0 环境与上游审计 | PARTIAL | `reports/R0_environment_audit.md`、项目外部 `../r0_smoke_output.txt`、官方 v2.1.1 Walk smoke 日志 |
-| R1 官方 AMP baseline | PARTIAL | `reports/R1_amp_baseline.md`、`configs/r1/requirements-venv.lock`、`scripts/r1_python.sh`、`runs/r1_venv_smoke/` |
+| R1 官方 AMP baseline | PARTIAL | [R1 短训报告](reports/R1_amp_baseline.md#6-两环境短训-smoke2026-11-23)、`configs/r1/requirements-venv.lock`、本机 `runs/r1_short_train/` |
 | R2 G1 单技能 | BLOCKED | G1 动作/USD 对象需要 Git LFS，数据来源和授权尚未闭合，候选版本面向 Isaac Lab 2.3.x / Isaac Sim 5.1 |
 | R3 多技能诊断与消融 | NOT_STARTED | — |
 | R4 报告与求职材料 | NOT_STARTED | — |
@@ -45,13 +45,13 @@
 
 ```text
 date: 2026-11-23
-stage: R1 — 官方 Humanoid AMP/PPO 最小 smoke
+stage: R1 — 官方 Humanoid AMP/PPO 两环境短训 smoke
 status: PARTIAL
-code_sha: c83f5e9a2465d36eaf8b572be9e489038a771eae
+code_sha: 9f38f2037274561391eba02db45f57057f7e99d5
 environment: Ubuntu 22.04.5; RTX 3070 8 GiB; driver 580.178.04; Isaac Sim 4.5.0; official Isaac Lab v2.1.1; Kit Python 3.10.15; torch 2.5.1+cu118; isolated venv skrl 1.4.3; gymnasium 0.29.1; hydra-core 1.3.2; numpy 1.26.0; tensorboard 2.19.0; flatdict 4.0.1; h5py 3.13.0
-commands_run: isolated venv version probe with PYTHONNOUSERSITE=1; AMP Walk --algorithm AMP --num_envs 4 --max_iterations 1 --seed 42; same-env PPO wrapper --algorithm PPO --num_envs 4 --max_iterations 1 --seed 42; 0.5s nvidia-smi sampling
-evidence_paths: reports/R1_amp_baseline.md; configs/r1/requirements-venv.lock; scripts/r1_python.sh; runs/r1_venv_smoke/
-key_metrics: final isolated venv AMP/PPO exit code 0; both 16/16 rollout steps; AMP peak monitor 7132 MiB; PPO peak monitor 6360 MiB; no independent evaluation
-blockers: RTX 3070 8 GiB with external Isaac Sim occupancy leaves little headroom; R1 full baseline still needs short training and independent evaluation; G1 assets/data require LFS and separate license/hash verification
-next_action: run short AMP/PPO training smoke only after controlling external GPU occupancy, then add independent evaluation
+commands_run: isolated runtime probe; AMP Walk and same-env PPO with --num_envs 2 --max_iterations 5 --seed 42 --headless --device cuda:0; nvidia-smi 500 ms sampling; TensorBoard and checkpoint validation
+evidence_paths: reports/R1_amp_baseline.md; runs/r1_short_train/20261123T002939+0900_seed42_env2_steps80/
+key_metrics: both exit code 0, 80 steps/env and 5 finite loss records; AMP/PPO whole-GPU peaks 4393/3607 MiB; independent eval episodes 0
+blockers: R1 PASS still requires independent evaluation and a comparable baseline under the experimental protocol; G1 assets/data require LFS and separate license/hash verification
+next_action: build the independent evaluation entry point and freeze its protocol
 ```
