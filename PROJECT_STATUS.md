@@ -2,11 +2,11 @@
 
 - **状态：PARTIAL**
 - **日期：2026-11-23**
-- **当前阶段为 R1，官方 Humanoid AMP/PPO 两环境短训 smoke 已完成**
-- **运行前项目 SHA 为 `9f38f2037274561391eba02db45f57057f7e99d5`**
-- **本轮训练为 AMP 和同环境 PPO 各 2 环境、5 次更新、160 个环境交互步**
-- **真实评估：0 次**
-- **验证结果为两组均退出码 0、五次更新的损失和最终模型参数均为有限值。独立评估尚未开始。**
+- **当前阶段为 R1，独立评估 smoke 和等预算奖励资源 pilot 已完成**
+- **运行前项目 SHA 为 `65f7a8d9baa1d9b55e66a8941b50ddfc5807d78b`**
+- **独立评估为 AMP 和同环境 PPO 各 10 个回合，10 对初始 policy observation 哈希全部一致**
+- **本轮训练为同一 AMP 实现下的任务奖励组和任务加风格组，各 2 环境、50 次更新、1,600 个环境交互步**
+- **正式多 seed 等预算对照尚未执行**
 
 ## 本轮完成
 
@@ -25,10 +25,12 @@
 - 创建真正独立的 Python 3.10 venv，清除旧 PYTHONPATH，验证运行时不含 anaconda、用户或 ROS site-packages。
 - 在该 venv 中锁定并重跑 AMP/PPO，补齐 `flatdict==4.0.1` 和 `h5py==3.13.0` 后两组均退出码为 0。
 - 在同一 venv 中顺序完成两环境短训，固定 seed 42，逐次导出损失并保存最终 checkpoint。RTX 3070 整卡显存采样峰值为 AMP 4393 MiB、PPO 3607 MiB。
+- 新增独立评估入口，记录跌倒、超时、存活时间、位移、速度和参考速度分布距离，保存 20 个回合的数据与两个骨架视频。
+- 预注册正式奖励消融，验证两组任务奖励权重一致，仅风格权重不同。资源 pilot 两组均完成 50 次更新。
 
 ## 下一步
 
-1. 建立独立评估入口，固定初态、seed、episode 数和姿态/接触指标。
+1. 根据资源 pilot 预先写定正式训练步数，运行已预注册的多 seed 奖励消融和独立评估。
 2. R2 先确认 G1 USD、专家动作、retarget 数据和许可证，再决定是否使用 `legged_lab` 的 Isaac Lab 2.3.x 路线。未满足前不启动 G1 AMP 训练。
 
 ## 阶段记录
@@ -36,7 +38,7 @@
 | 阶段 | 状态 | 证据 |
 |---|---|---|
 | R0 环境与上游审计 | PARTIAL | `reports/R0_environment_audit.md`、项目外部 `../r0_smoke_output.txt`、官方 v2.1.1 Walk smoke 日志 |
-| R1 官方 AMP baseline | PARTIAL | [R1 短训报告](reports/R1_amp_baseline.md#6-两环境短训-smoke2026-11-23)、`configs/r1/requirements-venv.lock`、本机 `runs/r1_short_train/` |
+| R1 官方 AMP baseline | PARTIAL | [R1 报告](reports/R1_amp_baseline.md)、[配对回合数据](reports/r1_eval/)、[正式对照协议](docs/EXPERIMENT_PROTOCOL.md#6-r1-walk-正式对照预注册) |
 | R2 G1 单技能 | BLOCKED | G1 动作/USD 对象需要 Git LFS，数据来源和授权尚未闭合，候选版本面向 Isaac Lab 2.3.x / Isaac Sim 5.1 |
 | R3 多技能诊断与消融 | NOT_STARTED | — |
 | R4 报告与求职材料 | NOT_STARTED | — |
@@ -45,13 +47,13 @@
 
 ```text
 date: 2026-11-23
-stage: R1 — 官方 Humanoid AMP/PPO 两环境短训 smoke
+stage: R1 — 独立评估 smoke 与奖励消融资源 pilot
 status: PARTIAL
-code_sha: 9f38f2037274561391eba02db45f57057f7e99d5
+code_sha: 65f7a8d9baa1d9b55e66a8941b50ddfc5807d78b
 environment: Ubuntu 22.04.5; RTX 3070 8 GiB; driver 580.178.04; Isaac Sim 4.5.0; official Isaac Lab v2.1.1; Kit Python 3.10.15; torch 2.5.1+cu118; isolated venv skrl 1.4.3; gymnasium 0.29.1; hydra-core 1.3.2; numpy 1.26.0; tensorboard 2.19.0; flatdict 4.0.1; h5py 3.13.0
-commands_run: isolated runtime probe; AMP Walk and same-env PPO with --num_envs 2 --max_iterations 5 --seed 42 --headless --device cuda:0; nvidia-smi 500 ms sampling; TensorBoard and checkpoint validation
-evidence_paths: reports/R1_amp_baseline.md; runs/r1_short_train/20261123T002939+0900_seed42_env2_steps80/
-key_metrics: both exit code 0, 80 steps/env and 5 finite loss records; AMP/PPO whole-GPU peaks 4393/3607 MiB; independent eval episodes 0
-blockers: R1 PASS still requires independent evaluation and a comparable baseline under the experimental protocol; G1 assets/data require LFS and separate license/hash verification
-next_action: build the independent evaluation entry point and freeze its protocol
+commands_run: scripts/r1_eval_walk.py with --episodes 10 --seed 1000 --video; AMP style-weight 0.0/1.0 pilot with --num_envs 2 --max_iterations 50 --seed 42
+evidence_paths: reports/R1_amp_baseline.md; reports/r1_eval/; runs/r1_eval/20261123T004510+0900_seed1000_n10/; runs/r1_reward_pilot/20261123T004402+0900_seed42_env2_steps800/
+key_metrics: 10/10 paired initial observation matches; AMP 9 falls and 1 timeout, PPO 10 falls; pilot 1600 env transitions per arm, 4274/4290 MiB whole-GPU peaks
+blockers: formal multi-seed baseline still pending; G1 assets/data require LFS and separate license/hash verification
+next_action: freeze formal training budget from resource pilot and execute the paired protocol
 ```
