@@ -29,7 +29,7 @@ R1 使用独立 Git checkout：
 | GPU | NVIDIA GeForce RTX 3070，8192 MiB，compute capability 8.6 |
 | Driver | `580.178.04` |
 
-运行时通过 `PYTHONPATH` 加载独立 checkout 的四个 source 目录，并加载已存在的只读 Python 依赖目录 `/home/ubuntu2004/anaconda3/envs/isaaclab/lib/python3.10/site-packages`。本轮没有修改该依赖目录，也没有升级现有 Conda 环境。
+早期 R1 smoke 曾通过 `PYTHONPATH` 加载已存在的只读依赖目录 `/home/ubuntu2004/anaconda3/envs/isaaclab/lib/python3.10/site-packages`。本报告后面的最终结果改用真正独立的 venv，并通过 `scripts/r1_python.sh` 清除该路径。独立 venv 结果是本轮交付的复现基线。
 
 Walk 专家动作文件为官方 v2.1.1 checkout 内的 `humanoid_walk.npz`，SHA256 为 `91a7af4e7fa59d8a3a2bb2c6e0dad45d73f6e5b5ee1a284d733435e32c418542`。文件为 60 fps、154 帧、28 DOF、15 bodies。
 
@@ -107,14 +107,50 @@ runs/r1_smoke/amp_20261123T0003+0900_seed42_env4_steps16/
 
 随后扩大独立 checkout 的 `source` 范围，使用相同版本和参数重跑成功。该修复没有修改官方源码内容。
 
-## 4. 结论边界
+## 4. 真正独立 venv 重跑
+
+为避免复用 R0/R1 之前的 anaconda site-packages，创建了独立 venv：
+
+```text
+/home/ubuntu2004/Documents/Codex/2026-11-22/learning-for-amp-github-https-github/work/r1/venv
+```
+
+创建入口为 `scripts/create_r1_venv.sh`，运行入口为 `scripts/r1_python.sh`。运行入口设置 `PYTHONNOUSERSITE=1`，清除继承的 `PYTHONPATH`，只加入该 venv 和独立 Isaac Lab source checkout。验证时 `sys.path` 不含 anaconda、用户 `.local` 或 `/opt/ros` 路径。
+
+venv 锁文件为 `configs/r1/requirements-venv.lock`，SHA256 为 `858d385cb68b9103a6dfab650a170feb343bf9d60fafb76853a0c8fb8671f1bb`。venv 内固定 `skrl==1.4.3`、`hydra-core==1.3.2`、`omegaconf==2.3.0`、`gymnasium==0.29.1`、`numpy==1.26.0`、`tensorboard==2.19.0`、`flatdict==4.0.1`、`h5py==3.13.0` 及其余列出的传递依赖。Isaac Sim Kit Python 提供 `torch==2.5.1+cu118` 和原生 simulator extensions，未安装到 venv。
+
+独立 venv 的版本探针输出为 Python 3.10.15、PyTorch 2.5.1+cu118、skrl 1.4.3、Gymnasium 0.29.1、Hydra 1.3.2、OmegaConf 2.3.0、TensorBoard 2.19.0、NumPy 1.26.0，CUDA 可用。
+
+第一次真正隔离启动暴露了旧 site-packages 隐式提供的 `flatdict`，补齐后又暴露 `h5py`。两者已按精确版本安装，失败目录保留在：
+
+```text
+runs/r1_venv_smoke/amp_20261123T0030+0900_seed42_env4_steps16/
+```
+
+补齐依赖后的最终重跑结果如下：
+
+| run_id | 算法 | 退出码 | 采样 wall time | 监控峰值显存 | 结果 |
+|---|---|---:|---:|---:|---|
+| `amp_20261123T0040+0900_seed42_env4_steps16` | AMP | 0 | 约 40.3 s | 7132 MiB | 16/16 rollout，policy/value/discriminator 初始化 |
+| `ppo_20261123T0045+0900_seed42_env4_steps16` | PPO | 0 | 约 25.8 s | 6360 MiB | 16/16 rollout，policy/value 初始化 |
+
+最终 venv checkpoint hash 与之前锁定环境的 smoke 一致：AMP `agent_16.pt` 为 `e0c57aa7127a445226ae9409214c4c76bc3136fed35941cfe0b616fc2973ab9d`，PPO `agent_16.pt` 为 `56aef81bbca0d401568580ba4752ae76448036acd48fa8e6ec676066d95b5a68`。
+
+venv 运行证据目录如下：
+
+```text
+runs/r1_venv_smoke/amp_20261123T0040+0900_seed42_env4_steps16/
+runs/r1_venv_smoke/ppo_20261123T0045+0900_seed42_env4_steps16/
+```
+
+## 5. 结论边界
 
 - 这两次运行证明官方 Walk AMP 的 policy/value/discriminator 链路和同环境 PPO 的 policy/value 链路可以在当前独立 checkout 中启动、加载动作数据、完成一次更新并保存 checkpoint。
 - 两次运行都只有 16 steps/env，不能作为训练收敛、步态稳定性、速度误差、风格相似度或 AMP 优于 PPO 的证据。
 - 尚未执行独立评估，因此 `success_rate`、跌倒率、速度 MAE、足端滑移和 style metric 均为未测量。
-- AMP 的峰值监控显存约 7203 MiB，当前 RTX 3070 8 GiB 上不适合直接复制官方 4096 环境配置。后续短训前要先释放外部 Isaac Sim 进程或把并行环境降到 2，并重新记录峰值。
+- 最终独立 venv AMP 的峰值监控显存约 7132 MiB，当前 RTX 3070 8 GiB 上不适合直接复制官方 4096 环境配置。后续短训前要先释放外部 Isaac Sim 进程或把并行环境降到 2，并重新记录峰值。
 
-## 5. 下一步
+## 6. 下一步
 
 1. 固定当前版本和 seed，选择低并行度，完成 AMP/PPO 各自的短训练 smoke。
 2. 按实验协议建立独立评估入口，固定初态、seed、episode 数和动作/姿态指标。
