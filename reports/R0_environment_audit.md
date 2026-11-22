@@ -1,8 +1,8 @@
 # R0 环境与上游审计
 
-审计日期：2026-11-22（Asia/Seoul）  
-审计范围：仓库接手、Isaac/AMP 工具链核验、G1 上游与动作数据可用性核验。  
-审计基线：`803f84f55af0044a8649d0fad5c0c4205ca406ca`。  
+审计日期：2026-11-22（Asia/Seoul）
+审计范围：仓库接手、Isaac/AMP 工具链核验、G1 上游与动作数据可用性核验。
+审计基线：`803f84f55af0044a8649d0fad5c0c4205ca406ca`。
 本轮没有启动长时间训练、没有修改既有 Isaac Lab 工作树、没有操作真实机器人。
 
 ## 结论
@@ -226,4 +226,3 @@ export PYTHONPATH=/home/ubuntu2004/WorkBuddy/2026-10-22-16-52-24/IsaacLab-v2.1.1
 - 官方 smoke 完整输出：`/home/ubuntu2004/Documents/Codex/2026-11-22/learning-for-amp-github-https-github/work/r0_smoke_output.txt`
 - 官方 smoke 日志与 checkpoint：`logs/skrl/humanoid_amp_walk/2026-11-22_23-43-34_amp_torch/`（被 `.gitignore` 忽略）
 - 目标仓库审计基线：`803f84f55af0044a8649d0fad5c0c4205ca406ca`
-
