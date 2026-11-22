@@ -2,11 +2,11 @@
 
 - **状态：PARTIAL**
 - **日期：2026-11-23**
-- **当前阶段为 R1，独立评估 smoke 和等预算奖励资源 pilot 已完成**
-- **运行前项目 SHA 为 `65f7a8d9baa1d9b55e66a8941b50ddfc5807d78b`**
-- **独立评估为 AMP 和同环境 PPO 各 10 个回合，10 对初始 policy observation 哈希全部一致**
-- **本轮训练为同一 AMP 实现下的任务奖励组和任务加风格组，各 2 环境、50 次更新、1,600 个环境交互步**
-- **正式多 seed 等预算对照尚未执行**
+- **当前阶段为 R1，正式三 seed 奖励对照和独立评估已完成**
+- **运行前项目 SHA 为 `7bcd195fe83589a6b4d3d5836f9cfdaea765df38`**
+- **正式训练为两种风格权重各 3 个 seed，每组 2 环境、500 次更新、16,000 个环境交互步**
+- **每个最终 checkpoint 使用同一组 100 个评估 seed，六组共 600 个评估回合**
+- **验证结果为六组 100% 跌倒，不能宣称 Walk 已学成，R1 仍为 PARTIAL**
 
 ## 本轮完成
 
@@ -27,10 +27,11 @@
 - 在同一 venv 中顺序完成两环境短训，固定 seed 42，逐次导出损失并保存最终 checkpoint。RTX 3070 整卡显存采样峰值为 AMP 4393 MiB、PPO 3607 MiB。
 - 新增独立评估入口，记录跌倒、超时、存活时间、位移、速度和参考速度分布距离，保存 20 个回合的数据与两个骨架视频。
 - 预注册正式奖励消融，验证两组任务奖励权重一致，仅风格权重不同。资源 pilot 两组均完成 50 次更新。
+- 完成正式三 seed 训练和同一 100 seed 评估，记录 paired deltas、参考速度 W1、视频和所有 checkpoint hash。
 
 ## 下一步
 
-1. 根据资源 pilot 预先写定正式训练步数，运行已预注册的多 seed 奖励消融和独立评估。
+1. 诊断六组全跌倒的训练预算、奖励/初始化和物理接触原因，先用小规模可控实验验证修正。
 2. R2 先确认 G1 USD、专家动作、retarget 数据和许可证，再决定是否使用 `legged_lab` 的 Isaac Lab 2.3.x 路线。未满足前不启动 G1 AMP 训练。
 
 ## 阶段记录
@@ -38,7 +39,7 @@
 | 阶段 | 状态 | 证据 |
 |---|---|---|
 | R0 环境与上游审计 | PARTIAL | `reports/R0_environment_audit.md`、项目外部 `../r0_smoke_output.txt`、官方 v2.1.1 Walk smoke 日志 |
-| R1 官方 AMP baseline | PARTIAL | [R1 报告](reports/R1_amp_baseline.md)、[配对回合数据](reports/r1_eval/)、[正式对照协议](docs/EXPERIMENT_PROTOCOL.md#6-r1-walk-正式对照预注册) |
+| R1 官方 AMP baseline | PARTIAL | [R1 报告](reports/R1_amp_baseline.md)、[正式评估汇总](reports/r1_formal_eval/summary.csv)、[正式对照协议](docs/EXPERIMENT_PROTOCOL.md#6-r1-walk-正式对照预注册) |
 | R2 G1 单技能 | BLOCKED | G1 动作/USD 对象需要 Git LFS，数据来源和授权尚未闭合，候选版本面向 Isaac Lab 2.3.x / Isaac Sim 5.1 |
 | R3 多技能诊断与消融 | NOT_STARTED | — |
 | R4 报告与求职材料 | NOT_STARTED | — |
@@ -47,13 +48,13 @@
 
 ```text
 date: 2026-11-23
-stage: R1 — 独立评估 smoke 与奖励消融资源 pilot
+stage: R1 — 正式三 seed 奖励对照与独立评估
 status: PARTIAL
-code_sha: 65f7a8d9baa1d9b55e66a8941b50ddfc5807d78b
+code_sha: 7bcd195fe83589a6b4d3d5836f9cfdaea765df38
 environment: Ubuntu 22.04.5; RTX 3070 8 GiB; driver 580.178.04; Isaac Sim 4.5.0; official Isaac Lab v2.1.1; Kit Python 3.10.15; torch 2.5.1+cu118; isolated venv skrl 1.4.3; gymnasium 0.29.1; hydra-core 1.3.2; numpy 1.26.0; tensorboard 2.19.0; flatdict 4.0.1; h5py 3.13.0
-commands_run: scripts/r1_eval_walk.py with --episodes 10 --seed 1000 --video; AMP style-weight 0.0/1.0 pilot with --num_envs 2 --max_iterations 50 --seed 42
-evidence_paths: reports/R1_amp_baseline.md; reports/r1_eval/; runs/r1_eval/20261123T004510+0900_seed1000_n10/; runs/r1_reward_pilot/20261123T004402+0900_seed42_env2_steps800/
-key_metrics: 10/10 paired initial observation matches; AMP 9 falls and 1 timeout, PPO 10 falls; pilot 1600 env transitions per arm, 4274/4290 MiB whole-GPU peaks
-blockers: formal multi-seed baseline still pending; G1 assets/data require LFS and separate license/hash verification
-next_action: freeze formal training budget from resource pilot and execute the paired protocol
+commands_run: six AMP training runs with style-weight 0.0/1.0, seeds 42/43/44, --num_envs 2 --max_iterations 500; six 100-episode paired evaluations with seeds 42000–42099; 500 ms GPU sampling
+evidence_paths: reports/R1_amp_baseline.md; reports/r1_formal_eval/; runs/r1_formal/; runs/r1_formal_eval/20261123T021500+0900_seed42000-42099/
+key_metrics: six training exit code 0; 600 evaluation episodes; six groups 100% fall rate; style-weight paired delta dx mean -0.061 m, W1 mean +0.002 m/s; final all-fall status
+blockers: 16,000 interactions per group did not produce stable Walk; next diagnosis/longer-budget decision required; G1 assets/data require LFS and separate license/hash verification
+next_action: diagnose all-fall failure before R2; do not claim R1 PASS
 ```

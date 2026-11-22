@@ -23,7 +23,7 @@ def main():
     agent_config = args.checkpoint.parents[1] / "params" / "agent.yaml"
     if not agent_config.is_file():
         parser.error(f"missing saved agent configuration: {agent_config}")
-    args.output.mkdir(parents=True)
+    args.output.mkdir(parents=True, exist_ok=True)
     app = AppLauncher(args).app
     try:
         evaluate(args, agent_config)
