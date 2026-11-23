@@ -2,7 +2,7 @@
 
 - **状态：PARTIAL**
 - **日期：2026-11-23**
-- **当前阶段为 R1，正式三 seed 奖励对照和独立评估已完成**
+- **当前阶段为 R1，正式三 seed 奖励对照、独立评估和全跌倒诊断已完成**
 - **运行前项目 SHA 为 `7bcd195fe83589a6b4d3d5836f9cfdaea765df38`**
 - **正式训练为两种风格权重各 3 个 seed，每组 2 环境、500 次更新、16,000 个环境交互步**
 - **每个最终 checkpoint 使用同一组 100 个评估 seed，六组共 600 个评估回合**
@@ -28,10 +28,15 @@
 - 新增独立评估入口，记录跌倒、超时、存活时间、位移、速度和参考速度分布距离，保存 20 个回合的数据与两个骨架视频。
 - 预注册正式奖励消融，验证两组任务奖励权重一致，仅风格权重不同。资源 pilot 两组均完成 50 次更新。
 - 完成正式三 seed 训练和同一 100 seed 评估，记录 paired deltas、参考速度 W1、视频和所有 checkpoint hash。
+- 对六组 100% 跌倒做了可复现诊断。16,000 交互步/组仍不足以形成稳定步态，最终策略动作从 agent800 到 agent8000 明显放大。
+- 单步动力学探针发现 agent 配置未裁剪动作，官方环境用完整关节范围作为 action scale。最终 checkpoint 首步目标关节范围达到 -5.49–7.96 rad，CPU PhysX 报告 spherical joint 目标角超出 [-pi, pi]。
+- 同一 checkpoint 的临时动作裁剪和半范围探针将首步最大目标偏差从 7.83 rad 降至 4.97/3.01 rad，但 60 步探针仍跌倒，说明动作接口是首要问题但不是唯一原因。
+- AMP 风格奖励在 task+style seed42 最终 checkpoint 的同一初态约为 4.43，而任务奖励固定为 1，风格项可能主导早期优势估计。正式三 seed 尚不能把该尺度单独归因为全跌倒。
+- 核对 reset 代码和初态范围，躯干 z 相比参考动作稳定多出官方明确的 0.15 m，x 范围一致，暂未发现初始化错位或独立接触求解异常。
 
 ## 下一步
 
-1. 诊断六组全跌倒的训练预算、奖励/初始化和物理接触原因，先用小规模可控实验验证修正。
+1. 先做动作目标范围修正的 2 环境短训和 10 回合评估，再校准风格奖励尺度，最后才延长训练预算。
 2. R2 先确认 G1 USD、专家动作、retarget 数据和许可证，再决定是否使用 `legged_lab` 的 Isaac Lab 2.3.x 路线。未满足前不启动 G1 AMP 训练。
 
 ## 阶段记录
@@ -54,7 +59,7 @@ code_sha: 7bcd195fe83589a6b4d3d5836f9cfdaea765df38
 environment: Ubuntu 22.04.5; RTX 3070 8 GiB; driver 580.178.04; Isaac Sim 4.5.0; official Isaac Lab v2.1.1; Kit Python 3.10.15; torch 2.5.1+cu118; isolated venv skrl 1.4.3; gymnasium 0.29.1; hydra-core 1.3.2; numpy 1.26.0; tensorboard 2.19.0; flatdict 4.0.1; h5py 3.13.0
 commands_run: six AMP training runs with style-weight 0.0/1.0, seeds 42/43/44, --num_envs 2 --max_iterations 500; six 100-episode paired evaluations with seeds 42000–42099; 500 ms GPU sampling
 evidence_paths: reports/R1_amp_baseline.md; reports/r1_formal_eval/; runs/r1_formal/; runs/r1_formal_eval/20261123T021500+0900_seed42000-42099/
-key_metrics: six training exit code 0; 600 evaluation episodes; six groups 100% fall rate; style-weight paired delta dx mean -0.061 m, W1 mean +0.002 m/s; final all-fall status
-blockers: 16,000 interactions per group did not produce stable Walk; next diagnosis/longer-budget decision required; G1 assets/data require LFS and separate license/hash verification
-next_action: diagnose all-fall failure before R2; do not claim R1 PASS
+key_metrics: six training exit code 0; 600 evaluation episodes; six groups 100% fall rate; style-weight paired delta dx mean -0.061 m, W1 mean +0.002 m/s; final all-fall status; final task seed42 first-step action target delta 7.83 rad; task+style seed42 initial style reward 4.43 vs task reward 1
+blockers: action targets are out of range under the official unmodified mapping and the 16,000-interaction budget did not produce stable Walk; G1 assets/data require LFS and separate license/hash verification
+next_action: run a 2-env action-range correction smoke and 10-episode evaluation, then calibrate style reward scale before any longer-budget or three-seed rerun; do not claim R1 PASS
 ```
