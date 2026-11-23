@@ -43,6 +43,7 @@
 - 新增项目侧 USD drive override，按 joint prim gains 转换为运行时单位。gain scale `0.5/1/2/4` 在 solver `16/4` 下完成 49/49/50/50 步，仍未完成 77 步。直接 IdealPD 探针出现 NaN，暂不进入训练。
 - 新增足底接触力观测。contact-force view 能读到约 640/1405 N 的初始足底力，但会把同一回放从 49 步改变为 23 步，因此仅作为独立观测证据。
 - 地面摩擦 sweep `0.1/0.5/1/2/5` 的完成步数为 `25/58/49/23/16`，起始帧 `0/30/60/90/120` 在摩擦 0.5 下完成 `58/63/22/25/22` 步，仍未完成 77 步。
+- 已改用不创建 contact-force view 的载荷 proxy。它基于躯干 link 速度有限差分、整机质量和重力项，phase 30、摩擦 0.5 仍完成 63 步，和无 proxy 基线一致。proxy 最大绝对载荷约 893.9/119.3/3122.5 N。
 
 ## 下一步
 
@@ -69,7 +70,7 @@ code_sha: 7bcd195fe83589a6b4d3d5836f9cfdaea765df38
 environment: Ubuntu 22.04.5; RTX 3070 8 GiB; driver 580.178.04; Isaac Sim 4.5.0; official Isaac Lab v2.1.1; Kit Python 3.10.15; torch 2.5.1+cu118; isolated venv skrl 1.4.3; gymnasium 0.29.1; hydra-core 1.3.2; numpy 1.26.0; tensorboard 2.19.0; flatdict 4.0.1; h5py 3.13.0
 commands_run: six AMP training runs with style-weight 0.0/1.0, seeds 42/43/44, --num_envs 2 --max_iterations 500; six 100-episode paired evaluations with seeds 42000–42099; 500 ms GPU sampling
 evidence_paths: reports/R1_amp_baseline.md; reports/r1_formal_eval/; runs/r1_formal/; runs/r1_formal_eval/20261123T021500+0900_seed42000-42099/; scripts/r1_diagnose_dynamics.py; runs/r1_diagnostics/
-key_metrics: six formal evaluation groups all fell; action correction smoke 10/10 fell but survival mean improved 0.563 to 0.747 s; corrected style scale 0.5 remained 10/10 fall with survival 0.753 s; direct reference replay fell at step 17 with zero target-angle errors; USD elbow/knee drive attrs disagree with runtime actuator tensor; no-gravity replay completed 77 steps; solver 16/4 completed 49 steps; drive override scales 0.5/1/2/4 completed 49/49/50/50 steps; friction and phase sweeps still completed at most 63 steps
+key_metrics: six formal evaluation groups all fell; action correction smoke 10/10 fell but survival mean improved 0.563 to 0.747 s; corrected style scale 0.5 remained 10/10 fall with survival 0.753 s; direct reference replay fell at step 17 with zero target-angle errors; USD elbow/knee drive attrs disagree with runtime actuator tensor; no-gravity replay completed 77 steps; solver 16/4 completed 49 steps; drive override scales 0.5/1/2/4 completed 49/49/50/50 steps; friction and phase sweeps still completed at most 63 steps; non-invasive load proxy preserved phase 30 result at 63 steps
 blockers: reference motion is not dynamically trackable under gravity in the current Humanoid28 USD/PhysX actuator setup, so longer AMP budgets are not interpretable yet; G1 assets/data require LFS and separate license/hash verification
 next_action: use friction 0.5 and phase 30 for a focused gravity/contact diagnosis while isolating contact-force instrumentation; do not claim R1 PASS
 ```

@@ -368,7 +368,9 @@ solver position iterations 对承载时间有明显但非单调影响，`16/4` �
 
 ### 接触力观测
 
-通过 Isaac Sim `RigidPrim(track_contact_forces=True)` 读取两个足部的法向接触力。初始帧的观测约为 `640.6 N` 和 `1404.6 N`，phase 30、摩擦 0.5 的观测最大值约为 `242.4 N` 和 `733.7 N`。开启该 PhysX contact-force view 后，同一配置的回放承载时间从无观测时的 63 步变为 26 步，说明这个观测 API 会改变当前运行时行为。接触力数值用于定位接触载荷，不能和无观测回放的稳定性直接比较。
+直接启用 Isaac Sim `RigidPrim(track_contact_forces=True)` 能读到两个足部的法向力，初始帧约为 `640.6 N` 和 `1404.6 N`，但 phase 30、摩擦 0.5 的承载时间从无观测时的 63 步变为 26 步。底层 `RigidContactView` 在当前 Humanoid28 link path 上无法建立匹配的 rigid-contact entries。为保持动力学不变，回放改用非侵入式载荷 proxy。它对躯干 link 线速度做有限差分，并乘以初始化时读取的整机质量，再扣除重力项。phase 30、摩擦 0.5 的回放仍完成 63 步，和无 proxy 基线一致。该 proxy 反映重力承载和整体加速度变化，不等同于足底接触力。
+
+该 proxy 的有重力 phase 30 统计为最大绝对值约 `[893.9, 119.3, 3122.5] N`，均值约 `[-36.7, -18.8, 305.3] N`。它提供了不改变动力学的载荷时间序列，接触力传感器的直接数值仍需后续修复 link/contact view 匹配后再采集。
 
 ### 地面摩擦
 
@@ -398,7 +400,7 @@ solver position iterations 对承载时间有明显但非单调影响，`16/4` �
 
 起始帧 30 的承载时间最长，但仍低于完整 77 步。起始相位明显影响是否快速跌倒，随机 reset 的全跌倒不能只归因于单个固定初态。
 
-这些运行目录位于 `runs/r1_contact_probe/`，脚本参数入口仍是 `scripts/r1_reference_replay.py`。当前结论是摩擦和相位会改变失稳时间，接触力观测还会引入运行时扰动，尚未找到能在有重力下完成参考片段的配置。
+这些运行目录位于 `runs/r1_contact_probe/`，脚本参数入口仍是 `scripts/r1_reference_replay.py`。当前结论是摩擦和相位会改变失稳时间，非侵入式载荷 proxy 不改变 phase 30 的 63 步结果，尚未找到能在有重力下完成参考片段的配置。
 
 ## 15. 下一步
 

@@ -61,6 +61,8 @@ def main() -> None:
     parser.add_argument("--drive-gain-scale", type=float, default=1.0)
     parser.add_argument("--frame-stride", type=int, default=None)
     parser.add_argument("--contact-forces", action="store_true")
+    parser.add_argument("--tensor-contact-forces", action="store_true")
+    parser.add_argument("--estimate-contact-load", action="store_true")
     parser.add_argument("--start-frame", type=int, default=None)
     parser.add_argument("--ground-friction", type=float, default=None)
     parser.add_argument("--ground-restitution", type=float, default=None)
@@ -76,6 +78,7 @@ def main() -> None:
 def replay(args) -> None:
     import numpy as np
     import torch
+    import omni.physics.tensors as physics_tensors
     from isaacsim.core.prims import RigidPrim
     from isaaclab_tasks.direct.humanoid_amp.humanoid_amp_env import HumanoidAmpEnv
     from isaaclab_tasks.utils.parse_cfg import parse_env_cfg
@@ -91,6 +94,18 @@ def replay(args) -> None:
             if getattr(self, "contact_view", None) is not None:
                 forces = self.contact_view.get_net_contact_forces(dt=self.step_dt)
                 self.terminal_contact_forces = torch.as_tensor(forces, device=self.device).clone()
+            if getattr(self, "tensor_contact_view", None) is not None:
+                forces = self.tensor_contact_view.get_net_contact_forces(self.step_dt)
+                self.terminal_tensor_contact_forces = torch.as_tensor(forces, device=self.device).clone()
+            if getattr(self, "estimate_contact_load", False):
+                gravity = torch.tensor((0.0, 0.0, -9.81), device=self.device)
+                velocity = self.robot.data.body_lin_vel_w[0, self.ref_body_index].clone()
+                if getattr(self, "previous_body_com_velocity", None) is not None:
+                    acceleration = (velocity - self.previous_body_com_velocity) / self.step_dt
+                    self.terminal_estimated_external_force = self.estimated_total_mass * (acceleration - gravity)
+                else:
+                    self.terminal_estimated_external_force = torch.zeros(3, device=self.device)
+                self.previous_body_com_velocity = velocity
             return super()._get_dones()
 
     task = "Isaac-Humanoid-AMP-Walk-Direct-v0"
@@ -148,7 +163,10 @@ def replay(args) -> None:
         amp_env_module.GroundPlaneCfg = patched_ground_plane_cfg
     env = ReplayEnv(env_cfg)
     try:
+        env.estimated_total_mass = env.robot.data.default_mass[0].sum()
         env.contact_view = None
+        env.tensor_contact_view = None
+        env.estimate_contact_load = args.estimate_contact_load
         contact_view_error = None
         if args.contact_forces:
             try:
@@ -161,6 +179,18 @@ def replay(args) -> None:
             except Exception as exc:
                 contact_view_error = repr(exc)
                 env.contact_view = None
+        tensor_contact_view_error = None
+        if args.tensor_contact_forces:
+            try:
+                tensor_sim_view = physics_tensors.create_simulation_view("torch")
+                env.tensor_contact_view = tensor_sim_view.create_rigid_contact_view(
+                    "/World/envs/env_0/Robot/right_foot|/World/envs/env_0/Robot/left_foot",
+                    filter_patterns=[],
+                    max_contact_data_count=64,
+                )
+            except Exception as exc:
+                tensor_contact_view_error = repr(exc)
+                env.tensor_contact_view = None
         if args.half_range:
             env.action_scale = 0.5 * env.action_scale
         obs, _ = env.reset(seed=args.seed)
@@ -245,6 +275,21 @@ def replay(args) -> None:
                             if args.contact_forces and hasattr(env, "terminal_contact_forces")
                             else None
                         ),
+                        "tensor_contact_forces": (
+                            env.terminal_tensor_contact_forces.cpu().tolist()
+                            if args.tensor_contact_forces and hasattr(env, "terminal_tensor_contact_forces")
+                            else None
+                        ),
+                        "tensor_contact_force_norms": (
+                            env.terminal_tensor_contact_forces.norm(dim=-1).cpu().tolist()
+                            if args.tensor_contact_forces and hasattr(env, "terminal_tensor_contact_forces")
+                            else None
+                        ),
+                        "estimated_external_force": (
+                            env.terminal_estimated_external_force.cpu().tolist()
+                            if args.estimate_contact_load and hasattr(env, "terminal_estimated_external_force")
+                            else None
+                        ),
                         "terminated": bool(terminated.item()),
                         "truncated": bool(truncated.item()),
                     }
@@ -274,6 +319,9 @@ def replay(args) -> None:
             "frame_stride": args.frame_stride,
             "contact_forces": args.contact_forces,
             "contact_view_error": contact_view_error,
+            "tensor_contact_forces": args.tensor_contact_forces,
+            "tensor_contact_view_error": tensor_contact_view_error,
+            "estimate_contact_load": args.estimate_contact_load,
             "start_frame": args.start_frame,
             "ground_friction": args.ground_friction,
             "ground_restitution": args.ground_restitution,

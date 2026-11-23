@@ -34,8 +34,17 @@ def inspect_usd(args) -> None:
     try:
         stage = omni.usd.get_context().get_stage()
         joints = []
+        foot_prims = []
         for prim in stage.Traverse():
             path = str(prim.GetPath())
+            if "/World/envs/env_0/Robot/" in path and "foot" in path.lower():
+                foot_prims.append(
+                    {
+                        "path": path,
+                        "type": prim.GetTypeName(),
+                        "rigid_body": prim.HasAPI(UsdPhysics.RigidBodyAPI),
+                    }
+                )
             if "/World/envs/env_0/Robot/joints/" not in path:
                 continue
             attributes = {}
@@ -62,6 +71,7 @@ def inspect_usd(args) -> None:
             "task": task,
             "asset_usd_path": env.unwrapped.robot.cfg.spawn.usd_path,
             "joint_count": len(joints),
+            "foot_prims": foot_prims,
             "joints": joints,
         }
         args.output.parent.mkdir(parents=True, exist_ok=True)
