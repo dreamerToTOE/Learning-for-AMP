@@ -406,6 +406,14 @@ solver position iterations 对承载时间有明显但非单调影响，`16/4` �
 
 进一步对照中，首个目标帧 offset `0/1/2/3/4` 分别完成 `32/32/63/63/38` 步，加入参考关节速度目标后仍为 63 步。地面 restitution sweep `0.05–0.8` 中最好为 restitution `0.12`，完成 68 步，仍未完成 77 步。参考动作与执行器/接触系统的剩余不匹配不能通过控制周期首帧、速度前馈或简单 restitution 调参消除。
 
+### 结构映射审计
+
+新增运行时结构对照后，frame 0 reset 的 runtime body position 与参考动作在统一高度偏移下最大误差为 `3.8e-7 m`，joint position 最大误差为 `0 rad`，整段动作没有超出 soft joint limits。runtime 和 motion 的 body/joint 名称通过名称索引对齐，坐标原点和姿态映射没有发现结构错位。物理步长为 `1/60 s`，decimation 为 2，环境步长为 `1/30 s`。
+
+剩余结构问题出现在速度。frame 0 的 torso velocity 被 reset 直接写入所以误差为 0，但 right/left foot body velocity 误差分别约 `0.45/0.63 m/s`。参考 NPZ 在 frame 0、30、60 等位置存在成对重复的 q 帧，同时给出非零 joint/body velocity。位置序列有限差分与这些速度并不一致，reset 因而把一个运动学不一致的位姿、速度组合交给 PhysX。用位置有限差分替换起始速度后 phase 30 只完成 30 步，不能作为修复方案，但确认速度字段是结构性风险。
+
+对照 JSON 和脚本位于 `runs/r1_structure/`、`scripts/r1_compare_motion_asset.py`。当前证据支持“名称映射和坐标系基本正确，专家速度与离散位置序列以及 Humanoid28 执行器响应不一致”这一诊断。
+
 ## 15. 下一步
 
 保留摩擦 0.5、起始帧 30 作为诊断条件，进一步拆分接触观测扰动和真实物理参数，先找到无额外观测时能完成 77 步的配置，再恢复 AMP 短训。
