@@ -322,6 +322,27 @@ scripts/r1_python.sh -u scripts/r1_eval_walk.py --headless --device cuda:0 \
 
 训练日志、评估 JSON、GPU 记录和命令保存在 `runs/r1_actionrange_smoke/20261123T103000+0900_seed42_env2_steps800/`。可选 patch 位于 `scripts/r1_action_range_patch.py`，训练入口位于 `scripts/r1_amp_actionrange_smoke.py`，评估入口通过 `scripts/r1_eval_walk.py --action-range-correction` 启用。
 
-## 12. 下一步
+## 12. 修正接口下的风格尺度短对照（2026-11-23）
 
-在修正动作接口下，运行风格权重为 1、`discriminator_reward_scale=0.5` 的同预算短对照，并使用同一 10 个评估初态。这个尺度把初始风格奖励拉近任务奖励量级。只有在跌倒率出现可重复下降后，才延长训练预算或恢复三 seed 正式实验。
+在动作裁剪和半范围映射已经启用的条件下，运行任务权重 1、风格权重 1、`discriminator_reward_scale=0.5` 的 50 次更新短训。该组仍使用 seed 42、2 个环境、800 steps/env，并用同一 10 个评估初态与修正 task-only 组比较。
+
+| 组别 | 风格权重 | 判别器 reward scale | 跌倒 / 超时 | 存活时间均值 | +X 位移均值 | 参考速度 W₁ |
+|---|---:|---:|---:|---:|---:|---:|
+| 修正 task-only | 0 | 2.0 | 10 / 0 | 0.747 s | 0.359 m | 0.977 m/s |
+| 修正 task+style | 1 | 0.5 | 10 / 0 | 0.753 s | 0.493 m | 0.842 m/s |
+
+初始风格奖励约为 0.80，已经接近任务奖励 1。0.5 尺度没有降低短评估跌倒率，因而不能把风格奖励量级作为当前全跌倒的单一原因。两组训练和评估均无 PhysX 目标角错误。
+
+该组日志和 checkpoint 位于 `runs/r1_actionrange_smoke/20261123T103000+0900_seed42_env2_steps800/corrected_style_scale05/`。修正 task-only 和 task+style 使用相同的初始 observation hash。
+
+## 13. 参考动作直接回放与动力学检查（2026-11-23）
+
+为区分策略学习失败和执行器/接触动力学失败，使用 `random-start` 在动作数据第 0 帧初始化，并每个环境步直接把参考动作第 2、4、6…帧转换为关节位置目标。目标动作范围在原始映射下为 `[-0.484, 0.413]`，没有 PhysX 目标角越界，但 18 个环境步后仍在第 17 步跌倒。将 reset 的 0.15 m 抬升去掉，或保持初始姿态而不跟踪后续参考帧，仍在第 17 步跌倒。这个结果排除了“策略输出越界”作为唯一解释，也说明参考动作与当前资产动力学没有闭合。
+
+运行时从 USD 解析出的隐式执行器参数中，`right_elbow`、`left_elbow`、`right_knee`、`left_knee` 的 stiffness、damping 和 effort limit 为 0，其余关节使用非零增益。把所有关节临时设为 stiffness 5000、damping 500 后，参考回放仍在第 17 步跌倒，终止前膝关节跟踪误差仍达到约 2.76 rad 和 2.22 rad。因此零增益关节是明确的资产/执行器异常信号，但单独填充增益尚未恢复运动。
+
+参考回放、保持姿态和显式增益探针保存在 `runs/r1_reference_replay/`。脚本位于 `scripts/r1_reference_replay.py`。当前 R1 的高优先级问题已经从“策略预算不足”收敛为“官方动作数据、Humanoid28 USD 关节驱动和接触动力学之间存在不匹配”。
+
+## 14. 下一步
+
+先核对 Humanoid28 Nucleus USD 的版本和四个零驱动关节的 joint prim 属性，再做显式执行器增益和 solver/contact 参数的单因素短对照。只有参考动作回放能够稳定超过 1–2 秒，才继续增加 AMP 训练预算。
