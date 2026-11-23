@@ -60,6 +60,8 @@ def main() -> None:
     parser.add_argument("--override-usd-drives", action="store_true")
     parser.add_argument("--drive-gain-scale", type=float, default=1.0)
     parser.add_argument("--frame-stride", type=int, default=None)
+    parser.add_argument("--target-offset", type=int, default=None)
+    parser.add_argument("--velocity-target", action="store_true")
     parser.add_argument("--contact-forces", action="store_true")
     parser.add_argument("--tensor-contact-forces", action="store_true")
     parser.add_argument("--estimate-contact-load", action="store_true")
@@ -87,6 +89,11 @@ def replay(args) -> None:
         from r1_humanoid28_drive_patch import apply_humanoid28_drive_override
 
     class ReplayEnv(HumanoidAmpEnv):
+        def _apply_action(self):
+            super()._apply_action()
+            if getattr(self, "reference_velocity_target", None) is not None:
+                self.robot.set_joint_velocity_target(self.reference_velocity_target)
+
         def _get_dones(self):
             self.terminal_root = self.robot.data.body_pos_w[0, self.ref_body_index].clone()
             self.terminal_feet = self.robot.data.body_pos_w[0, self.key_body_indexes].clone()
@@ -252,8 +259,18 @@ def replay(args) -> None:
             for step in range(args.steps):
                 stride = int(env.cfg.decimation) if args.frame_stride is None else args.frame_stride
                 phase_offset = 0 if args.start_frame is None else args.start_frame
-                frame = min(phase_offset + (step + 1) * stride, dof_positions.shape[0] - 1)
+                if args.target_offset is None:
+                    frame = phase_offset + (step + 1) * stride
+                else:
+                    frame = phase_offset + args.target_offset + step * stride
+                frame = min(max(frame, 0), dof_positions.shape[0] - 1)
                 target = dof_positions[0] if args.hold_initial else dof_positions[frame]
+                if args.velocity_target:
+                    env.reference_velocity_target = torch.as_tensor(
+                        motion["dof_velocities"][frame, index], device=env.device
+                    ).unsqueeze(0)
+                else:
+                    env.reference_velocity_target = None
                 actions = ((target - env.action_offset) / env.action_scale).unsqueeze(0)
                 obs, _, terminated, truncated, _ = env.step(actions)
                 steps.append(
@@ -317,6 +334,8 @@ def replay(args) -> None:
             "override_usd_drives": args.override_usd_drives,
             "drive_gain_scale": args.drive_gain_scale,
             "frame_stride": args.frame_stride,
+            "target_offset": args.target_offset,
+            "velocity_target": args.velocity_target,
             "contact_forces": args.contact_forces,
             "contact_view_error": contact_view_error,
             "tensor_contact_forces": args.tensor_contact_forces,
