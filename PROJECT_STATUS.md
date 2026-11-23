@@ -39,7 +39,7 @@
 - 新增参考动作直接回放。参考目标动作没有 PhysX 角度越界，但原始、去掉 reset 抬升、保持初始姿态和显式 stiffness 5000/damping 500 探针均在约 0.6 s 跌倒。
 - 运行时 actuator tensor 中 `right_elbow`、`left_elbow`、`right_knee`、`left_knee` 的 stiffness、damping 和 effort limit 为 0，但同一环境加载的 USD joint prim 分别有 elbow 150/15、knee 300/30 的 drive 属性。显式填充增益后膝关节跟踪误差仍约 2.76/2.22 rad，说明存在 USD 到 PhysX tensor 的解析不一致和更深的接触动力学问题。
 - 关闭重力的参考回放完成 77 步而有重力在第 17 步跌倒，失稳触发点位于重力接触承载阶段。
-- solver position/velocity 单因素探针显示默认 `4/0` 完成 18 步，`16/4` 完成 49 步，`32/4` 反而完成 17 步。接触 solver 对承载时间有明显但非单调影响，仍未完成 77 步参考回放。
+- solver position/velocity 单因素探针显示默认 `4/0` 完成 18 步，`16/4` 完成 49 步，`32/4` 反而完成 17 步。position 12、14、16、18、20、24 的窄 sweep 为 23、37、49、26、18、16 步。接触 solver 对承载时间有明显但非单调影响，仍未完成 77 步参考回放。
 
 ## 下一步
 
