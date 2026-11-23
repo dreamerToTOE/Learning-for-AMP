@@ -49,6 +49,7 @@
 - 结构审计显示 reset 后 body position 最大误差 `3.8e-7 m`、joint position 误差 0、动作无 soft-limit 越界，名称映射和坐标系基本正确。foot body velocity 误差最高约 `0.63 m/s`，NPZ 存在重复位置帧与非零速度不一致。有限差分速度回放 phase30 仅 30 步，未形成修复。
 - reset velocity frame offset `0/1/2/3` 在 phase30 分别完成 `63/27/37/31` 步，原始速度相位反而最好，简单换下一帧或有限差分不能修复结构不匹配。
 - unique 30 Hz 位置重建速度并用于 reset/velocity target 仅完成 29 步，每步直接写回参考 joint state 仅完成 28 步，未恢复 77 步。速度字段问题与执行器跟踪都不是唯一失稳来源。
+- 去重为 30 Hz、77 帧的 motion file，有限差分速度回放完成 29 步，保留原始速度完成 63 步。IdealPD 低增益探针产生 NaN，未形成稳定修复。
 - Humanoid28 runtime 总质量约 35.73 kg，body mass/inertia 有限且左右对称。USD elbow/knee axis 与 radian soft limits 一致，未发现轴反向或单位错误。foot collision geometry 位于引用 payload，当前 stage/contact view 不能直接枚举，接触几何链路仍未闭合。
 
 ## 下一步

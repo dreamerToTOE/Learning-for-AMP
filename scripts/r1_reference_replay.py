@@ -40,6 +40,7 @@ USD_DAMPING = [
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--motion-file", type=Path, default=None)
     parser.add_argument("--seed", type=int, default=1000)
     parser.add_argument("--steps", type=int, default=77)
     parser.add_argument("--half-range", action="store_true")
@@ -123,6 +124,8 @@ def replay(args) -> None:
     env_cfg = parse_env_cfg(task, device=args.device, num_envs=1)
     env_cfg.seed = args.seed
     env_cfg.reset_strategy = "random-start"
+    if args.motion_file is not None:
+        env_cfg.motion_file = str(args.motion_file.resolve())
     if args.disable_gravity:
         env_cfg.robot.spawn.rigid_props.disable_gravity = True
     if args.disable_self_collisions:
@@ -385,6 +388,7 @@ def replay(args) -> None:
                     break
         result = {
             "task": task,
+            "motion_file": str(env_cfg.motion_file),
             "seed": args.seed,
             "half_range": args.half_range,
             "hold_initial": args.hold_initial,

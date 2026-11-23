@@ -426,6 +426,8 @@ foot body Xform 具有 rigid-body schema，但其 collision shape 位于引用 p
 
 进一步对整段 unique 30 Hz 位置序列重建 joint/body velocity，并同时作为 reset velocity 和每步 velocity target，phase 30 只完成 29 步。每步把 joint state 直接写回参考姿态的隔离实验完成 28 步。两者都没有恢复 77 步，说明单纯修复速度字段或强制关节跟踪不能消除根部接触失稳。
 
+将 60 Hz NPZ 去重为 77 帧、fps 30 的新 motion file 后，使用有限差分速度回放仍只完成 29 步；保留原始速度字段的去重版本完成 63 步。IdealPD 直接替代 implicit actuator 的低增益探针虽然走完了循环次数，但终止状态和关节误差出现 NaN，不能视为稳定回放。
+
 ## 15. 下一步
 
 保留摩擦 0.5、起始帧 30 作为诊断条件，进一步拆分接触观测扰动和真实物理参数，先找到无额外观测时能完成 77 步的配置，再恢复 AMP 短训。
