@@ -59,6 +59,11 @@ def main() -> None:
     parser.add_argument("--pd-effort-limit", type=float, default=1000.0)
     parser.add_argument("--override-usd-drives", action="store_true")
     parser.add_argument("--drive-gain-scale", type=float, default=1.0)
+    parser.add_argument("--frame-stride", type=int, default=None)
+    parser.add_argument("--contact-forces", action="store_true")
+    parser.add_argument("--start-frame", type=int, default=None)
+    parser.add_argument("--ground-friction", type=float, default=None)
+    parser.add_argument("--ground-restitution", type=float, default=None)
     AppLauncher.add_app_launcher_args(parser)
     args = parser.parse_args()
     app = AppLauncher(args).app
@@ -71,6 +76,7 @@ def main() -> None:
 def replay(args) -> None:
     import numpy as np
     import torch
+    from isaacsim.core.prims import RigidPrim
     from isaaclab_tasks.direct.humanoid_amp.humanoid_amp_env import HumanoidAmpEnv
     from isaaclab_tasks.utils.parse_cfg import parse_env_cfg
 
@@ -82,6 +88,9 @@ def replay(args) -> None:
             self.terminal_root = self.robot.data.body_pos_w[0, self.ref_body_index].clone()
             self.terminal_feet = self.robot.data.body_pos_w[0, self.key_body_indexes].clone()
             self.terminal_joint_pos = self.robot.data.joint_pos[0].clone()
+            if getattr(self, "contact_view", None) is not None:
+                forces = self.contact_view.get_net_contact_forces(dt=self.step_dt)
+                self.terminal_contact_forces = torch.as_tensor(forces, device=self.device).clone()
             return super()._get_dones()
 
     task = "Isaac-Humanoid-AMP-Walk-Direct-v0"
@@ -122,8 +131,36 @@ def replay(args) -> None:
             actuator_cfg.stiffness = args.stiffness
         if args.damping is not None:
             actuator_cfg.damping = args.damping
+    if args.ground_friction is not None or args.ground_restitution is not None:
+        from isaaclab_tasks.direct.humanoid_amp import humanoid_amp_env as amp_env_module
+
+        original_ground_plane_cfg = amp_env_module.GroundPlaneCfg
+
+        def patched_ground_plane_cfg(*ground_args, **ground_kwargs):
+            cfg = original_ground_plane_cfg(*ground_args, **ground_kwargs)
+            if args.ground_friction is not None:
+                cfg.physics_material.static_friction = args.ground_friction
+                cfg.physics_material.dynamic_friction = args.ground_friction
+            if args.ground_restitution is not None:
+                cfg.physics_material.restitution = args.ground_restitution
+            return cfg
+
+        amp_env_module.GroundPlaneCfg = patched_ground_plane_cfg
     env = ReplayEnv(env_cfg)
     try:
+        env.contact_view = None
+        contact_view_error = None
+        if args.contact_forces:
+            try:
+                env.contact_view = RigidPrim(
+                    prim_paths_expr="/World/envs/env_0/Robot/.*_foot",
+                    name="r1_humanoid_feet_contact_view",
+                    track_contact_forces=True,
+                )
+                env.contact_view.initialize()
+            except Exception as exc:
+                contact_view_error = repr(exc)
+                env.contact_view = None
         if args.half_range:
             env.action_scale = 0.5 * env.action_scale
         obs, _ = env.reset(seed=args.seed)
@@ -139,6 +176,33 @@ def replay(args) -> None:
         dof_names = motion["dof_names"].tolist()
         index = [dof_names.index(name) for name in env.robot.data.joint_names]
         dof_positions = torch.as_tensor(motion["dof_positions"][:, index], device=env.device)
+        if args.start_frame is not None:
+            if not 0 <= args.start_frame < dof_positions.shape[0]:
+                raise ValueError(f"start frame out of range: {args.start_frame}")
+            body_names_motion = motion["body_names"].tolist()
+            torso_index = body_names_motion.index(env_cfg.reference_body)
+            root_state = env.robot.data.root_state_w[0].clone()
+            root_state[:3] = torch.as_tensor(
+                motion["body_positions"][args.start_frame, torso_index], device=env.device
+            ) + env.scene.env_origins[0]
+            root_state[2] += 0.0 if args.no_reset_lift else 0.15
+            root_state[3:7] = torch.as_tensor(
+                motion["body_rotations"][args.start_frame, torso_index], device=env.device
+            )
+            root_state[7:10] = torch.as_tensor(
+                motion["body_linear_velocities"][args.start_frame, torso_index], device=env.device
+            )
+            root_state[10:13] = torch.as_tensor(
+                motion["body_angular_velocities"][args.start_frame, torso_index], device=env.device
+            )
+            env.robot.write_root_link_pose_to_sim(root_state[:7].unsqueeze(0), env.robot._ALL_INDICES)
+            env.robot.write_root_com_velocity_to_sim(root_state[7:].unsqueeze(0), env.robot._ALL_INDICES)
+            joint_velocity = torch.as_tensor(
+                motion["dof_velocities"][args.start_frame, index], device=env.device
+            )
+            env.robot.write_joint_state_to_sim(
+                dof_positions[args.start_frame].unsqueeze(0), joint_velocity.unsqueeze(0), None, env.robot._ALL_INDICES
+            )
         actuator = next(iter(env.robot.actuators.values()))
         joint_names = list(env.robot.data.joint_names)
         body_names = list(env.robot.data.body_names)
@@ -156,7 +220,9 @@ def replay(args) -> None:
         steps = []
         with torch.inference_mode():
             for step in range(args.steps):
-                frame = min((step + 1) * int(env.cfg.decimation), dof_positions.shape[0] - 1)
+                stride = int(env.cfg.decimation) if args.frame_stride is None else args.frame_stride
+                phase_offset = 0 if args.start_frame is None else args.start_frame
+                frame = min(phase_offset + (step + 1) * stride, dof_positions.shape[0] - 1)
                 target = dof_positions[0] if args.hold_initial else dof_positions[frame]
                 actions = ((target - env.action_offset) / env.action_scale).unsqueeze(0)
                 obs, _, terminated, truncated, _ = env.step(actions)
@@ -169,6 +235,16 @@ def replay(args) -> None:
                         "target_delta_by_joint": (target - env.terminal_joint_pos).cpu().tolist(),
                         "root_terminal": env.terminal_root.cpu().tolist(),
                         "feet_terminal": env.terminal_feet.cpu().tolist(),
+                        "contact_forces": (
+                            env.terminal_contact_forces.cpu().tolist()
+                            if args.contact_forces and hasattr(env, "terminal_contact_forces")
+                            else None
+                        ),
+                        "contact_force_norms": (
+                            env.terminal_contact_forces.norm(dim=-1).cpu().tolist()
+                            if args.contact_forces and hasattr(env, "terminal_contact_forces")
+                            else None
+                        ),
                         "terminated": bool(terminated.item()),
                         "truncated": bool(truncated.item()),
                     }
@@ -195,6 +271,12 @@ def replay(args) -> None:
             "pd_effort_limit": args.pd_effort_limit,
             "override_usd_drives": args.override_usd_drives,
             "drive_gain_scale": args.drive_gain_scale,
+            "frame_stride": args.frame_stride,
+            "contact_forces": args.contact_forces,
+            "contact_view_error": contact_view_error,
+            "start_frame": args.start_frame,
+            "ground_friction": args.ground_friction,
+            "ground_restitution": args.ground_restitution,
             "steps_requested": args.steps,
             "steps_completed": len(steps),
             "terminated_step": next((item["step"] for item in steps if item["terminated"]), None),

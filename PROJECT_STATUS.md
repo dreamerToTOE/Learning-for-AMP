@@ -41,10 +41,12 @@
 - 关闭重力的参考回放完成 77 步而有重力在第 17 步跌倒，失稳触发点位于重力接触承载阶段。
 - solver position/velocity 单因素探针显示默认 `4/0` 完成 18 步，`16/4` 完成 49 步，`32/4` 反而完成 17 步。position 12、14、16、18、20、24 的窄 sweep 为 23、37、49、26、18、16 步。`16/4` 加显式 stiffness 5000/damping 500 后完成 47 步。接触 solver 对承载时间有明显但非单调影响，仍未完成 77 步参考回放。
 - 新增项目侧 USD drive override，按 joint prim gains 转换为运行时单位。gain scale `0.5/1/2/4` 在 solver `16/4` 下完成 49/49/50/50 步，仍未完成 77 步。直接 IdealPD 探针出现 NaN，暂不进入训练。
+- 新增足底接触力观测。contact-force view 能读到约 640/1405 N 的初始足底力，但会把同一回放从 49 步改变为 23 步，因此仅作为独立观测证据。
+- 地面摩擦 sweep `0.1/0.5/1/2/5` 的完成步数为 `25/58/49/23/16`，起始帧 `0/30/60/90/120` 在摩擦 0.5 下完成 `58/63/22/25/22` 步，仍未完成 77 步。
 
 ## 下一步
 
-1. 保留项目侧 drive override 作为可复现实验分支，继续定位重力接触下参考回放的剩余失稳，参考回放稳定后才延长训练预算。
+1. 保留摩擦 0.5、起始帧 30 作为诊断条件，拆分接触观测扰动和真实物理参数，参考回放稳定后才延长训练预算。
 2. R2 先确认 G1 USD、专家动作、retarget 数据和许可证，再决定是否使用 `legged_lab` 的 Isaac Lab 2.3.x 路线。未满足前不启动 G1 AMP 训练。
 
 ## 阶段记录
@@ -67,7 +69,7 @@ code_sha: 7bcd195fe83589a6b4d3d5836f9cfdaea765df38
 environment: Ubuntu 22.04.5; RTX 3070 8 GiB; driver 580.178.04; Isaac Sim 4.5.0; official Isaac Lab v2.1.1; Kit Python 3.10.15; torch 2.5.1+cu118; isolated venv skrl 1.4.3; gymnasium 0.29.1; hydra-core 1.3.2; numpy 1.26.0; tensorboard 2.19.0; flatdict 4.0.1; h5py 3.13.0
 commands_run: six AMP training runs with style-weight 0.0/1.0, seeds 42/43/44, --num_envs 2 --max_iterations 500; six 100-episode paired evaluations with seeds 42000–42099; 500 ms GPU sampling
 evidence_paths: reports/R1_amp_baseline.md; reports/r1_formal_eval/; runs/r1_formal/; runs/r1_formal_eval/20261123T021500+0900_seed42000-42099/; scripts/r1_diagnose_dynamics.py; runs/r1_diagnostics/
-key_metrics: six formal evaluation groups all fell; action correction smoke 10/10 fell but survival mean improved 0.563 to 0.747 s; corrected style scale 0.5 remained 10/10 fall with survival 0.753 s; direct reference replay fell at step 17 with zero target-angle errors; USD elbow/knee drive attrs disagree with runtime actuator tensor; no-gravity replay completed 77 steps; solver 16/4 completed 49 steps; drive override scales 0.5/1/2/4 completed 49/49/50/50 steps
+key_metrics: six formal evaluation groups all fell; action correction smoke 10/10 fell but survival mean improved 0.563 to 0.747 s; corrected style scale 0.5 remained 10/10 fall with survival 0.753 s; direct reference replay fell at step 17 with zero target-angle errors; USD elbow/knee drive attrs disagree with runtime actuator tensor; no-gravity replay completed 77 steps; solver 16/4 completed 49 steps; drive override scales 0.5/1/2/4 completed 49/49/50/50 steps; friction and phase sweeps still completed at most 63 steps
 blockers: reference motion is not dynamically trackable under gravity in the current Humanoid28 USD/PhysX actuator setup, so longer AMP budgets are not interpretable yet; G1 assets/data require LFS and separate license/hash verification
-next_action: use the project-side drive override for a focused gravity/contact diagnosis before any longer-budget or three-seed rerun; do not claim R1 PASS
+next_action: use friction 0.5 and phase 30 for a focused gravity/contact diagnosis while isolating contact-force instrumentation; do not claim R1 PASS
 ```
