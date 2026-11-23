@@ -3,6 +3,7 @@
 - **状态：PARTIAL**
 - **日期：2026-11-23**
 - **当前阶段为 R1，正式三 seed 奖励对照、独立评估和全跌倒诊断已完成**
+- **最新提交为 `51319a3b7bc8d3a62ad15d1fba9dc1bf14727291`**
 - **运行前项目 SHA 为 `7bcd195fe83589a6b4d3d5836f9cfdaea765df38`**
 - **正式训练为两种风格权重各 3 个 seed，每组 2 环境、500 次更新、16,000 个环境交互步**
 - **每个最终 checkpoint 使用同一组 100 个评估 seed，六组共 600 个评估回合**
@@ -58,7 +59,7 @@ status: PARTIAL
 code_sha: 7bcd195fe83589a6b4d3d5836f9cfdaea765df38
 environment: Ubuntu 22.04.5; RTX 3070 8 GiB; driver 580.178.04; Isaac Sim 4.5.0; official Isaac Lab v2.1.1; Kit Python 3.10.15; torch 2.5.1+cu118; isolated venv skrl 1.4.3; gymnasium 0.29.1; hydra-core 1.3.2; numpy 1.26.0; tensorboard 2.19.0; flatdict 4.0.1; h5py 3.13.0
 commands_run: six AMP training runs with style-weight 0.0/1.0, seeds 42/43/44, --num_envs 2 --max_iterations 500; six 100-episode paired evaluations with seeds 42000–42099; 500 ms GPU sampling
-evidence_paths: reports/R1_amp_baseline.md; reports/r1_formal_eval/; runs/r1_formal/; runs/r1_formal_eval/20261123T021500+0900_seed42000-42099/
+evidence_paths: reports/R1_amp_baseline.md; reports/r1_formal_eval/; runs/r1_formal/; runs/r1_formal_eval/20261123T021500+0900_seed42000-42099/; scripts/r1_diagnose_dynamics.py; runs/r1_diagnostics/
 key_metrics: six training exit code 0; 600 evaluation episodes; six groups 100% fall rate; style-weight paired delta dx mean -0.061 m, W1 mean +0.002 m/s; final all-fall status; final task seed42 first-step action target delta 7.83 rad; task+style seed42 initial style reward 4.43 vs task reward 1
 blockers: action targets are out of range under the official unmodified mapping and the 16,000-interaction budget did not produce stable Walk; G1 assets/data require LFS and separate license/hash verification
 next_action: run a 2-env action-range correction smoke and 10-episode evaluation, then calibrate style reward scale before any longer-budget or three-seed rerun; do not claim R1 PASS
