@@ -414,6 +414,14 @@ solver position iterations 对承载时间有明显但非单调影响，`16/4` �
 
 对照 JSON 和脚本位于 `runs/r1_structure/`、`scripts/r1_compare_motion_asset.py`。当前证据支持“名称映射和坐标系基本正确，专家速度与离散位置序列以及 Humanoid28 执行器响应不一致”这一诊断。
 
+### 质量、惯量、关节轴和接触几何
+
+运行时 Humanoid28 的 15 个 body 质量均为有限正值，总质量约 `35.73 kg`，左右对应 body 的质量和惯量对称。USD 顶层 body Xform 上的 `physics:mass` 和 `physics:diagonalInertia` 显示为 0/占位值，实际质量来自引用 payload 并已被 PhysX runtime 解析，因此不能把顶层 Xform 属性直接当作物理质量。
+
+elbow joint 的 USD axis 为 X、限位 `[-160, 0]` 度，knee joint 的 axis 为 X、限位 `[0, 160]` 度。runtime soft limits 分别转换为 `[-2.7925, 0]` 和 `[0, 2.7925]` rad，与 USD 一致。关节轴、左右腿方向和角度单位没有发现结构错位。runtime effort limit 仍对四个 revolute DOF 解析为 0，这个 drive resolution 异常已由项目侧 override 绕过，但没有恢复参考回放。
+
+foot body Xform 具有 rigid-body schema，但其 collision shape 位于引用 payload 中，当前 stage traversal 没有直接枚举出 CollisionAPI prim。底层 rigid-contact view 也无法匹配这些 link/filter path，说明接触几何的可观测链路仍未闭合。当前不能把“没有枚举到 collision prim”解释成没有碰撞体，必须继续用 runtime 接触代理和 payload 级 USD 检查确认。
+
 把 reset 速度相位改成 frame 30 的后续 velocity 字段也没有改善，velocity frame offset `0/1/2/3` 分别完成 `63/27/37/31` 步。当前原始 NPZ 速度相位反而是这组对照中最稳定的，不能简单用下一帧或有限差分替代。
 
 进一步对整段 unique 30 Hz 位置序列重建 joint/body velocity，并同时作为 reset velocity 和每步 velocity target，phase 30 只完成 29 步。每步把 joint state 直接写回参考姿态的隔离实验完成 28 步。两者都没有恢复 77 步，说明单纯修复速度字段或强制关节跟踪不能消除根部接触失稳。
