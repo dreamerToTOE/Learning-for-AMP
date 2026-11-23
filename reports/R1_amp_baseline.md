@@ -358,6 +358,8 @@ solver position iterations 对承载时间有明显但非单调影响，`16/4` �
 
 在 position iterations 12、14、16、18、20、24 的窄范围 sweep 中，完成步数分别为 23、37、49、26、18、16，非单调性在相邻配置间仍然存在。
 
+在最佳的 `16/4` solver 设置下把所有关节临时设为 stiffness 5000、damping 500，参考回放完成 47 步，略低于未覆盖 USD 解析的 49 步。显式增益与 solver 组合没有形成可用修正。
+
 参考回放、保持姿态、显式增益、无重力和 solver 探针保存在 `runs/r1_reference_replay/`。USD joint 检查结果位于 `runs/r1_usd_inspect/humanoid28_joints.json`，脚本位于 `scripts/r1_reference_replay.py` 和 `scripts/r1_inspect_humanoid_usd.py`。当前 R1 的高优先级问题已经从“策略预算不足”收敛为“官方动作数据、Humanoid28 USD 关节驱动解析和重力接触动力学之间存在不匹配”。
 
 ## 14. 下一步
