@@ -360,7 +360,9 @@ solver position iterations 对承载时间有明显但非单调影响，`16/4` �
 
 在最佳的 `16/4` solver 设置下把所有关节临时设为 stiffness 5000、damping 500，参考回放完成 47 步，略低于未覆盖 USD 解析的 49 步。显式增益与 solver 组合没有形成可用修正。
 
-参考回放、保持姿态、显式增益、无重力和 solver 探针保存在 `runs/r1_reference_replay/`。USD joint 检查结果位于 `runs/r1_usd_inspect/humanoid28_joints.json`，脚本位于 `scripts/r1_reference_replay.py` 和 `scripts/r1_inspect_humanoid_usd.py`。当前 R1 的高优先级问题已经从“策略预算不足”收敛为“官方动作数据、Humanoid28 USD 关节驱动解析和重力接触动力学之间存在不匹配”。
+随后加入项目侧 `scripts/r1_humanoid28_drive_patch.py`，按照 USD joint prim 的实际 stiffness/damping 乘以 `180/π` 写入 actuator 配置，并显式设置 effort/velocity limits。solver `16/4` 下 gain scale `0.5/1/2/4` 的参考回放分别完成 49、49、50、50 步，仍未完成 77 步。直接替换为 IdealPD actuator、stiffness 1000、damping 100、effort limit 1000 的探针产生 NaN，不能作为当前修正方案。
+
+参考回放、保持姿态、显式增益、无重力和 solver 探针保存在 `runs/r1_reference_replay/`。USD joint 检查结果位于 `runs/r1_usd_inspect/humanoid28_joints.json`，脚本位于 `scripts/r1_reference_replay.py`、`scripts/r1_humanoid28_drive_patch.py` 和 `scripts/r1_inspect_humanoid_usd.py`。当前 R1 的高优先级问题已经从“策略预算不足”收敛为“官方动作数据、Humanoid28 USD 关节驱动解析和重力接触动力学之间存在不匹配”。
 
 ## 14. 下一步
 
