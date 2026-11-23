@@ -15,6 +15,11 @@ def main():
     parser.add_argument("--episodes", type=int, default=10)
     parser.add_argument("--seed", type=int, default=1000, help="Seed for the first evaluation reset")
     parser.add_argument("--video", action="store_true", help="Render a side-view skeleton of the first episode")
+    parser.add_argument(
+        "--action-range-correction",
+        action="store_true",
+        help="Apply the opt-in local action clipping and half-range mapping used by the R1 correction smoke",
+    )
     AppLauncher.add_app_launcher_args(parser)
     args = parser.parse_args()
     if args.episodes < 1 or not 0 <= args.seed <= 2**31 - args.episodes:
@@ -74,6 +79,11 @@ def evaluate(args, agent_config):
     from scipy.stats import wasserstein_distance
     from skrl.resources.preprocessors.torch import RunningStandardScaler
     from skrl.utils.model_instantiators.torch import gaussian_model
+
+    if args.action_range_correction:
+        from r1_action_range_patch import apply_action_range_patch
+
+        apply_action_range_patch()
 
     class EvaluationWalkEnv(HumanoidAmpEnv):
         def _get_dones(self):

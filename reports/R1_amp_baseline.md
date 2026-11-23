@@ -309,6 +309,19 @@ scripts/r1_python.sh -u scripts/r1_eval_walk.py --headless --device cuda:0 \
 
 下一轮只做小规模可归因验证，顺序固定为：先固定动作接口并保留原始配置作为对照，再将风格奖励改为与任务奖励同量级，最后在同一 seed 和同一评估初态上延长预算。每个改动先跑 2 环境短训和 10 回合评估，只有跌倒率明显下降后才进入三 seed 正式重跑。
 
-## 11. 下一步
+## 11. 动作范围修正短对照（2026-11-23）
 
-先实现动作范围修正的最小对照，记录是否仍有 spherical joint 目标角错误，再校准风格奖励尺度。预算扩展放在这两个接口问题之后，避免把控制目标越界的训练误判为“需要更长训练”。
+在不修改独立 Isaac Lab checkout 的前提下，新增了项目侧可选 patch。它把动作裁剪到 `[-1, 1]`，并把 action scale 改为软关节上下限宽度的一半。修正组仍使用官方 AMP、2 个环境、seed 42、50 次更新、800 steps/env、任务奖励权重 1、风格奖励权重 0。原始组复用了同预算、同 seed 的既有 pilot checkpoint。两组使用相同的 10 个评估初态，初始 observation hash 全部一致。
+
+| 组别 | action 接口 | 跌倒 / 超时 | 存活时间均值 | +X 位移均值 | 参考速度 W₁ | PhysX 目标角错误 |
+|---|---|---:|---:|---:|---:|---:|
+| 原始 pilot | 未裁剪、完整宽度 | 10 / 0 | 0.563 s | 0.554 m | 0.413 m/s | 0 |
+| 修正 smoke | 裁剪、半宽度 | 10 / 0 | 0.747 s | 0.359 m | 0.977 m/s | 0 |
+
+修正组训练和评估均退出码为 0，修正训练 stdout 没有 PhysX error。修正 checkpoint 的 CPU 单步探针首步最大目标偏差为 2.04 rad，目标关节范围为 -1.79–1.33 rad。存活时间提高但跌倒率没有下降，说明动作范围越界是实质性问题，却不是当前全跌倒的唯一原因。该结果不能支持增加训练预算已经有效，也不能支持 R1 通过。
+
+训练日志、评估 JSON、GPU 记录和命令保存在 `runs/r1_actionrange_smoke/20261123T103000+0900_seed42_env2_steps800/`。可选 patch 位于 `scripts/r1_action_range_patch.py`，训练入口位于 `scripts/r1_amp_actionrange_smoke.py`，评估入口通过 `scripts/r1_eval_walk.py --action-range-correction` 启用。
+
+## 12. 下一步
+
+在修正动作接口下，运行风格权重为 1、`discriminator_reward_scale=0.5` 的同预算短对照，并使用同一 10 个评估初态。这个尺度把初始风格奖励拉近任务奖励量级。只有在跌倒率出现可重复下降后，才延长训练预算或恢复三 seed 正式实验。

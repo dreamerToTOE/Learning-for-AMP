@@ -34,10 +34,11 @@
 - 同一 checkpoint 的临时动作裁剪和半范围探针将首步最大目标偏差从 7.83 rad 降至 4.97/3.01 rad，但 60 步探针仍跌倒，说明动作接口是首要问题但不是唯一原因。
 - AMP 风格奖励在 task+style seed42 最终 checkpoint 的同一初态约为 4.43，而任务奖励固定为 1，风格项可能主导早期优势估计。正式三 seed 尚不能把该尺度单独归因为全跌倒。
 - 核对 reset 代码和初态范围，躯干 z 相比参考动作稳定多出官方明确的 0.15 m，x 范围一致，暂未发现初始化错位或独立接触求解异常。
+- 完成动作范围修正的 2 环境、50 更新短训和同一 10 初态评估。修正组无 PhysX 目标角错误，平均存活时间从 0.563 s 提高到 0.747 s，但跌倒率仍为 10/10。
 
 ## 下一步
 
-1. 先做动作目标范围修正的 2 环境短训和 10 回合评估，再校准风格奖励尺度，最后才延长训练预算。
+1. 在已修正动作接口下做风格奖励尺度 0.5 的 2 环境短训和 10 回合评估，最后才延长训练预算。
 2. R2 先确认 G1 USD、专家动作、retarget 数据和许可证，再决定是否使用 `legged_lab` 的 Isaac Lab 2.3.x 路线。未满足前不启动 G1 AMP 训练。
 
 ## 阶段记录
@@ -60,7 +61,7 @@ code_sha: 7bcd195fe83589a6b4d3d5836f9cfdaea765df38
 environment: Ubuntu 22.04.5; RTX 3070 8 GiB; driver 580.178.04; Isaac Sim 4.5.0; official Isaac Lab v2.1.1; Kit Python 3.10.15; torch 2.5.1+cu118; isolated venv skrl 1.4.3; gymnasium 0.29.1; hydra-core 1.3.2; numpy 1.26.0; tensorboard 2.19.0; flatdict 4.0.1; h5py 3.13.0
 commands_run: six AMP training runs with style-weight 0.0/1.0, seeds 42/43/44, --num_envs 2 --max_iterations 500; six 100-episode paired evaluations with seeds 42000–42099; 500 ms GPU sampling
 evidence_paths: reports/R1_amp_baseline.md; reports/r1_formal_eval/; runs/r1_formal/; runs/r1_formal_eval/20261123T021500+0900_seed42000-42099/; scripts/r1_diagnose_dynamics.py; runs/r1_diagnostics/
-key_metrics: six training exit code 0; 600 evaluation episodes; six groups 100% fall rate; style-weight paired delta dx mean -0.061 m, W1 mean +0.002 m/s; final all-fall status; final task seed42 first-step action target delta 7.83 rad; task+style seed42 initial style reward 4.43 vs task reward 1
-blockers: action targets are out of range under the official unmodified mapping and the 16,000-interaction budget did not produce stable Walk; G1 assets/data require LFS and separate license/hash verification
-next_action: run a 2-env action-range correction smoke and 10-episode evaluation, then calibrate style reward scale before any longer-budget or three-seed rerun; do not claim R1 PASS
+key_metrics: six training exit code 0; 600 formal evaluation episodes all fell; action-range correction smoke 10/10 fell but survival mean improved 0.563 to 0.747 s with no PhysX target-angle error; task+style seed42 initial style reward 4.43 vs task reward 1
+blockers: action correction improved dynamics but did not yield stable Walk, and the 16,000-interaction budget did not produce stable Walk; G1 assets/data require LFS and separate license/hash verification
+next_action: run corrected-action style-weight 1 with discriminator_reward_scale 0.5 for 50 updates and 10 paired evaluations, then consider budget extension; do not claim R1 PASS
 ```
