@@ -339,10 +339,12 @@ scripts/r1_python.sh -u scripts/r1_eval_walk.py --headless --device cuda:0 \
 
 为区分策略学习失败和执行器/接触动力学失败，使用 `random-start` 在动作数据第 0 帧初始化，并每个环境步直接把参考动作第 2、4、6…帧转换为关节位置目标。目标动作范围在原始映射下为 `[-0.484, 0.413]`，没有 PhysX 目标角越界，但 18 个环境步后仍在第 17 步跌倒。将 reset 的 0.15 m 抬升去掉，或保持初始姿态而不跟踪后续参考帧，仍在第 17 步跌倒。这个结果排除了“策略输出越界”作为唯一解释，也说明参考动作与当前资产动力学没有闭合。
 
-运行时从 USD 解析出的隐式执行器参数中，`right_elbow`、`left_elbow`、`right_knee`、`left_knee` 的 stiffness、damping 和 effort limit 为 0，其余关节使用非零增益。把所有关节临时设为 stiffness 5000、damping 500 后，参考回放仍在第 17 步跌倒，终止前膝关节跟踪误差仍达到约 2.76 rad 和 2.22 rad。因此零增益关节是明确的资产/执行器异常信号，但单独填充增益尚未恢复运动。
+运行时 Isaac Lab actuator tensor 中，`right_elbow`、`left_elbow`、`right_knee`、`left_knee` 的 stiffness、damping 和 effort limit 为 0。直接遍历同一环境加载的 USD joint prim，则能读到 elbow `150/15`、knee `300/30` 的 stiffness/damping。这个 USD 属性与 PhysX tensor/actuator resolution 的不一致是明确的版本或解析链路异常。把所有关节临时设为 stiffness 5000、damping 500 后，参考回放仍在第 17 步跌倒，终止前膝关节跟踪误差仍达到约 2.76 rad 和 2.22 rad。因此零增益解析异常需要修复，但单独填充增益尚未恢复运动。
 
-参考回放、保持姿态和显式增益探针保存在 `runs/r1_reference_replay/`。脚本位于 `scripts/r1_reference_replay.py`。当前 R1 的高优先级问题已经从“策略预算不足”收敛为“官方动作数据、Humanoid28 USD 关节驱动和接触动力学之间存在不匹配”。
+关闭重力的同一参考回放完成了全部 77 步且没有跌倒，躯干 z 上升到 4.35 m。这个对照只用于定位触发条件，说明当前失稳发生在重力与接触承载阶段，不能把无重力通过当作行走成功。
+
+参考回放、保持姿态、显式增益和无重力探针保存在 `runs/r1_reference_replay/`。USD joint 检查结果位于 `runs/r1_usd_inspect/humanoid28_joints.json`，脚本位于 `scripts/r1_reference_replay.py` 和 `scripts/r1_inspect_humanoid_usd.py`。当前 R1 的高优先级问题已经从“策略预算不足”收敛为“官方动作数据、Humanoid28 USD 关节驱动解析和重力接触动力学之间存在不匹配”。
 
 ## 14. 下一步
 
-先核对 Humanoid28 Nucleus USD 的版本和四个零驱动关节的 joint prim 属性，再做显式执行器增益和 solver/contact 参数的单因素短对照。只有参考动作回放能够稳定超过 1–2 秒，才继续增加 AMP 训练预算。
+先修复或绕过 USD joint drive 到 PhysX tensor 的解析不一致，再做 solver/contact 参数的单因素短对照。只有参考动作回放能够在有重力条件下稳定超过 1–2 秒，才继续增加 AMP 训练预算。

@@ -37,11 +37,12 @@
 - 完成动作范围修正的 2 环境、50 更新短训和同一 10 初态评估。修正组无 PhysX 目标角错误，平均存活时间从 0.563 s 提高到 0.747 s，但跌倒率仍为 10/10。
 - 在修正动作接口下完成 style weight 1、`discriminator_reward_scale=0.5` 的同预算短训。10/10 跌倒，平均存活时间 0.753 s，与修正 task-only 的 0.747 s 无实质差异。
 - 新增参考动作直接回放。参考目标动作没有 PhysX 角度越界，但原始、去掉 reset 抬升、保持初始姿态和显式 stiffness 5000/damping 500 探针均在约 0.6 s 跌倒。
-- 运行时 USD 执行器参数显示 `right_elbow`、`left_elbow`、`right_knee`、`left_knee` 的 stiffness、damping 和 effort limit 为 0。显式填充增益后膝关节跟踪误差仍约 2.76/2.22 rad，说明存在更深的资产/执行器/接触动力学不匹配。
+- 运行时 actuator tensor 中 `right_elbow`、`left_elbow`、`right_knee`、`left_knee` 的 stiffness、damping 和 effort limit 为 0，但同一环境加载的 USD joint prim 分别有 elbow 150/15、knee 300/30 的 drive 属性。显式填充增益后膝关节跟踪误差仍约 2.76/2.22 rad，说明存在 USD 到 PhysX tensor 的解析不一致和更深的接触动力学问题。
+- 关闭重力的参考回放完成 77 步而有重力在第 17 步跌倒，失稳触发点位于重力接触承载阶段。
 
 ## 下一步
 
-1. 核对 Humanoid28 USD 版本和四个零驱动关节属性，再做显式执行器和 solver/contact 参数的单因素短对照，参考回放稳定后才延长训练预算。
+1. 修复或绕过 USD joint drive 到 PhysX tensor 的解析不一致，再做 solver/contact 参数的单因素短对照，参考回放稳定后才延长训练预算。
 2. R2 先确认 G1 USD、专家动作、retarget 数据和许可证，再决定是否使用 `legged_lab` 的 Isaac Lab 2.3.x 路线。未满足前不启动 G1 AMP 训练。
 
 ## 阶段记录
@@ -64,7 +65,7 @@ code_sha: 7bcd195fe83589a6b4d3d5836f9cfdaea765df38
 environment: Ubuntu 22.04.5; RTX 3070 8 GiB; driver 580.178.04; Isaac Sim 4.5.0; official Isaac Lab v2.1.1; Kit Python 3.10.15; torch 2.5.1+cu118; isolated venv skrl 1.4.3; gymnasium 0.29.1; hydra-core 1.3.2; numpy 1.26.0; tensorboard 2.19.0; flatdict 4.0.1; h5py 3.13.0
 commands_run: six AMP training runs with style-weight 0.0/1.0, seeds 42/43/44, --num_envs 2 --max_iterations 500; six 100-episode paired evaluations with seeds 42000–42099; 500 ms GPU sampling
 evidence_paths: reports/R1_amp_baseline.md; reports/r1_formal_eval/; runs/r1_formal/; runs/r1_formal_eval/20261123T021500+0900_seed42000-42099/; scripts/r1_diagnose_dynamics.py; runs/r1_diagnostics/
-key_metrics: six formal evaluation groups all fell; action correction smoke 10/10 fell but survival mean improved 0.563 to 0.747 s; corrected style scale 0.5 remained 10/10 fall with survival 0.753 s; direct reference replay fell at step 17 with zero target-angle errors; four USD joints report zero drive gains
-blockers: reference motion is not dynamically trackable in the current Humanoid28 asset/actuator setup, so longer AMP budgets are not interpretable yet; G1 assets/data require LFS and separate license/hash verification
-next_action: audit Humanoid28 USD joint drive properties and run single-factor actuator/solver/contact probes before any longer-budget or three-seed rerun; do not claim R1 PASS
+key_metrics: six formal evaluation groups all fell; action correction smoke 10/10 fell but survival mean improved 0.563 to 0.747 s; corrected style scale 0.5 remained 10/10 fall with survival 0.753 s; direct reference replay fell at step 17 with zero target-angle errors; USD elbow/knee drive attrs disagree with runtime actuator tensor; no-gravity replay completed 77 steps
+blockers: reference motion is not dynamically trackable under gravity in the current Humanoid28 USD/PhysX actuator setup, so longer AMP budgets are not interpretable yet; G1 assets/data require LFS and separate license/hash verification
+next_action: repair or bypass USD-to-PhysX joint-drive resolution and run solver/contact probes before any longer-budget or three-seed rerun; do not claim R1 PASS
 ```

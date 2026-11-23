@@ -19,6 +19,7 @@ def main() -> None:
     parser.add_argument("--no-reset-lift", action="store_true")
     parser.add_argument("--stiffness", type=float, default=None)
     parser.add_argument("--damping", type=float, default=None)
+    parser.add_argument("--disable-gravity", action="store_true")
     AppLauncher.add_app_launcher_args(parser)
     args = parser.parse_args()
     app = AppLauncher(args).app
@@ -45,6 +46,8 @@ def replay(args) -> None:
     env_cfg = parse_env_cfg(task, device=args.device, num_envs=1)
     env_cfg.seed = args.seed
     env_cfg.reset_strategy = "random-start"
+    if args.disable_gravity:
+        env_cfg.robot.spawn.rigid_props.disable_gravity = True
     if args.stiffness is not None or args.damping is not None:
         actuator_cfg = env_cfg.robot.actuators["body"]
         if args.stiffness is not None:
@@ -108,6 +111,7 @@ def replay(args) -> None:
             "no_reset_lift": args.no_reset_lift,
             "stiffness": args.stiffness,
             "damping": args.damping,
+            "disable_gravity": args.disable_gravity,
             "steps_requested": args.steps,
             "steps_completed": len(steps),
             "terminated_step": next((item["step"] for item in steps if item["terminated"]), None),
@@ -115,6 +119,7 @@ def replay(args) -> None:
             "initial_joint_error": initial_joint_error,
             "joint_names": joint_names,
             "body_names": body_names,
+            "asset_usd_path": env.robot.cfg.spawn.usd_path,
             "actuator_summary": actuator_summary,
             "steps": steps,
             "step_dt_s": env.step_dt,
