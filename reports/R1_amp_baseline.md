@@ -414,6 +414,8 @@ solver position iterations 对承载时间有明显但非单调影响，`16/4` �
 
 对照 JSON 和脚本位于 `runs/r1_structure/`、`scripts/r1_compare_motion_asset.py`。当前证据支持“名称映射和坐标系基本正确，专家速度与离散位置序列以及 Humanoid28 执行器响应不一致”这一诊断。
 
+把 reset 速度相位改成 frame 30 的后续 velocity 字段也没有改善，velocity frame offset `0/1/2/3` 分别完成 `63/27/37/31` 步。当前原始 NPZ 速度相位反而是这组对照中最稳定的，不能简单用下一帧或有限差分替代。
+
 ## 15. 下一步
 
 保留摩擦 0.5、起始帧 30 作为诊断条件，进一步拆分接触观测扰动和真实物理参数，先找到无额外观测时能完成 77 步的配置，再恢复 AMP 短训。

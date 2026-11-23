@@ -63,6 +63,7 @@ def main() -> None:
     parser.add_argument("--target-offset", type=int, default=None)
     parser.add_argument("--velocity-target", action="store_true")
     parser.add_argument("--finite-difference-velocity", action="store_true")
+    parser.add_argument("--velocity-frame-offset", type=int, default=0)
     parser.add_argument("--contact-forces", action="store_true")
     parser.add_argument("--tensor-contact-forces", action="store_true")
     parser.add_argument("--estimate-contact-load", action="store_true")
@@ -227,6 +228,9 @@ def replay(args) -> None:
             root_state[3:7] = torch.as_tensor(
                 motion["body_rotations"][args.start_frame, torso_index], device=env.device
             )
+            velocity_frame = min(
+                max(args.start_frame + args.velocity_frame_offset, 0), len(motion["body_positions"]) - 1
+            )
             if args.finite_difference_velocity:
                 next_frame = min(args.start_frame + 2, len(motion["body_positions"]) - 1)
                 frame_dt = 2.0 / float(motion["fps"])
@@ -237,10 +241,10 @@ def replay(args) -> None:
                 )
             else:
                 root_state[7:10] = torch.as_tensor(
-                    motion["body_linear_velocities"][args.start_frame, torso_index], device=env.device
+                    motion["body_linear_velocities"][velocity_frame, torso_index], device=env.device
                 )
             root_state[10:13] = torch.as_tensor(
-                motion["body_angular_velocities"][args.start_frame, torso_index], device=env.device
+                    motion["body_angular_velocities"][velocity_frame, torso_index], device=env.device
             )
             env.robot.write_root_link_pose_to_sim(root_state[:7].unsqueeze(0), env.robot._ALL_INDICES)
             env.robot.write_root_com_velocity_to_sim(root_state[7:].unsqueeze(0), env.robot._ALL_INDICES)
@@ -254,7 +258,7 @@ def replay(args) -> None:
                 )
             else:
                 joint_velocity = torch.as_tensor(
-                    motion["dof_velocities"][args.start_frame, index], device=env.device
+                    motion["dof_velocities"][velocity_frame, index], device=env.device
                 )
             env.robot.write_joint_state_to_sim(
                 dof_positions[args.start_frame].unsqueeze(0), joint_velocity.unsqueeze(0), None, env.robot._ALL_INDICES
@@ -356,6 +360,7 @@ def replay(args) -> None:
             "target_offset": args.target_offset,
             "velocity_target": args.velocity_target,
             "finite_difference_velocity": args.finite_difference_velocity,
+            "velocity_frame_offset": args.velocity_frame_offset,
             "contact_forces": args.contact_forces,
             "contact_view_error": contact_view_error,
             "tensor_contact_forces": args.tensor_contact_forces,
