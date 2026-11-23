@@ -20,6 +20,8 @@ def main() -> None:
     parser.add_argument("--stiffness", type=float, default=None)
     parser.add_argument("--damping", type=float, default=None)
     parser.add_argument("--disable-gravity", action="store_true")
+    parser.add_argument("--solver-position-iterations", type=int, default=None)
+    parser.add_argument("--solver-velocity-iterations", type=int, default=None)
     AppLauncher.add_app_launcher_args(parser)
     args = parser.parse_args()
     app = AppLauncher(args).app
@@ -48,6 +50,10 @@ def replay(args) -> None:
     env_cfg.reset_strategy = "random-start"
     if args.disable_gravity:
         env_cfg.robot.spawn.rigid_props.disable_gravity = True
+    if args.solver_position_iterations is not None:
+        env_cfg.robot.spawn.articulation_props.solver_position_iteration_count = args.solver_position_iterations
+    if args.solver_velocity_iterations is not None:
+        env_cfg.robot.spawn.articulation_props.solver_velocity_iteration_count = args.solver_velocity_iterations
     if args.stiffness is not None or args.damping is not None:
         actuator_cfg = env_cfg.robot.actuators["body"]
         if args.stiffness is not None:
@@ -112,6 +118,8 @@ def replay(args) -> None:
             "stiffness": args.stiffness,
             "damping": args.damping,
             "disable_gravity": args.disable_gravity,
+            "solver_position_iterations": args.solver_position_iterations,
+            "solver_velocity_iterations": args.solver_velocity_iterations,
             "steps_requested": args.steps,
             "steps_completed": len(steps),
             "terminated_step": next((item["step"] for item in steps if item["terminated"]), None),

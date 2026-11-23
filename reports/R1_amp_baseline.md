@@ -343,8 +343,21 @@ scripts/r1_python.sh -u scripts/r1_eval_walk.py --headless --device cuda:0 \
 
 关闭重力的同一参考回放完成了全部 77 步且没有跌倒，躯干 z 上升到 4.35 m。这个对照只用于定位触发条件，说明当前失稳发生在重力与接触承载阶段，不能把无重力通过当作行走成功。
 
-参考回放、保持姿态、显式增益和无重力探针保存在 `runs/r1_reference_replay/`。USD joint 检查结果位于 `runs/r1_usd_inspect/humanoid28_joints.json`，脚本位于 `scripts/r1_reference_replay.py` 和 `scripts/r1_inspect_humanoid_usd.py`。当前 R1 的高优先级问题已经从“策略预算不足”收敛为“官方动作数据、Humanoid28 USD 关节驱动解析和重力接触动力学之间存在不匹配”。
+在去掉 reset 抬升的相同参考回放上单独改变 PhysX solver 迭代次数，结果如下。每行仍是 77 步上限，跌倒步数越大表示承载时间越长。
+
+| position iterations | velocity iterations | 完成步数 | 跌倒步 |
+|---:|---:|---:|---:|
+| 4 | 0 | 18 | 17 |
+| 4 | 4 | 21 | 20 |
+| 8 | 4 | 26 | 25 |
+| 8 | 8 | 25 | 24 |
+| 16 | 4 | 49 | 48 |
+| 32 | 4 | 17 | 16 |
+
+solver position iterations 对承载时间有明显但非单调影响，`16/4` 比默认 `4/0` 延长约 2.7 倍，仍未完成参考片段。接触 solver 是实质性因素，但不能单独解释全部跌倒，也不能直接把 `16/4` 选为最终配置。
+
+参考回放、保持姿态、显式增益、无重力和 solver 探针保存在 `runs/r1_reference_replay/`。USD joint 检查结果位于 `runs/r1_usd_inspect/humanoid28_joints.json`，脚本位于 `scripts/r1_reference_replay.py` 和 `scripts/r1_inspect_humanoid_usd.py`。当前 R1 的高优先级问题已经从“策略预算不足”收敛为“官方动作数据、Humanoid28 USD 关节驱动解析和重力接触动力学之间存在不匹配”。
 
 ## 14. 下一步
 
-先修复或绕过 USD joint drive 到 PhysX tensor 的解析不一致，再做 solver/contact 参数的单因素短对照。只有参考动作回放能够在有重力条件下稳定超过 1–2 秒，才继续增加 AMP 训练预算。
+先修复或绕过 USD joint drive 到 PhysX tensor 的解析不一致，再在 solver position `16` 附近做窄范围接触参数对照。只有参考动作回放能够在有重力条件下稳定超过 1–2 秒，才继续增加 AMP 训练预算。
