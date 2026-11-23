@@ -41,6 +41,18 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--motion-file", type=Path, default=None)
+    parser.add_argument(
+        "--asset-usd",
+        type=Path,
+        default=None,
+        help="Use a local Humanoid28 USD asset instead of the task's remote asset.",
+    )
+    parser.add_argument(
+        "--payload-collision-z-offset",
+        type=float,
+        default=0.0,
+        help="Patch the resolved remote mesh payload before robot creation without saving it.",
+    )
     parser.add_argument("--seed", type=int, default=1000)
     parser.add_argument("--steps", type=int, default=77)
     parser.add_argument("--half-range", action="store_true")
@@ -73,6 +85,7 @@ def main() -> None:
     parser.add_argument("--start-frame", type=int, default=None)
     parser.add_argument("--ground-friction", type=float, default=None)
     parser.add_argument("--ground-restitution", type=float, default=None)
+    parser.add_argument("--collision-z-offset", type=float, default=0.0)
     AppLauncher.add_app_launcher_args(parser)
     args = parser.parse_args()
     app = AppLauncher(args).app
@@ -86,9 +99,36 @@ def replay(args) -> None:
     import numpy as np
     import torch
     import omni.physics.tensors as physics_tensors
+    import omni.usd
     from isaacsim.core.prims import RigidPrim
     from isaaclab_tasks.direct.humanoid_amp.humanoid_amp_env import HumanoidAmpEnv
     from isaaclab_tasks.utils.parse_cfg import parse_env_cfg
+
+    payload_patch_result = None
+    if args.payload_collision_z_offset != 0.0:
+        from pxr import Gf, Usd
+
+        mesh_url = (
+            "http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/"
+            "Isaac/IsaacLab/Robots/Classic/Humanoid28/Props/instanceable_meshes.usd"
+        )
+        mesh_stage = Usd.Stage.Open(mesh_url)
+        mesh_layer = mesh_stage.GetRootLayer()
+        payload_patch_result = []
+        for path in (
+            "/pelvis/right_foot/collisions/right_foot",
+            "/pelvis/left_foot/collisions/left_foot",
+        ):
+            attr = mesh_layer.GetAttributeAtPath(f"{path}.xformOp:transform")
+            if attr is None:
+                raise RuntimeError(f"failed to resolve mesh payload collision: {path}")
+            matrix = Gf.Matrix4d(attr.default)
+            old_z = float(matrix[3][2])
+            matrix.SetRow(3, Gf.Vec4d(matrix[3][0], matrix[3][1], old_z + args.payload_collision_z_offset, 1.0))
+            attr.default = matrix
+            payload_patch_result.append(
+                {"path": path, "old_translation_z": old_z, "new_translation_z": float(matrix[3][2])}
+            )
 
     if args.override_usd_drives:
         from r1_humanoid28_drive_patch import apply_humanoid28_drive_override
@@ -124,6 +164,8 @@ def replay(args) -> None:
     env_cfg = parse_env_cfg(task, device=args.device, num_envs=1)
     env_cfg.seed = args.seed
     env_cfg.reset_strategy = "random-start"
+    if args.asset_usd is not None:
+        env_cfg.robot.spawn.usd_path = str(args.asset_usd.resolve())
     if args.motion_file is not None:
         env_cfg.motion_file = str(args.motion_file.resolve())
     if args.disable_gravity:
@@ -177,6 +219,43 @@ def replay(args) -> None:
         amp_env_module.GroundPlaneCfg = patched_ground_plane_cfg
     env = ReplayEnv(env_cfg)
     try:
+        collision_patch_result = None
+        if args.collision_z_offset != 0.0:
+            stage = omni.usd.get_context().get_stage()
+            collision_patch_result = []
+            from pxr import Gf
+
+            for path in (
+                "/World/envs/env_0/Robot/right_foot/collisions/right_foot",
+                "/World/envs/env_0/Robot/left_foot/collisions/left_foot",
+            ):
+                prim = stage.GetPrimAtPath(path)
+                if not prim.IsValid():
+                    collision_patch_result.append({"path": path, "valid": False})
+                    continue
+                if prim.IsInstanceProxy():
+                    prim = prim.GetPrimInPrototype()
+                attr = prim.GetAttribute("xformOp:transform")
+                matrix = attr.Get()
+                if matrix is None:
+                    collision_patch_result.append({"path": path, "valid": True, "transform": False})
+                    continue
+                translation = matrix.ExtractTranslation()
+                # Preserve the collision shape scale. SetTranslate resets the
+                # 3x3 block to identity in this USD build.
+                matrix.SetRow(
+                    3,
+                    Gf.Vec4d(
+                        translation[0],
+                        translation[1],
+                        translation[2] + args.collision_z_offset,
+                        1.0,
+                    ),
+                )
+                attr.Set(matrix)
+                collision_patch_result.append(
+                    {"path": path, "valid": True, "transform": True, "translation": list(matrix.ExtractTranslation())}
+                )
         env.estimated_total_mass = env.robot.data.default_mass[0].sum()
         env.contact_view = None
         env.tensor_contact_view = None
@@ -311,6 +390,7 @@ def replay(args) -> None:
         feet_initial = env.robot.data.body_pos_w[0, env.key_body_indexes].clone()
         initial_joint_error = (dof_positions[0] - env.robot.data.joint_pos[0]).cpu().tolist()
         steps = []
+        nonfinite_step = None
         with torch.inference_mode():
             for step in range(args.steps):
                 stride = int(env.cfg.decimation) if args.frame_stride is None else args.frame_stride
@@ -346,6 +426,17 @@ def replay(args) -> None:
                     )
                 actions = ((target - env.action_offset) / env.action_scale).unsqueeze(0)
                 obs, _, terminated, truncated, _ = env.step(actions)
+                state_finite = all(
+                    torch.isfinite(value).all().item()
+                    for value in (
+                        env.terminal_root,
+                        env.terminal_feet,
+                        env.terminal_joint_pos,
+                    )
+                )
+                if not state_finite:
+                    nonfinite_step = step
+                    break
                 steps.append(
                     {
                         "step": step,
@@ -389,6 +480,9 @@ def replay(args) -> None:
         result = {
             "task": task,
             "motion_file": str(env_cfg.motion_file),
+            "asset_usd": str(args.asset_usd.resolve()) if args.asset_usd is not None else None,
+            "payload_collision_z_offset": args.payload_collision_z_offset,
+            "payload_patch_result": payload_patch_result,
             "seed": args.seed,
             "half_range": args.half_range,
             "hold_initial": args.hold_initial,
@@ -422,9 +516,13 @@ def replay(args) -> None:
             "start_frame": args.start_frame,
             "ground_friction": args.ground_friction,
             "ground_restitution": args.ground_restitution,
+            "collision_z_offset": args.collision_z_offset,
+            "collision_patch_result": collision_patch_result,
             "steps_requested": args.steps,
             "steps_completed": len(steps),
             "terminated_step": next((item["step"] for item in steps if item["terminated"]), None),
+            "nonfinite_step": nonfinite_step,
+            "all_finite": nonfinite_step is None,
             "initial_root": root_initial.cpu().tolist(),
             "initial_feet": feet_initial.cpu().tolist(),
             "initial_joint_error": initial_joint_error,

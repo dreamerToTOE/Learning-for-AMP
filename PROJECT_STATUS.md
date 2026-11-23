@@ -50,11 +50,14 @@
 - reset velocity frame offset `0/1/2/3` 在 phase30 分别完成 `63/27/37/31` 步，原始速度相位反而最好，简单换下一帧或有限差分不能修复结构不匹配。
 - unique 30 Hz 位置重建速度并用于 reset/velocity target 仅完成 29 步，每步直接写回参考 joint state 仅完成 28 步，未恢复 77 步。速度字段问题与执行器跟踪都不是唯一失稳来源。
 - 去重为 30 Hz、77 帧的 motion file，有限差分速度回放完成 29 步，保留原始速度完成 63 步。IdealPD 低增益探针产生 NaN，未形成稳定修复。
-- Humanoid28 runtime 总质量约 35.73 kg，body mass/inertia 有限且左右对称。USD elbow/knee axis 与 radian soft limits 一致，未发现轴反向或单位错误。foot collision geometry 位于引用 payload，当前 stage/contact view 不能直接枚举，接触几何链路仍未闭合。
+- Humanoid28 runtime 总质量约 35.73 kg，body mass/inertia 有限且左右对称。USD elbow/knee axis 与 radian soft limits 一致，未发现轴反向或单位错误。foot collision geometry 位于引用 payload，已完成 payload、实例原型和预物理修改路径审计。
+- 已完成 Humanoid28 USD payload 接触几何审计。左右脚 Cube 来自 `Props/instanceable_meshes.usd`，extent 为 `±(0.0885, 0.045, 0.0275) m`，局部平移 z 为 `-0.0225 m`，frame30 参考姿态下底部约为 `-0.0295/-0.0641 m`。运行时路径是 instance proxy，直接改 prototype 不可用。
+- 已验证展平 USD、解除 instanceability、保留 root→mesh 分层复制和预物理 payload 修改四条路径。原始远程资产 CUDA 回放为 63 步且全状态有限，展平资产为 24 步，分层 mesh 几何偏移在 47–57 步，预物理远程 payload 偏移在 23–52 步。没有几何偏移达到 77 步。
+- `scripts/r1_reference_replay.py` 已加入 root、feet、joint state 的逐步有限性检查，记录 `nonfinite_step` 和 `all_finite`，旧的 NaN 假成功结果不再作为证据。详细结果见 `reports/R1_humanoid28_contact_geometry.md`。
 
 ## 下一步
 
-1. 保留摩擦 0.5、起始帧 30 作为诊断条件，拆分接触观测扰动和真实物理参数，参考回放稳定后才延长训练预算。
+1. 保留 CUDA、摩擦 0.5、起始帧 30 和 solver 16/4 作为诊断条件，继续拆分接触参数、质量/惯量推断和执行器映射。达到全状态有限的 77 步有重力参考回放前不恢复 AMP 短训。
 2. R2 先确认 G1 USD、专家动作、retarget 数据和许可证，再决定是否使用 `legged_lab` 的 Isaac Lab 2.3.x 路线。未满足前不启动 G1 AMP 训练。
 
 ## 阶段记录
@@ -77,7 +80,7 @@ code_sha: 7bcd195fe83589a6b4d3d5836f9cfdaea765df38
 environment: Ubuntu 22.04.5; RTX 3070 8 GiB; driver 580.178.04; Isaac Sim 4.5.0; official Isaac Lab v2.1.1; Kit Python 3.10.15; torch 2.5.1+cu118; isolated venv skrl 1.4.3; gymnasium 0.29.1; hydra-core 1.3.2; numpy 1.26.0; tensorboard 2.19.0; flatdict 4.0.1; h5py 3.13.0
 commands_run: six AMP training runs with style-weight 0.0/1.0, seeds 42/43/44, --num_envs 2 --max_iterations 500; six 100-episode paired evaluations with seeds 42000–42099; 500 ms GPU sampling
 evidence_paths: reports/R1_amp_baseline.md; reports/r1_formal_eval/; runs/r1_formal/; runs/r1_formal_eval/20261123T021500+0900_seed42000-42099/; scripts/r1_diagnose_dynamics.py; runs/r1_diagnostics/
-key_metrics: six formal evaluation groups all fell; action correction smoke 10/10 fell but survival mean improved 0.563 to 0.747 s; corrected style scale 0.5 remained 10/10 fall with survival 0.753 s; direct reference replay fell at step 17 with zero target-angle errors; USD elbow/knee drive attrs disagree with runtime actuator tensor; no-gravity replay completed 77 steps; solver 16/4 completed 49 steps; drive override scales 0.5/1/2/4 completed 49/49/50/50 steps; friction and phase sweeps still completed at most 63 steps; non-invasive load proxy preserved phase 30 result at 63 steps
+key_metrics: six formal evaluation groups all fell; action correction smoke 10/10 fell but survival mean improved 0.563 to 0.747 s; corrected style scale 0.5 remained 10/10 fall with survival 0.753 s; direct reference replay fell at step 17 with zero target-angle errors; USD elbow/knee drive attrs disagree with runtime actuator tensor; no-gravity replay completed 77 steps; CUDA gravity baseline with friction 0.5, phase 30 and solver 16/4 completed 63 finite steps; payload collision geometry audit found foot-Cube bottoms around -0.0295/-0.0641 m at frame 30; geometry offset tests completed at most 63 finite steps and did not reach 77; finite-value gating now rejects NaN runs
 blockers: reference motion is not dynamically trackable under gravity in the current Humanoid28 USD/PhysX actuator setup, so longer AMP budgets are not interpretable yet; G1 assets/data require LFS and separate license/hash verification
-next_action: use friction 0.5 and phase 30 for a focused gravity/contact diagnosis while isolating contact-force instrumentation; do not claim R1 PASS
+next_action: use the CUDA remote asset baseline with friction 0.5 and phase 30 for a focused contact-parameter, mass/inertia, and actuator-mapping diagnosis; do not claim R1 PASS
 ```

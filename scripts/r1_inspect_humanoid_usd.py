@@ -12,6 +12,7 @@ from isaaclab.app import AppLauncher
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--asset-usd", type=Path, default=None)
     AppLauncher.add_app_launcher_args(parser)
     args = parser.parse_args()
     app = AppLauncher(args).app
@@ -30,6 +31,8 @@ def inspect_usd(args) -> None:
 
     task = "Isaac-Humanoid-AMP-Walk-Direct-v0"
     env_cfg = parse_env_cfg(task, device=args.device, num_envs=1)
+    if args.asset_usd is not None:
+        env_cfg.robot.spawn.usd_path = str(args.asset_usd.resolve())
     env = gym.make(task, cfg=env_cfg)
     try:
         stage = omni.usd.get_context().get_stage()
@@ -37,6 +40,7 @@ def inspect_usd(args) -> None:
         foot_prims = []
         bodies = []
         collision_prims = []
+        foot_prim_details = []
         for prim in stage.Traverse():
             path = str(prim.GetPath())
             if "/World/envs/env_0/Robot/" in path and prim.HasAPI(UsdPhysics.RigidBodyAPI):
@@ -50,6 +54,16 @@ def inspect_usd(args) -> None:
                             for attr in prim.GetAttributes()
                             if any(token in attr.GetName().lower() for token in ("mass", "inertia", "centerofmass", "principalaxes"))
                         },
+                    }
+                )
+            if path in {
+                "/World/envs/env_0/Robot/right_foot",
+                "/World/envs/env_0/Robot/left_foot",
+            }:
+                foot_prim_details.append(
+                    {
+                        "path": path,
+                        "children": [str(child.GetPath()) for child in prim.GetAllChildren()],
                     }
                 )
             if "/World/envs/env_0/Robot/" in path and prim.HasAPI(UsdPhysics.CollisionAPI):
@@ -105,7 +119,9 @@ def inspect_usd(args) -> None:
             "bodies": bodies,
             "foot_prims": foot_prims,
             "collision_prims": collision_prims,
+            "foot_prim_details": foot_prim_details,
             "joints": joints,
+            "used_layers": [str(layer.identifier) for layer in stage.GetUsedLayers()],
             "runtime": {
                 "body_names": list(robot.data.body_names),
                 "joint_names": list(robot.data.joint_names),
