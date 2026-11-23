@@ -48,6 +48,7 @@
 - 目标帧 offset `0/1/2/3/4` 完成 `32/32/63/63/38` 步，参考关节速度目标仍为 63 步。restitution sweep 最好为 `0.12`、68 步，仍未达到 77 步。
 - 结构审计显示 reset 后 body position 最大误差 `3.8e-7 m`、joint position 误差 0、动作无 soft-limit 越界，名称映射和坐标系基本正确。foot body velocity 误差最高约 `0.63 m/s`，NPZ 存在重复位置帧与非零速度不一致。有限差分速度回放 phase30 仅 30 步，未形成修复。
 - reset velocity frame offset `0/1/2/3` 在 phase30 分别完成 `63/27/37/31` 步，原始速度相位反而最好，简单换下一帧或有限差分不能修复结构不匹配。
+- unique 30 Hz 位置重建速度并用于 reset/velocity target 仅完成 29 步，每步直接写回参考 joint state 仅完成 28 步，未恢复 77 步。速度字段问题与执行器跟踪都不是唯一失稳来源。
 
 ## 下一步
 

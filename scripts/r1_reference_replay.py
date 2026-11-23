@@ -64,6 +64,8 @@ def main() -> None:
     parser.add_argument("--velocity-target", action="store_true")
     parser.add_argument("--finite-difference-velocity", action="store_true")
     parser.add_argument("--velocity-frame-offset", type=int, default=0)
+    parser.add_argument("--reconstructed-velocity", action="store_true")
+    parser.add_argument("--teleport-joints", action="store_true")
     parser.add_argument("--contact-forces", action="store_true")
     parser.add_argument("--tensor-contact-forces", action="store_true")
     parser.add_argument("--estimate-contact-load", action="store_true")
@@ -215,6 +217,30 @@ def replay(args) -> None:
         dof_names = motion["dof_names"].tolist()
         index = [dof_names.index(name) for name in env.robot.data.joint_names]
         dof_positions = torch.as_tensor(motion["dof_positions"][:, index], device=env.device)
+        unique_frames = np.arange(0, dof_positions.shape[0], 2)
+        unique_dt = 2.0 / float(motion["fps"])
+        reconstructed_joint_velocity = torch.zeros_like(dof_positions)
+        reconstructed_body_velocity = torch.zeros(
+            (len(motion["body_positions"]), len(motion["body_names"]), 3), device=env.device
+        )
+        if args.reconstructed_velocity:
+            unique_joint_positions = dof_positions[unique_frames]
+            unique_joint_velocity = torch.zeros_like(unique_joint_positions)
+            unique_joint_velocity[1:-1] = (unique_joint_positions[2:] - unique_joint_positions[:-2]) / (2.0 * unique_dt)
+            unique_joint_velocity[0] = (unique_joint_positions[1] - unique_joint_positions[0]) / unique_dt
+            unique_joint_velocity[-1] = (unique_joint_positions[-1] - unique_joint_positions[-2]) / unique_dt
+            reconstructed_joint_velocity[unique_frames] = unique_joint_velocity
+            for odd_frame in range(1, dof_positions.shape[0], 2):
+                reconstructed_joint_velocity[odd_frame] = reconstructed_joint_velocity[odd_frame - 1]
+            body_positions = torch.as_tensor(motion["body_positions"], device=env.device)
+            unique_body_positions = body_positions[unique_frames]
+            unique_body_velocity = torch.zeros_like(unique_body_positions)
+            unique_body_velocity[1:-1] = (unique_body_positions[2:] - unique_body_positions[:-2]) / (2.0 * unique_dt)
+            unique_body_velocity[0] = (unique_body_positions[1] - unique_body_positions[0]) / unique_dt
+            unique_body_velocity[-1] = (unique_body_positions[-1] - unique_body_positions[-2]) / unique_dt
+            reconstructed_body_velocity[unique_frames] = unique_body_velocity
+            for odd_frame in range(1, len(motion["body_positions"]), 2):
+                reconstructed_body_velocity[odd_frame] = reconstructed_body_velocity[odd_frame - 1]
         if args.start_frame is not None:
             if not 0 <= args.start_frame < dof_positions.shape[0]:
                 raise ValueError(f"start frame out of range: {args.start_frame}")
@@ -231,7 +257,9 @@ def replay(args) -> None:
             velocity_frame = min(
                 max(args.start_frame + args.velocity_frame_offset, 0), len(motion["body_positions"]) - 1
             )
-            if args.finite_difference_velocity:
+            if args.reconstructed_velocity:
+                root_state[7:10] = reconstructed_body_velocity[args.start_frame, torso_index]
+            elif args.finite_difference_velocity:
                 next_frame = min(args.start_frame + 2, len(motion["body_positions"]) - 1)
                 frame_dt = 2.0 / float(motion["fps"])
                 root_state[7:10] = torch.as_tensor(
@@ -248,7 +276,9 @@ def replay(args) -> None:
             )
             env.robot.write_root_link_pose_to_sim(root_state[:7].unsqueeze(0), env.robot._ALL_INDICES)
             env.robot.write_root_com_velocity_to_sim(root_state[7:].unsqueeze(0), env.robot._ALL_INDICES)
-            if args.finite_difference_velocity:
+            if args.reconstructed_velocity:
+                joint_velocity = reconstructed_joint_velocity[args.start_frame]
+            elif args.finite_difference_velocity:
                 next_frame = min(args.start_frame + 2, len(motion["dof_positions"]) - 1)
                 frame_dt = 2.0 / float(motion["fps"])
                 joint_velocity = torch.as_tensor(
@@ -289,11 +319,28 @@ def replay(args) -> None:
                 frame = min(max(frame, 0), dof_positions.shape[0] - 1)
                 target = dof_positions[0] if args.hold_initial else dof_positions[frame]
                 if args.velocity_target:
+                    velocity_source = reconstructed_joint_velocity if args.reconstructed_velocity else None
+                    if velocity_source is not None:
+                        velocity_frame = velocity_source[frame]
+                    else:
+                        velocity_frame = torch.as_tensor(
+                            motion["dof_velocities"][frame, index], device=env.device
+                        )
                     env.reference_velocity_target = torch.as_tensor(
-                        motion["dof_velocities"][frame, index], device=env.device
+                        velocity_frame, device=env.device
                     ).unsqueeze(0)
                 else:
                     env.reference_velocity_target = None
+                if args.teleport_joints:
+                    if args.reconstructed_velocity:
+                        teleport_velocity = reconstructed_joint_velocity[frame]
+                    else:
+                        teleport_velocity = torch.as_tensor(
+                            motion["dof_velocities"][frame, index], device=env.device
+                        )
+                    env.robot.write_joint_state_to_sim(
+                        target.unsqueeze(0), teleport_velocity.unsqueeze(0), None, env.robot._ALL_INDICES
+                    )
                 actions = ((target - env.action_offset) / env.action_scale).unsqueeze(0)
                 obs, _, terminated, truncated, _ = env.step(actions)
                 steps.append(
@@ -361,6 +408,8 @@ def replay(args) -> None:
             "velocity_target": args.velocity_target,
             "finite_difference_velocity": args.finite_difference_velocity,
             "velocity_frame_offset": args.velocity_frame_offset,
+            "reconstructed_velocity": args.reconstructed_velocity,
+            "teleport_joints": args.teleport_joints,
             "contact_forces": args.contact_forces,
             "contact_view_error": contact_view_error,
             "tensor_contact_forces": args.tensor_contact_forces,

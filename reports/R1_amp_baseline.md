@@ -416,6 +416,8 @@ solver position iterations 对承载时间有明显但非单调影响，`16/4` �
 
 把 reset 速度相位改成 frame 30 的后续 velocity 字段也没有改善，velocity frame offset `0/1/2/3` 分别完成 `63/27/37/31` 步。当前原始 NPZ 速度相位反而是这组对照中最稳定的，不能简单用下一帧或有限差分替代。
 
+进一步对整段 unique 30 Hz 位置序列重建 joint/body velocity，并同时作为 reset velocity 和每步 velocity target，phase 30 只完成 29 步。每步把 joint state 直接写回参考姿态的隔离实验完成 28 步。两者都没有恢复 77 步，说明单纯修复速度字段或强制关节跟踪不能消除根部接触失稳。
+
 ## 15. 下一步
 
 保留摩擦 0.5、起始帧 30 作为诊断条件，进一步拆分接触观测扰动和真实物理参数，先找到无额外观测时能完成 77 步的配置，再恢复 AMP 短训。
