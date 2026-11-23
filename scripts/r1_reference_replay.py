@@ -85,6 +85,11 @@ def main() -> None:
     parser.add_argument("--start-frame", type=int, default=None)
     parser.add_argument("--ground-friction", type=float, default=None)
     parser.add_argument("--ground-restitution", type=float, default=None)
+    parser.add_argument("--ground-friction-combine-mode", choices=("average", "min", "multiply", "max"), default=None)
+    parser.add_argument("--ground-restitution-combine-mode", choices=("average", "min", "multiply", "max"), default=None)
+    parser.add_argument("--collision-contact-offset", type=float, default=None)
+    parser.add_argument("--collision-rest-offset", type=float, default=None)
+    parser.add_argument("--collision-shape-indices", type=str, default=None)
     parser.add_argument("--collision-z-offset", type=float, default=0.0)
     AppLauncher.add_app_launcher_args(parser)
     args = parser.parse_args()
@@ -202,7 +207,12 @@ def replay(args) -> None:
             actuator_cfg.stiffness = args.stiffness
         if args.damping is not None:
             actuator_cfg.damping = args.damping
-    if args.ground_friction is not None or args.ground_restitution is not None:
+    if (
+        args.ground_friction is not None
+        or args.ground_restitution is not None
+        or args.ground_friction_combine_mode is not None
+        or args.ground_restitution_combine_mode is not None
+    ):
         from isaaclab_tasks.direct.humanoid_amp import humanoid_amp_env as amp_env_module
 
         original_ground_plane_cfg = amp_env_module.GroundPlaneCfg
@@ -214,11 +224,46 @@ def replay(args) -> None:
                 cfg.physics_material.dynamic_friction = args.ground_friction
             if args.ground_restitution is not None:
                 cfg.physics_material.restitution = args.ground_restitution
+            if args.ground_friction_combine_mode is not None:
+                cfg.physics_material.friction_combine_mode = args.ground_friction_combine_mode
+            if args.ground_restitution_combine_mode is not None:
+                cfg.physics_material.restitution_combine_mode = args.ground_restitution_combine_mode
             return cfg
 
         amp_env_module.GroundPlaneCfg = patched_ground_plane_cfg
     env = ReplayEnv(env_cfg)
     try:
+        collision_offset_result = None
+        if args.collision_contact_offset is not None or args.collision_rest_offset is not None:
+            physx_view = env.robot.root_physx_view
+            contact_offsets = physx_view.get_contact_offsets()
+            rest_offsets = physx_view.get_rest_offsets()
+            indices = torch.arange(contact_offsets.shape[0], dtype=torch.int32, device="cpu")
+            shape_indices = (
+                list(range(contact_offsets.shape[1]))
+                if args.collision_shape_indices is None
+                else [int(item) for item in args.collision_shape_indices.split(",") if item]
+            )
+            if any(item < 0 or item >= contact_offsets.shape[1] for item in shape_indices):
+                raise ValueError(f"collision shape index outside [0, {contact_offsets.shape[1]}): {shape_indices}")
+            collision_offset_result = {
+                "shape_count": int(contact_offsets.shape[1]),
+                "shape_indices": shape_indices,
+                "contact_before_min_max": [float(contact_offsets.min().item()), float(contact_offsets.max().item())],
+                "rest_before_min_max": [float(rest_offsets.min().item()), float(rest_offsets.max().item())],
+            }
+            if args.collision_contact_offset is not None:
+                contact_offsets[:, shape_indices] = args.collision_contact_offset
+                physx_view.set_contact_offsets(contact_offsets, indices)
+            if args.collision_rest_offset is not None:
+                rest_offsets[:, shape_indices] = args.collision_rest_offset
+                physx_view.set_rest_offsets(rest_offsets, indices)
+            collision_offset_result.update(
+                {
+                    "contact_after_min_max": [float(physx_view.get_contact_offsets().min().item()), float(physx_view.get_contact_offsets().max().item())],
+                    "rest_after_min_max": [float(physx_view.get_rest_offsets().min().item()), float(physx_view.get_rest_offsets().max().item())],
+                }
+            )
         collision_patch_result = None
         if args.collision_z_offset != 0.0:
             stage = omni.usd.get_context().get_stage()
@@ -516,6 +561,12 @@ def replay(args) -> None:
             "start_frame": args.start_frame,
             "ground_friction": args.ground_friction,
             "ground_restitution": args.ground_restitution,
+            "ground_friction_combine_mode": args.ground_friction_combine_mode,
+            "ground_restitution_combine_mode": args.ground_restitution_combine_mode,
+            "collision_contact_offset": args.collision_contact_offset,
+            "collision_rest_offset": args.collision_rest_offset,
+            "collision_shape_indices": args.collision_shape_indices,
+            "collision_offset_result": collision_offset_result,
             "collision_z_offset": args.collision_z_offset,
             "collision_patch_result": collision_patch_result,
             "steps_requested": args.steps,

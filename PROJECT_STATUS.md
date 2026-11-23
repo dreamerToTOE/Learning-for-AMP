@@ -54,10 +54,15 @@
 - 已完成 Humanoid28 USD payload 接触几何审计。左右脚 Cube 来自 `Props/instanceable_meshes.usd`，extent 为 `±(0.0885, 0.045, 0.0275) m`，局部平移 z 为 `-0.0225 m`，frame30 参考姿态下底部约为 `-0.0295/-0.0641 m`。运行时路径是 instance proxy，直接改 prototype 不可用。
 - 已验证展平 USD、解除 instanceability、保留 root→mesh 分层复制和预物理 payload 修改四条路径。原始远程资产 CUDA 回放为 63 步且全状态有限，展平资产为 24 步，分层 mesh 几何偏移在 47–57 步，预物理远程 payload 偏移在 23–52 步。没有几何偏移达到 77 步。
 - `scripts/r1_reference_replay.py` 已加入 root、feet、joint state 的逐步有限性检查，记录 `nonfinite_step` 和 `all_finite`，旧的 NaN 假成功结果不再作为证据。详细结果见 `reports/R1_humanoid28_contact_geometry.md`。
+- 沿 CUDA、摩擦 0.5、起始帧 30、solver 16/4 完成接触参数诊断。默认 contact offset 为 0.00545 m、rest offset 为 0 m。contact offset sweep 为 46–56 步，正 rest offset 为 47 步，friction combine multiply 为 20 步，restitution 0.12 加 average combine 最好为 68 步，全部状态有限。
+- 完成质量/惯量来源诊断。runtime mass 与碰撞体积乘 1000 kg/m³ 精确对应。显式锁定当前 runtime mass/diagonal inertia 仍为 63 步，质量缩放 0.5/2.0 降至 41/32 步，说明质量会影响稳定性，但当前推断值不是唯一失稳原因。
+- 完成 USD drive 到 actuator tensor 映射诊断。四个 elbow/knee 在原始 tensor 中 stiffness、damping、effort 为 0，repair/override 后计算 torque 变为非零，但三条完整轨迹逐步一致并均为 63 步。ImplicitActuator 将位置/速度目标直接交给 PhysX，实际轨迹仍由 USD implicit drive 主导。显式 torque PD 探针在低增益下仅 13/21 步。
+- 验证了本地 root USD 的实际 drive 覆盖工具。将四个关节从原始 150/15、300/30 设为 300/30 后，CUDA 回放仍为 63/77 且全状态有限，表明简单 USD 增益覆盖也不是当前失稳的单一来源。
+- 诊断结果记录在 `reports/R1_humanoid28_gravity_diagnosis.md`，并新增 `scripts/r1_probe_actuator_mapping.py`、`scripts/r1_make_humanoid28_mass_override.py`。
 
 ## 下一步
 
-1. 保留 CUDA、摩擦 0.5、起始帧 30 和 solver 16/4 作为诊断条件，继续拆分接触参数、质量/惯量推断和执行器映射。达到全状态有限的 77 步有重力参考回放前不恢复 AMP 短训。
+1. 保留 CUDA、摩擦 0.5、起始帧 30 和 solver 16/4 作为诊断条件，验证 USD 场景创建前的真实 joint drive 显式覆盖或明确 effort actuator 路径。达到全状态有限的 77 步有重力参考回放前不恢复 AMP 短训。
 2. R2 先确认 G1 USD、专家动作、retarget 数据和许可证，再决定是否使用 `legged_lab` 的 Isaac Lab 2.3.x 路线。未满足前不启动 G1 AMP 训练。
 
 ## 阶段记录
@@ -80,7 +85,7 @@ code_sha: 7bcd195fe83589a6b4d3d5836f9cfdaea765df38
 environment: Ubuntu 22.04.5; RTX 3070 8 GiB; driver 580.178.04; Isaac Sim 4.5.0; official Isaac Lab v2.1.1; Kit Python 3.10.15; torch 2.5.1+cu118; isolated venv skrl 1.4.3; gymnasium 0.29.1; hydra-core 1.3.2; numpy 1.26.0; tensorboard 2.19.0; flatdict 4.0.1; h5py 3.13.0
 commands_run: six AMP training runs with style-weight 0.0/1.0, seeds 42/43/44, --num_envs 2 --max_iterations 500; six 100-episode paired evaluations with seeds 42000–42099; 500 ms GPU sampling
 evidence_paths: reports/R1_amp_baseline.md; reports/r1_formal_eval/; runs/r1_formal/; runs/r1_formal_eval/20261123T021500+0900_seed42000-42099/; scripts/r1_diagnose_dynamics.py; runs/r1_diagnostics/
-key_metrics: six formal evaluation groups all fell; action correction smoke 10/10 fell but survival mean improved 0.563 to 0.747 s; corrected style scale 0.5 remained 10/10 fall with survival 0.753 s; direct reference replay fell at step 17 with zero target-angle errors; USD elbow/knee drive attrs disagree with runtime actuator tensor; no-gravity replay completed 77 steps; CUDA gravity baseline with friction 0.5, phase 30 and solver 16/4 completed 63 finite steps; payload collision geometry audit found foot-Cube bottoms around -0.0295/-0.0641 m at frame 30; geometry offset tests completed at most 63 finite steps and did not reach 77; finite-value gating now rejects NaN runs
+key_metrics: six formal evaluation groups all fell; action correction smoke 10/10 fell but survival mean improved 0.563 to 0.747 s; corrected style scale 0.5 remained 10/10 fall with survival 0.753 s; direct reference replay fell at step 17 with zero target-angle errors; USD elbow/knee drive attrs disagree with runtime actuator tensor; no-gravity replay completed 77 steps; CUDA gravity baseline with friction 0.5, phase 30 and solver 16/4 completed 63 finite steps; restitution 0.12 average combine reached 68 finite steps; contact offset/rest offset sweeps reached at most 63/47 steps; mass scale 0.5/2.0 reached 41/32 steps; actuator gain repair changed logged torque but left trajectories bit-identical at 63 steps; payload collision geometry audit found foot-Cube bottoms around -0.0295/-0.0641 m at frame 30; finite-value gating now rejects NaN runs
 blockers: reference motion is not dynamically trackable under gravity in the current Humanoid28 USD/PhysX actuator setup, so longer AMP budgets are not interpretable yet; G1 assets/data require LFS and separate license/hash verification
 next_action: use the CUDA remote asset baseline with friction 0.5 and phase 30 for a focused contact-parameter, mass/inertia, and actuator-mapping diagnosis; do not claim R1 PASS
 ```
