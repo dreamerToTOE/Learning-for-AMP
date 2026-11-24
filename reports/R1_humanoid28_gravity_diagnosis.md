@@ -53,6 +53,8 @@ effort_limit = 0
 
 USD joint prim 仍包含 elbow `150/15`、knee `300/30` 的 drive 参数。首个参考目标帧中，原始配置的四个计算 torque 均为零。repair 或 override 后，四个 torque 变为约 `4978, -10529, -12273, -6484`，但三条完整回放的 root、feet、target delta 逐步完全一致，均为 `63/77`。
 
+把本地 USD 的四个关节 drive 直接改为约 `8594/859` 并在不使用 Isaac Lab override 的情况下回放，结果仍为 `63/77`。真实 USD drive 覆盖已经验证，简单提高这四个关节增益仍然不能解决全局接触失稳。
+
 源码审计显示 `ImplicitActuator` 将位置/速度目标直接交给 PhysX，计算 torque 主要用于 tensor 记录。当前 Humanoid AMP 任务的实际物理驱动仍由 USD implicit drive 主导，因此 actuator tensor 增益修正没有改变真实轨迹。
 
 切换到明确 effort 输出的 IdealPD 路径后，低增益 `(10, 1)` 和 `(25, 2)` 分别只完成 13 和 21 步，说明直接 torque 控制路径需要单独的稳定化验证。

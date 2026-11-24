@@ -60,6 +60,7 @@
 - 保持 body-frame diagonal inertia、写入 COM 并使用 identity principal axes 的变体为 49 步，仍低于原始几何推断资产的 63 步。
 - 完成 USD drive 到 actuator tensor 映射诊断。四个 elbow/knee 在原始 tensor 中 stiffness、damping、effort 为 0，repair/override 后计算 torque 变为非零，但三条完整轨迹逐步一致并均为 63 步。ImplicitActuator 将位置/速度目标直接交给 PhysX，实际轨迹仍由 USD implicit drive 主导。显式 torque PD 探针在低增益下仅 13/21 步。
 - 验证了本地 root USD 的实际 drive 覆盖工具。将四个关节从原始 150/15、300/30 设为 300/30 后，CUDA 回放仍为 63/77 且全状态有限，表明简单 USD 增益覆盖也不是当前失稳的单一来源。
+- 将本地 USD 四个关节 drive 直接提高到约 8594/859，并关闭 Isaac Lab override 后，CUDA 回放仍为 63/77，进一步排除了简单关节增益不足作为单一原因。
 - 在 restitution `0.12` average combine 下细扫起始帧和 restitution 参数，起始帧 28/30/32 为 26/68/27 步，restitution 0.1175–0.1205 为 68/68/68/67 步，确认当前接触最佳结果稳定在 68 步附近。
 - 诊断结果记录在 `reports/R1_humanoid28_gravity_diagnosis.md`，并新增 `scripts/r1_probe_actuator_mapping.py`、`scripts/r1_make_humanoid28_mass_override.py`。
 
