@@ -79,7 +79,7 @@
 - 核对 skrl AMP 的 rollout、GAE、优势归一化、motion dataset、reply buffer 和判别器采样。2 环境每次更新只有 32 个 PPO rollout 样本，每个 mini-batch 16 个样本，判别器每个 mini-batch 实际使用 16 个策略、16 个回放和 16 个专家状态。
 - 保存容量与小样本审计报告 `reports/R1_capacity_and_small_batch.md`、机器可读摘要 `reports/r1_capacity_sweep_20261124.json` 和可复现实验脚本 `scripts/r1_capacity_sweep.sh`。
 - 补测 512、1024、2048 并行环境各 50 次更新。三组均退出码为 0，未出现 OOM、NaN 或 Inf。2048 环境吞吐约 34,860 环境步/s，峰值显存 5823 MiB，最低空闲 2009 MiB。
-- 新增 `scripts/r1_amp_train_monitored.py`，在 AMP 更新边界记录实际风格奖励、策略/专家判别器评分、动作范围、目标角超限比例、目标位置误差、存活时间和跌倒率。2 环境监控 smoke 正常退出并写入逐更新 JSONL。
+- 新增 `scripts/r1_amp_train_monitored.py`，在 AMP 更新边界记录实际风格奖励、策略/专家判别器评分、动作范围、目标角超限比例、目标位置误差、存活时间和跌倒率。2 环境监控 smoke 正常退出并写入逐更新 JSONL。 之后补充逐关节 `target_angle_violation_by_joint` 字段，2 环境 1 更新 smoke 记录了全部 28 个关节。
 - 使用 2048 环境、seed42 连续完成 625 次更新和 20,480,000 个环境交互步，主训练峰值显存 6194 MiB，最低空闲 1638 MiB，退出码为 0。
 - 独立评估四个阶段 checkpoint，各使用固定评估 seed 42000–42009。约 20.48M 步 checkpoint 的 10 个回合中 6 个完整运行 9.97 秒，4 个跌倒，平均前进距离 7.07 m，参考速度 W1 为 0.392 m/s。
 - 保存高并行容量摘要 `reports/r1_capacity_sweep_high_20261124.json`、正式训练报告 `reports/R1_formal_seed42_env2048.md` 和阶段评估汇总 `reports/r1_formal_eval_env2048/summary.json`。

@@ -142,6 +142,8 @@ def install_amp_monitor(agent, metric_env: TrainingMetricsWrapper, sample_size: 
                 target = raw_env.action_offset + raw_env.action_scale * flat_actions
                 limits = raw_env.robot.data.soft_joint_pos_limits[0]
                 target_violations = ((target < limits[:, 0]) | (target > limits[:, 1])).float()
+                joint_violation_ratio = target_violations.mean(dim=0)
+                joint_names = list(raw_env.robot.data.joint_names)
                 joint_positions = flat_states[:, : target.shape[-1]]
                 target_error = (joint_positions - target).abs()
 
@@ -185,6 +187,9 @@ def install_amp_monitor(agent, metric_env: TrainingMetricsWrapper, sample_size: 
                     "action_max": float(flat_actions.max().item()),
                     "action_absolute_max": float(flat_actions.abs().max().item()),
                     "target_angle_violation_ratio": float(target_violations.mean().item()),
+                    "target_angle_violation_by_joint": {
+                        name: float(value) for name, value in zip(joint_names, joint_violation_ratio.detach().cpu().tolist())
+                    },
                     "target_position_error_mean": float(target_error.mean().item()),
                     "target_position_error_max": float(target_error.max().item()),
                     "completed_episodes": completed,
