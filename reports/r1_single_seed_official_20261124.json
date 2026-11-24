@@ -1,0 +1,177 @@
+{
+  "run_id": "20261124T113000+0900_seed42_env2_updates2000",
+  "code_sha": "0d4ffdf",
+  "task": "Isaac-Humanoid-AMP-Walk-Direct-v0",
+  "algorithm": "AMP",
+  "seed": 42,
+  "num_envs": 2,
+  "max_iterations": 2000,
+  "rollouts": 16,
+  "trainer_timesteps": 32000,
+  "environment_transitions": 64000,
+  "device": "cuda:0",
+  "headless": true,
+  "task_reward_weight": 0.0,
+  "style_reward_weight": 1.0,
+  "exit_code": 0,
+  "event_file": "logs/skrl/r1_single_seed_official_20261124/2026-11-24_11-48-50_amp_torch_seed42_env2_updates2000/events.out.tfevents.1795488533.ubuntu2004.44441.0",
+  "event_sha256": "411da9fee87dda9d4a37f2d53f4a1edc0eabc8aff5ae774904fc47afb32dad57",
+  "checkpoints": [
+    {
+      "name": "agent_12800.pt",
+      "sha256": "5f07e2e3bffa55d21877779313068f097e661ac14120b34ad9488d0508c26de4",
+      "bytes": 23124600
+    },
+    {
+      "name": "agent_16000.pt",
+      "sha256": "d9a763fcd97033e1c8abe93a9a772ab360f65b0a4e2e0bbb9a3563aada2fcff2",
+      "bytes": 23124600
+    },
+    {
+      "name": "agent_19200.pt",
+      "sha256": "e737b19d6b848dcd324316f29ad90a605e0cbf433c31933ed5cd00746645a4ca",
+      "bytes": 23124600
+    },
+    {
+      "name": "agent_22400.pt",
+      "sha256": "908c2e64bce31e498aa8b1fb002e3804bb935bdde97a7dcae5de0f00dcc1d77d",
+      "bytes": 23124600
+    },
+    {
+      "name": "agent_25600.pt",
+      "sha256": "8835d9fb4711c1d6175e1901511006569cbe89925a6d5bb51c730b17d8bcd8fd",
+      "bytes": 23124600
+    },
+    {
+      "name": "agent_28800.pt",
+      "sha256": "94bb007232c5c6d2bf7c33051126a73579b2ffd32c857384fe4b069689e9f875",
+      "bytes": 23124600
+    },
+    {
+      "name": "agent_3200.pt",
+      "sha256": "749ca3aabcf118229cdd3652f98a5abedc11b2847d2c5d6b08da0fc35f8744cf",
+      "bytes": 23124514
+    },
+    {
+      "name": "agent_32000.pt",
+      "sha256": "a632d268ec20caca75d4e126527a055bec34b133e4a701f0e2daf8beff947534",
+      "bytes": 23124600
+    },
+    {
+      "name": "agent_6400.pt",
+      "sha256": "17e792504b72f2fcf6cd5cca7206652c2289b907ccd4d0a5305c83d5b92e2f2d",
+      "bytes": 23124514
+    },
+    {
+      "name": "agent_9600.pt",
+      "sha256": "36cbdfe8f9880b4eee29c0bd839d320c72a9db9216e66ae2ef47923bc449226c",
+      "bytes": 23124514
+    }
+  ],
+  "final_checkpoint": {
+    "name": "agent_32000.pt",
+    "sha256": "a632d268ec20caca75d4e126527a055bec34b133e4a701f0e2daf8beff947534",
+    "bytes": 23124600
+  },
+  "gpu": {
+    "samples": 471,
+    "peak_used_mib": 4507,
+    "min_free_mib": 3334,
+    "first_used_mib": 891,
+    "last_used_mib": 4357
+  },
+  "scalars": {
+    "Reward / Total reward (mean)": {
+      "points": 100,
+      "first_step": 320,
+      "first": 22.288856506347656,
+      "last_step": 32000,
+      "last": 20.448740005493164,
+      "min": 11.636466026306152,
+      "max": 24.472698211669922
+    },
+    "Episode / Total timesteps (mean)": {
+      "points": 100,
+      "first_step": 320,
+      "first": 22.288856506347656,
+      "last_step": 32000,
+      "last": 20.448740005493164,
+      "min": 11.636466026306152,
+      "max": 24.472698211669922
+    },
+    "Loss / Discriminator loss": {
+      "points": 100,
+      "first_step": 320,
+      "first": 1.984782099723816,
+      "last_step": 32000,
+      "last": 1.7244426012039185,
+      "min": 1.3789424896240234,
+      "max": 1.984782099723816
+    },
+    "Loss / Policy loss": {
+      "points": 100,
+      "first_step": 320,
+      "first": -0.07820288091897964,
+      "last_step": 32000,
+      "last": -0.1036147028207779,
+      "min": -0.11426525563001633,
+      "max": -0.045887503772974014
+    },
+    "Loss / Value loss": {
+      "points": 100,
+      "first_step": 320,
+      "first": 0.8869867920875549,
+      "last_step": 32000,
+      "last": 0.4397779703140259,
+      "min": 0.04128775745630264,
+      "max": 1.3062077760696411
+    },
+    "Policy / Standard deviation": {
+      "points": 100,
+      "first_step": 320,
+      "first": 0.05502321198582649,
+      "last_step": 32000,
+      "last": 0.05502321198582649,
+      "min": 0.05502321198582649,
+      "max": 0.05502321198582649
+    }
+  },
+  "action_diagnostics": {
+    "3200": {
+      "raw_action_min": -0.7272529006004333,
+      "raw_action_max": 0.3915342688560486,
+      "target_joint_min": -2.170924425125122,
+      "target_joint_max": 1.4461250305175781,
+      "max_target_delta": 1.5618562698364258,
+      "observation_finite": true
+    },
+    "16000": {
+      "raw_action_min": -0.8418328166007996,
+      "raw_action_max": 0.6238899230957031,
+      "target_joint_min": -1.8112884759902954,
+      "target_joint_max": 3.1384925842285156,
+      "max_target_delta": 2.3506710529327393,
+      "observation_finite": true
+    },
+    "32000": {
+      "raw_action_min": -0.5438147783279419,
+      "raw_action_max": 1.0784635543823242,
+      "target_joint_min": -2.9148807525634766,
+      "target_joint_max": 3.0570192337036133,
+      "max_target_delta": 3.249850034713745,
+      "observation_finite": true
+    }
+  },
+  "evaluation": {
+    "episodes": 10,
+    "falls": 10,
+    "timeouts": 0,
+    "fall_rate": 1.0,
+    "mean_steps": 25.7,
+    "mean_duration_s": 0.8566666666666667,
+    "mean_forward_dx_m": 0.9016058266162872,
+    "mean_net_forward_speed_mps": 1.1175458158774922,
+    "reference_vx_wasserstein_mps": 0.5531641559336391,
+    "checkpoint_sha256": "a632d268ec20caca75d4e126527a055bec34b133e4a701f0e2daf8beff947534"
+  }
+}
