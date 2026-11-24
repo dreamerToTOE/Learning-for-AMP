@@ -5,6 +5,8 @@
 运行主机：RTX 3070 8 GiB，driver `580.178.04`。
 源码基线：官方 Isaac Lab `v2.1.1`，SHA `90b79bb2d44feb8d833f260f2bf37da3487180ba`。
 
+路线纠偏说明：本报告中的短训、奖励消融和三 seed 结果现在归类为训练链路与奖励配置 smoke。官方 Walk 任务每步任务奖励固定为 1，且没有显式速度目标，因此这些结果不再作为 AMP 与普通 PPO 行走性能的最终证据。reference replay 的末帧语义已在 [R1 路线复审](R1_reassessment.md) 中修正，官方 AMP checkpoint 目前不可用。
+
 ## 1. 锁定的环境
 
 R1 使用独立 Git checkout：

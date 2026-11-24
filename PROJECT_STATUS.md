@@ -62,11 +62,15 @@
 - 验证了本地 root USD 的实际 drive 覆盖工具。将四个关节从原始 150/15、300/30 设为 300/30 后，CUDA 回放仍为 63/77 且全状态有限，表明简单 USD 增益覆盖也不是当前失稳的单一来源。
 - 将本地 USD 四个关节 drive 直接提高到约 8594/859，并关闭 Isaac Lab override 后，CUDA 回放仍为 63/77，进一步排除了简单关节增益不足作为单一原因。
 - 在 restitution `0.12` average combine 下细扫起始帧和 restitution 参数，起始帧 28/30/32 为 26/68/27 步，restitution 0.1175–0.1205 为 68/68/68/67 步，确认当前接触最佳结果稳定在 68 步附近。
+- 完成 R1 路线纠偏。reference replay 现在默认在真实 motion 末帧停止，明确区分末帧保持。CUDA phase30 exact replay 为 62 个真实参考控制步，`terminated_step=null`、`all_finite=true`，旧的 63 步终止包含一次额外末帧保持。
+- 审计官方 AMP 配置。默认 4096 环境、80000 trainer timesteps、rollouts16、task reward 0、style reward 1、官方网络 1024/512。官方 Humanoid AMP Walk checkpoint probe 返回 unavailable，本机没有可用预训练 checkpoint。
+- 既有每组 16000 环境交互步重新标记为奖励消融和训练链路 smoke，暂不作为 AMP 与普通 PPO 行走性能的最终证据。新的单种子预算计划为 64000 环境步趋势阶段，再对齐 160000 环境步阶段。
+- 完成 G1 路线复审。`legged_lab` 是最佳代码候选，`AMP_Running_baseline` 是最佳 checkpoint 验证候选，但都要求新的 Isaac Sim 5.1 / Isaac Lab 2.3.2 环境、Git LFS 和资产/许可证闭环。
 - 诊断结果记录在 `reports/R1_humanoid28_gravity_diagnosis.md`，并新增 `scripts/r1_probe_actuator_mapping.py`、`scripts/r1_make_humanoid28_mass_override.py`。
 
 ## 下一步
 
-1. 保留 CUDA、摩擦 0.5、起始帧 30 和 solver 16/4 作为诊断条件，验证 USD 场景创建前的真实 joint drive 显式覆盖或明确 effort actuator 路径。达到全状态有限的 77 步有重力参考回放前不恢复 AMP 短训。
+1. 暂停底层物理参数搜索，按官方 AMP 配置在当前 RTX 3070 上进行单种子趋势训练。先完成 64000 环境交互步，再决定是否对齐 160000 环境步并进入三种子对照。
 2. R2 先确认 G1 USD、专家动作、retarget 数据和许可证，再决定是否使用 `legged_lab` 的 Isaac Lab 2.3.x 路线。未满足前不启动 G1 AMP 训练。
 
 ## 阶段记录
@@ -74,7 +78,7 @@
 | 阶段 | 状态 | 证据 |
 |---|---|---|
 | R0 环境与上游审计 | PARTIAL | `reports/R0_environment_audit.md`、项目外部 `../r0_smoke_output.txt`、官方 v2.1.1 Walk smoke 日志 |
-| R1 官方 AMP baseline | PARTIAL | [R1 报告](reports/R1_amp_baseline.md)、[正式评估汇总](reports/r1_formal_eval/summary.csv)、[正式对照协议](docs/EXPERIMENT_PROTOCOL.md#6-r1-walk-正式对照预注册) |
+| R1 官方 AMP baseline | PARTIAL | [R1 报告](reports/R1_amp_baseline.md)、[路线纠偏](reports/R1_reassessment.md)、[正式评估汇总](reports/r1_formal_eval/summary.csv)、[正式对照协议](docs/EXPERIMENT_PROTOCOL.md#6-r1-walk-正式对照预注册) |
 | R2 G1 单技能 | BLOCKED | G1 动作/USD 对象需要 Git LFS，数据来源和授权尚未闭合，候选版本面向 Isaac Lab 2.3.x / Isaac Sim 5.1 |
 | R3 多技能诊断与消融 | NOT_STARTED | — |
 | R4 报告与求职材料 | NOT_STARTED | — |
@@ -91,5 +95,5 @@ commands_run: six AMP training runs with style-weight 0.0/1.0, seeds 42/43/44, -
 evidence_paths: reports/R1_amp_baseline.md; reports/r1_formal_eval/; runs/r1_formal/; runs/r1_formal_eval/20261123T021500+0900_seed42000-42099/; scripts/r1_diagnose_dynamics.py; runs/r1_diagnostics/
 key_metrics: six formal evaluation groups all fell; action correction smoke 10/10 fell but survival mean improved 0.563 to 0.747 s; corrected style scale 0.5 remained 10/10 fall with survival 0.753 s; direct reference replay fell at step 17 with zero target-angle errors; USD elbow/knee drive attrs disagree with runtime actuator tensor; no-gravity replay completed 77 steps; CUDA gravity baseline with friction 0.5, phase 30 and solver 16/4 completed 63 finite steps; restitution 0.12 average combine reached 68 finite steps; contact offset/rest offset sweeps reached at most 63/47 steps; mass scale 0.5/2.0 reached 41/32 steps; actuator gain repair changed logged torque but left trajectories bit-identical at 63 steps; payload collision geometry audit found foot-Cube bottoms around -0.0295/-0.0641 m at frame 30; finite-value gating now rejects NaN runs
 blockers: reference motion is not dynamically trackable under gravity in the current Humanoid28 USD/PhysX actuator setup, so longer AMP budgets are not interpretable yet; G1 assets/data require LFS and separate license/hash verification
-next_action: use the CUDA remote asset baseline with friction 0.5 and phase 30 for a focused contact-parameter, mass/inertia, and actuator-mapping diagnosis; do not claim R1 PASS
+next_action: run a single-seed official AMP trend stage with 64000 environment transitions under the current 2-env memory constraint; reclassify prior 16000-step results as smoke/ablation; keep G1 2.3.2/Sim5.1 and asset verification in parallel; do not claim R1 PASS
 ```

@@ -65,6 +65,8 @@ peak_gpu_mem_mb, code_sha, checkpoint_path, notes
 
 ## 6. R1 Walk 正式对照预注册
 
+路线纠偏记录：Isaac Lab v2.1.1 官方 Walk AMP 配置的任务奖励权重默认为 0，风格奖励权重默认为 1，任务每步存活奖励固定为 1，环境没有明确前进速度目标。此前的 task-only、task+style 和临时 PPO 运行先归类为奖励消融与训练链路 smoke。它们不承担明确速度行走性能比较的结论。速度目标 PPO 与 AMP 对照需要在后续任务奖励定义完成后重新预注册。
+
 使用 Isaac Lab v2.1.1 的 `Isaac-Humanoid-AMP-Walk-Direct-v0`。环境的任务奖励为每步存活奖励 1，没有速度指令。原版纯风格 AMP 和独立 skrl PPO 保留为参考。检验风格奖励增量时，两组都使用同一个 skrl AMP 实现，任务权重固定为 1，只改变风格权重。两组都更新判别器，因此该消融控制了更新路径，另外报告独立 PPO 的效率时使用其实际开销。
 
 | 组别 | 任务权重 | 风格权重 |
