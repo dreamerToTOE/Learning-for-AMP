@@ -38,6 +38,8 @@ runtime mass 与碰撞体积乘 `1000 kg/m³` 精确对应。示例包括：
 
 进一步提取 runtime 的 COM、完整 inertia tensor 和 principal axes，并全部写入 USD 后，回放降为 `38/77`。这说明显式质量属性的坐标语义或 PhysX 资产重建路径会改变动力学，完整覆盖目前不能作为修复方案。
 
+保持 body-frame diagonal inertia、写入 COM 并使用 identity principal axes 的变体为 `49/77`，仍低于原始几何推断资产的 63 步。
+
 ## 执行器映射
 
 原始 runtime actuator tensor 中四个关节的配置为零：
