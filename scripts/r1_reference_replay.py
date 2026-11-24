@@ -57,6 +57,11 @@ def main() -> None:
     parser.add_argument("--steps", type=int, default=77)
     parser.add_argument("--half-range", action="store_true")
     parser.add_argument("--hold-initial", action="store_true")
+    parser.add_argument(
+        "--hold-final-frame",
+        action="store_true",
+        help="Continue stepping after the reference motion ends while holding its final frame.",
+    )
     parser.add_argument("--no-reset-lift", action="store_true")
     parser.add_argument("--stiffness", type=float, default=None)
     parser.add_argument("--damping", type=float, default=None)
@@ -436,15 +441,23 @@ def replay(args) -> None:
         initial_joint_error = (dof_positions[0] - env.robot.data.joint_pos[0]).cpu().tolist()
         steps = []
         nonfinite_step = None
+        reference_end_step = None
+        reference_end_truncated = False
         with torch.inference_mode():
             for step in range(args.steps):
                 stride = int(env.cfg.decimation) if args.frame_stride is None else args.frame_stride
                 phase_offset = 0 if args.start_frame is None else args.start_frame
                 if args.target_offset is None:
-                    frame = phase_offset + (step + 1) * stride
+                    raw_frame = phase_offset + (step + 1) * stride
                 else:
-                    frame = phase_offset + args.target_offset + step * stride
-                frame = min(max(frame, 0), dof_positions.shape[0] - 1)
+                    raw_frame = phase_offset + args.target_offset + step * stride
+                frame = min(max(raw_frame, 0), dof_positions.shape[0] - 1)
+                frame_clamped = raw_frame > dof_positions.shape[0] - 1
+                if frame_clamped and reference_end_step is not None and not args.hold_final_frame:
+                    reference_end_truncated = True
+                    break
+                if frame_clamped and reference_end_step is None:
+                    reference_end_step = step
                 target = dof_positions[0] if args.hold_initial else dof_positions[frame]
                 if args.velocity_target:
                     velocity_source = reconstructed_joint_velocity if args.reconstructed_velocity else None
@@ -485,7 +498,9 @@ def replay(args) -> None:
                 steps.append(
                     {
                         "step": step,
+                        "motion_frame_raw": raw_frame,
                         "motion_frame": frame,
+                        "motion_frame_clamped": frame_clamped,
                         "action_min_max": [actions.min().item(), actions.max().item()],
                         "target_delta_max_abs": (target - env.terminal_joint_pos).abs().max().item(),
                         "target_delta_by_joint": (target - env.terminal_joint_pos).cpu().tolist(),
@@ -531,6 +546,7 @@ def replay(args) -> None:
             "seed": args.seed,
             "half_range": args.half_range,
             "hold_initial": args.hold_initial,
+            "hold_final_frame": args.hold_final_frame,
             "no_reset_lift": args.no_reset_lift,
             "stiffness": args.stiffness,
             "damping": args.damping,
@@ -572,6 +588,8 @@ def replay(args) -> None:
             "steps_requested": args.steps,
             "steps_completed": len(steps),
             "terminated_step": next((item["step"] for item in steps if item["terminated"]), None),
+            "reference_end_step": reference_end_step,
+            "reference_end_truncated": reference_end_truncated,
             "nonfinite_step": nonfinite_step,
             "all_finite": nonfinite_step is None,
             "initial_root": root_initial.cpu().tolist(),
