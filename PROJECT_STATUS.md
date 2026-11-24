@@ -82,6 +82,8 @@
 - 新增 `scripts/r1_amp_train_monitored.py`，在 AMP 更新边界记录实际风格奖励、策略/专家判别器评分、动作范围、目标角超限比例、目标位置误差、存活时间和跌倒率。2 环境监控 smoke 正常退出并写入逐更新 JSONL。 之后补充逐关节 `target_angle_violation_by_joint` 字段，2 环境 1 更新 smoke 记录了全部 28 个关节。
 - 使用 2048 环境、seed42 连续完成 625 次更新和 20,480,000 个环境交互步，主训练峰值显存 6194 MiB，最低空闲 1638 MiB，退出码为 0。
 - 独立评估四个阶段 checkpoint，各使用固定评估 seed 42000–42009。约 20.48M 步 checkpoint 的 10 个回合中 6 个完整运行 9.97 秒，4 个跌倒，平均前进距离 7.07 m，参考速度 W1 为 0.392 m/s。
+- 对 20.48M checkpoint 重复运行 42000–42009，并新增 43000–43019、44000–44019 两组独立评估。重复组的初始观测哈希和回合结果完全一致，三组共 50 回合中 41 回合跑满 9.97 秒，9 回合跌倒。
+- 保存固定初态与独立 seed 复评报告 `reports/R1_repeatability_eval_env2048.md` 和汇总 `reports/r1_repeatability_eval_env2048/summary.json`。
 - 保存高并行容量摘要 `reports/r1_capacity_sweep_high_20261124.json`、正式训练报告 `reports/R1_formal_seed42_env2048.md` 和阶段评估汇总 `reports/r1_formal_eval_env2048/summary.json`。
 
 ## 下一步
@@ -96,7 +98,7 @@
 | 阶段 | 状态 | 证据 |
 |---|---|---|
 | R0 环境与上游审计 | PARTIAL | `reports/R0_environment_audit.md`、项目外部 `../r0_smoke_output.txt`、官方 v2.1.1 Walk smoke 日志 |
-| R1 官方 AMP baseline | PARTIAL | [R1 报告](reports/R1_amp_baseline.md)、[路线纠偏](reports/R1_reassessment.md)、[容量与小样本审计](reports/R1_capacity_and_small_batch.md)、[高并行容量补测](reports/r1_capacity_sweep_high_20261124.json)、[2048 环境正式训练](reports/R1_formal_seed42_env2048.md)、[阶段评估汇总](reports/r1_formal_eval_env2048/summary.json)、[正式评估汇总](reports/r1_formal_eval/summary.csv)、[正式对照协议](docs/EXPERIMENT_PROTOCOL.md#6-r1-walk-正式对照预注册) |
+| R1 官方 AMP baseline | PARTIAL | [R1 报告](reports/R1_amp_baseline.md)、[路线纠偏](reports/R1_reassessment.md)、[容量与小样本审计](reports/R1_capacity_and_small_batch.md)、[高并行容量补测](reports/r1_capacity_sweep_high_20261124.json)、[2048 环境正式训练](reports/R1_formal_seed42_env2048.md)、[阶段评估汇总](reports/r1_formal_eval_env2048/summary.json)、[固定初态复评](reports/R1_repeatability_eval_env2048.md)、[正式评估汇总](reports/r1_formal_eval/summary.csv)、[正式对照协议](docs/EXPERIMENT_PROTOCOL.md#6-r1-walk-正式对照预注册) |
 | R2 G1 单技能 | BLOCKED | G1 动作/USD 对象需要 Git LFS，数据来源和授权尚未闭合，候选版本面向 Isaac Lab 2.3.x / Isaac Sim 5.1 |
 | R3 多技能诊断与消融 | NOT_STARTED | — |
 | R4 报告与求职材料 | NOT_STARTED | — |
@@ -112,6 +114,6 @@ environment: Ubuntu 22.04.5; RTX 3070 8 GiB; driver 580.178.04; Isaac Sim 4.5.0;
 commands_run: prior AMP/PPO smoke and formal reward runs; capacity sweep seed42 --num_envs 2,8,16,32,64,128,256,512,1024,2048 --max_iterations 50; monitored AMP seed42 --num_envs 2 --max_iterations 1 smoke; monitored AMP seed42 --num_envs 2048 --max_iterations 625; official AMP resume for final 5 updates; 500 ms GPU sampling; four 10-episode evaluations with seeds 42000–42009
 evidence_paths: reports/R1_amp_baseline.md; reports/R1_reassessment.md; reports/R1_capacity_and_small_batch.md; reports/r1_capacity_sweep_20261124.json; reports/r1_capacity_sweep_high_20261124.json; reports/R1_formal_seed42_env2048.md; reports/r1_formal_eval_env2048/summary.json; scripts/r1_capacity_sweep.sh; scripts/r1_capacity_sweep_high.sh; scripts/r1_amp_train_monitored.py; reports/r1_single_seed_official_20261124.json; reports/r1_single_seed_official_20261124_budget5000.json; runs/r1_capacity/; runs/r1_formal_seed42_env2048_updates625/; logs/skrl/r1_capacity_sweep_high_20261124/; logs/skrl/r1_amp_formal_seed42_20261124/
 key_metrics: capacity sweep through 2048 environments all exit 0 with no OOM/NaN/Inf; 2048 environments reached 34859.57 environment steps/s with peak 5823 MiB and minimum free 2009 MiB; monitored 2048-environment training completed 625 updates and 20480000 environment transitions with peak 6194 MiB and minimum free 1638 MiB; final 10-episode evaluation had 6 timeouts and 4 falls, mean survival 6.32 s, mean forward distance 7.07 m, reference velocity W1 0.392 m/s; target angle violation ratio peaked at 0.494%; policy discriminator score ended at 0.258 and expert score at 0.735; no OOM/NaN/Inf in the completed main run
-blockers: the first 20.48M checkpoint evaluation has 4/10 falls and needs more fixed-seed repeats before R1 can be called PASS; official Humanoid AMP Walk checkpoint remains unavailable; G1 assets/data require LFS and separate license/hash verification
-next_action: repeat fixed-seed evaluation across more initial states and independent evaluation seeds for the 20.48M checkpoint; keep PhysX parameter search and multi-seed/G1/multi-skill work paused; consider action clipping only if target-angle violations or evaluation falls increase; do not claim R1 PASS until stable walking repeats
+blockers: the 20.48M checkpoint has 9/50 falls across the current fixed-seed evaluation and needs broader coverage before R1 can advance; official Humanoid AMP Walk checkpoint remains unavailable; G1 assets/data require LFS and separate license/hash verification
+next_action: 20.48M checkpoint now has 50 fixed-seed evaluations with 41 timeouts and 9 falls; keep PhysX parameter search and multi-seed/G1/multi-skill work paused; expand evaluation coverage and report confidence intervals before deciding whether R1 can advance; consider action clipping only if target-angle violations or evaluation falls increase
 ```

@@ -1,0 +1,64 @@
+[
+  {
+    "set": "independent_43000",
+    "seed_start": 43000,
+    "episodes": 20,
+    "falls": 4,
+    "timeouts": 16,
+    "fall_rate": 0.2,
+    "timeout_rate": 0.8,
+    "mean_survival_s": 8.168333333333333,
+    "mean_forward_dx_m": 9.342356634140014,
+    "median_forward_dx_m": 11.46170949935913,
+    "reference_vx_wasserstein_mps": 0.3668757580760004,
+    "checkpoint_sha256": "01ff324c5454c157f743b3abab8f3fba6cdea978781bafa46686cd8d6291b356"
+  },
+  {
+    "set": "independent_44000",
+    "seed_start": 44000,
+    "episodes": 20,
+    "falls": 1,
+    "timeouts": 19,
+    "fall_rate": 0.05,
+    "timeout_rate": 0.95,
+    "mean_survival_s": 9.53,
+    "mean_forward_dx_m": 10.961842873692513,
+    "median_forward_dx_m": 11.56280517578125,
+    "reference_vx_wasserstein_mps": 0.36105814851552137,
+    "checkpoint_sha256": "01ff324c5454c157f743b3abab8f3fba6cdea978781bafa46686cd8d6291b356"
+  },
+  {
+    "set": "repeat_42000",
+    "seed_start": 42000,
+    "episodes": 10,
+    "falls": 4,
+    "timeouts": 6,
+    "fall_rate": 0.4,
+    "timeout_rate": 0.6,
+    "mean_survival_s": 6.32,
+    "mean_forward_dx_m": 7.0722542107105255,
+    "median_forward_dx_m": 11.277092456817627,
+    "reference_vx_wasserstein_mps": 0.3922624366303737,
+    "checkpoint_sha256": "01ff324c5454c157f743b3abab8f3fba6cdea978781bafa46686cd8d6291b356"
+  },
+  {
+    "comparison": "repeat_42000_vs_stage4_20m",
+    "same_initial_hashes": true,
+    "same_end_reason_and_steps": true
+  },
+  {
+    "pooled_sets": [
+      "repeat_42000",
+      "independent_43000",
+      "independent_44000"
+    ],
+    "episodes": 50,
+    "falls": 9,
+    "timeouts": 41,
+    "fall_rate": 0.18,
+    "timeout_rate": 0.82,
+    "mean_survival_s": 8.343333333333334,
+    "mean_forward_dx_m": 9.536130645275115,
+    "median_forward_dx_m": 11.478963375091553
+  }
+]
