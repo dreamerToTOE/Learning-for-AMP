@@ -1,0 +1,54 @@
+[
+  {
+    "stage": "stage1_1m",
+    "checkpoint_sha256": "764baf1d5a0a3d20326c891d85354d391eac210990a6b88bdaefff154faaf130",
+    "episodes": 10,
+    "falls": 10,
+    "timeouts": 0,
+    "fall_rate": 1.0,
+    "mean_steps": 27.5,
+    "mean_survival_s": 0.9166666666666666,
+    "mean_forward_dx_m": 0.49866928458213805,
+    "reference_vx_wasserstein_mps": 0.9902279947330426,
+    "video": "reports/r1_formal_eval_env2048/stage1_1m/episode_001.mp4"
+  },
+  {
+    "stage": "stage2_4m",
+    "checkpoint_sha256": "bdd0965ae84ffd41c5cba98ee396234622f39625a729c4a0cfd2658657796e59",
+    "episodes": 10,
+    "falls": 10,
+    "timeouts": 0,
+    "fall_rate": 1.0,
+    "mean_steps": 29.3,
+    "mean_survival_s": 0.9766666666666667,
+    "mean_forward_dx_m": 0.9255255401134491,
+    "reference_vx_wasserstein_mps": 0.5632069135013499,
+    "video": "reports/r1_formal_eval_env2048/stage2_4m/episode_001.mp4"
+  },
+  {
+    "stage": "stage3_10m",
+    "checkpoint_sha256": "249cb7e2dc91c0b4cba7b8bb8d29ace51159e1227a2a3a15c7653343b3edff7c",
+    "episodes": 10,
+    "falls": 10,
+    "timeouts": 0,
+    "fall_rate": 1.0,
+    "mean_steps": 53.1,
+    "mean_survival_s": 1.77,
+    "mean_forward_dx_m": 1.8824553608894348,
+    "reference_vx_wasserstein_mps": 0.46128761529245343,
+    "video": "reports/r1_formal_eval_env2048/stage3_10m/episode_001.mp4"
+  },
+  {
+    "stage": "stage4_20m",
+    "checkpoint_sha256": "01ff324c5454c157f743b3abab8f3fba6cdea978781bafa46686cd8d6291b356",
+    "episodes": 10,
+    "falls": 4,
+    "timeouts": 6,
+    "fall_rate": 0.4,
+    "mean_steps": 189.6,
+    "mean_survival_s": 6.32,
+    "mean_forward_dx_m": 7.0722542107105255,
+    "reference_vx_wasserstein_mps": 0.3922624366303737,
+    "video": "reports/r1_formal_eval_env2048/stage4_20m/episode_001.mp4"
+  }
+]
