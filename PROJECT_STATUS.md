@@ -56,8 +56,10 @@
 - `scripts/r1_reference_replay.py` 已加入 root、feet、joint state 的逐步有限性检查，记录 `nonfinite_step` 和 `all_finite`，旧的 NaN 假成功结果不再作为证据。详细结果见 `reports/R1_humanoid28_contact_geometry.md`。
 - 沿 CUDA、摩擦 0.5、起始帧 30、solver 16/4 完成接触参数诊断。默认 contact offset 为 0.00545 m、rest offset 为 0 m。contact offset sweep 为 46–56 步，正 rest offset 为 47 步，friction combine multiply 为 20 步，restitution 0.12 加 average combine 最好为 68 步，全部状态有限。
 - 完成质量/惯量来源诊断。runtime mass 与碰撞体积乘 1000 kg/m³ 精确对应。显式锁定当前 runtime mass/diagonal inertia 仍为 63 步，质量缩放 0.5/2.0 降至 41/32 步，说明质量会影响稳定性，但当前推断值不是唯一失稳原因。
+- 进一步提取并覆盖 runtime COM、完整 inertia tensor 和 principal axes 后，回放为 38 步且全有限，说明显式质量属性的坐标语义或 PhysX 资产重建路径会改变动力学。完整覆盖暂不作为修复方案。
 - 完成 USD drive 到 actuator tensor 映射诊断。四个 elbow/knee 在原始 tensor 中 stiffness、damping、effort 为 0，repair/override 后计算 torque 变为非零，但三条完整轨迹逐步一致并均为 63 步。ImplicitActuator 将位置/速度目标直接交给 PhysX，实际轨迹仍由 USD implicit drive 主导。显式 torque PD 探针在低增益下仅 13/21 步。
 - 验证了本地 root USD 的实际 drive 覆盖工具。将四个关节从原始 150/15、300/30 设为 300/30 后，CUDA 回放仍为 63/77 且全状态有限，表明简单 USD 增益覆盖也不是当前失稳的单一来源。
+- 在 restitution `0.12` average combine 下细扫起始帧和 restitution 参数，起始帧 28/30/32 为 26/68/27 步，restitution 0.1175–0.1205 为 68/68/68/67 步，确认当前接触最佳结果稳定在 68 步附近。
 - 诊断结果记录在 `reports/R1_humanoid28_gravity_diagnosis.md`，并新增 `scripts/r1_probe_actuator_mapping.py`、`scripts/r1_make_humanoid28_mass_override.py`。
 
 ## 下一步

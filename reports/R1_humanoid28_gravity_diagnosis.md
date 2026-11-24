@@ -18,6 +18,8 @@ runtime root PhysX view 暴露 18 个 shape。默认 contact offset 为 `0.00545
 | friction combine | average / min / multiply / max | 63 / 63 / 20 / 63 | 全有限 |
 | restitution `0.12` | average / min / multiply / max | 68 / 63 / 63 / 57 | 全有限 |
 
+在 `restitution=0.12`、average combine 下，起始帧 `28/30/32` 的结果为 `26/68/27` 步。围绕 `0.12` 的细扫 `0.1175/0.1185/0.1195/0.1205` 为 `68/68/68/67` 步，说明当前 68 步结果不是单点数值偶然性。
+
 `restitution=0.12` 配合 average combine 是当前接触参数中最好的结果，但仍未完成 77 步。rest offset 的微小正值会明显缩短回放，说明当前脚底穿透和接触约束之间存在敏感耦合。
 
 ## 质量与惯量推断
@@ -33,6 +35,8 @@ runtime mass 与碰撞体积乘 `1000 kg/m³` 精确对应。示例包括：
 显式写入当前 runtime mass 和 diagonal inertia 后，回放仍为 `63/77`。把所有 body 的质量和惯量同时缩放为 `0.5` 与 `2.0` 后，结果分别为 `41/77` 与 `32/77`。质量和惯量会显著影响稳定性，当前推断值仍是测试范围内的最佳值，质量来源本身不是唯一失稳原因。
 
 仅写入 mass 和 diagonal inertia 不能完全复现所有 runtime 惯性。torso 的 COM 和 principal axes 仍沿用 USD 的无穷或零值语义，因此显式覆盖结果更适合作为敏感性探针。
+
+进一步提取 runtime 的 COM、完整 inertia tensor 和 principal axes，并全部写入 USD 后，回放降为 `38/77`。这说明显式质量属性的坐标语义或 PhysX 资产重建路径会改变动力学，完整覆盖目前不能作为修复方案。
 
 ## 执行器映射
 
@@ -65,6 +69,8 @@ USD joint prim 仍包含 elbow `150/15`、knee `300/30` 的 drive 参数。首�
 - `scripts/r1_reference_replay.py`
 - `scripts/r1_probe_actuator_mapping.py`
 - `scripts/r1_make_humanoid28_mass_override.py`
+- `scripts/r1_extract_humanoid28_mass_properties.py`
+- `scripts/r1_make_humanoid28_full_mass_override.py`
 - `scripts/r1_patch_local_humanoid28_usd_drives.py`
 - `runs/r1_structure/replay_cuda_restitution_average.json`
 - `runs/r1_structure/replay_explicit_mass_cuda.json`
