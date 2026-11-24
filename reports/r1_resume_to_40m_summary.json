@@ -1,0 +1,116 @@
+{
+  "source_checkpoint": {
+    "checkpoint": "logs/skrl/r1_amp_formal_seed42_20261124_final5_official/2026-11-25_00-23-05_amp_torch_resume_agent9920_updates5/checkpoints/agent_80.pt",
+    "sha256": "01ff324c5454c157f743b3abab8f3fba6cdea978781bafa46686cd8d6291b356",
+    "keys": [
+      "amp_state_preprocessor",
+      "discriminator",
+      "optimizer",
+      "policy",
+      "state_preprocessor",
+      "value",
+      "value_preprocessor"
+    ],
+    "has_policy": true,
+    "has_value": true,
+    "has_discriminator": true,
+    "has_optimizer": true,
+    "has_state_preprocessor": true,
+    "has_value_preprocessor": true,
+    "has_amp_state_preprocessor": true,
+    "has_motion_dataset": false,
+    "has_reply_buffer": false,
+    "optimizer_param_groups": 1,
+    "optimizer_state_entries": 18,
+    "agent_yaml": "logs/skrl/r1_amp_formal_seed42_20261124_final5_official/2026-11-25_00-23-05_amp_torch_resume_agent9920_updates5/params/agent.yaml",
+    "seed": 42,
+    "rollouts": 16,
+    "amp_batch_size": 512,
+    "motion_dataset_memory_size": 200000,
+    "reply_buffer_memory_size": 1000000
+  },
+  "resume_run": {
+    "updates": 625,
+    "trainer_timesteps": 10000,
+    "environment_transitions": 20480000,
+    "started_at": "2026-11-25T02:32:14+09:00",
+    "finished_at": "2026-11-25T02:38:53+09:00",
+    "exit_code": 0,
+    "gpu_peak_used_mib": 7832,
+    "gpu_min_free_mib": 0,
+    "gpu_util_mean_pct": 70.84461152882206,
+    "gpu_util_max_pct": 98,
+    "monitor_interval_updates": 31,
+    "monitor_amp_score_samples": 128,
+    "metric_rows": 21,
+    "metric_ranges": [
+      {
+        "metric": "amp_style_reward_mean",
+        "min": 2.6625494956970215,
+        "max": 3.0494470596313477,
+        "first": 3.0494470596313477,
+        "last": 2.6625494956970215
+      },
+      {
+        "metric": "policy_discriminator_score_mean",
+        "min": 0.23578926920890808,
+        "max": 0.27702081203460693,
+        "first": 0.23578926920890808,
+        "last": 0.27552977204322815
+      },
+      {
+        "metric": "expert_discriminator_score_mean",
+        "min": 0.7277234792709351,
+        "max": 0.7450954914093018,
+        "first": 0.7422040700912476,
+        "last": 0.7309567928314209
+      },
+      {
+        "metric": "target_angle_violation_ratio",
+        "min": 0.003665379248559475,
+        "max": 0.01135798916220665,
+        "first": 0.0112577173858881,
+        "last": 0.01135798916220665
+      },
+      {
+        "metric": "target_position_error_mean",
+        "min": 0.2992649972438812,
+        "max": 0.32652902603149414,
+        "first": 0.32652902603149414,
+        "last": 0.3118252456188202
+      },
+      {
+        "metric": "average_survival_seconds",
+        "min": 0.457037037037037,
+        "max": 8.686775503152804,
+        "first": 0.457037037037037,
+        "last": 8.527962870876843
+      },
+      {
+        "metric": "fall_rate",
+        "min": 0.16273646022285565,
+        "max": 1.0,
+        "first": 1.0,
+        "last": 0.17777225261064147
+      }
+    ]
+  },
+  "final_continuation": {
+    "updates": 5,
+    "environment_transitions": 163840,
+    "entrypoint": "official Isaac Lab skrl train.py",
+    "reason": "checkpoint interval ended at 620 updates, so the final 5 updates were completed from agent_9920.pt with the official entrypoint",
+    "exit_code": 0
+  },
+  "cumulative_environment_transitions": 40960000,
+  "strict_seamless_continuity": false,
+  "boundary_effects": [
+    "motion_dataset and reply_buffer are absent from checkpoint and were reinitialized at resume",
+    "AMP state, policy state, value state, discriminator state, running preprocessors and optimizer were restored",
+    "low-frequency monitoring was enabled during the 625-update resumed segment, while final 5 updates used the official entrypoint without extra monitor forwards"
+  ],
+  "final_checkpoint": {
+    "checkpoint": "logs/skrl/r1_amp_resume_seed42_20251125_final5/2026-11-25_02-40-09_amp_torch_resume40m_final5/checkpoints/agent_80.pt",
+    "sha256": "22f389039512e97a542403702e391b3d7efde619a78008026d849144dadd860c"
+  }
+}

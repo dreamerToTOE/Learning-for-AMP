@@ -1,0 +1,146 @@
+{
+  "baseline_and_new_sets": [
+    {
+      "name": "baseline_42000",
+      "episodes": 10,
+      "falls": 1,
+      "complete": 9,
+      "fall_rate": 0.1,
+      "complete_rate": 0.9,
+      "complete_wilson_95": [
+        0.5958499732047615,
+        0.9821237869049271
+      ],
+      "mean_survival_s": 9.236666666666666,
+      "mean_forward_dx_m": 10.43405648469925,
+      "median_forward_dx_m": 11.58859920501709,
+      "mean_forward_speed_mps": 1.0389494912331318,
+      "reference_vx_wasserstein_mps": 0.3823596468696725,
+      "mean_target_violation_ratio": 0.007651546822742475,
+      "max_target_violation_ratio": 0.009794553272814142,
+      "worst_joint_average_violation": [
+        [
+          "left_ankle_y",
+          0.10000000000000002
+        ],
+        [
+          "right_ankle_y",
+          0.07725752508361203
+        ],
+        [
+          "right_shoulder_z",
+          0.020137959866220734
+        ],
+        [
+          "neck_y",
+          0.01258779264214047
+        ],
+        [
+          "left_shoulder_y",
+          0.0013377926421404682
+        ],
+        [
+          "left_hip_y",
+          0.00125
+        ],
+        [
+          "right_hip_y",
+          0.0006688963210702341
+        ],
+        [
+          "left_hip_x",
+          0.0006688963210702341
+        ]
+      ],
+      "failure_seeds": [
+        42002
+      ],
+      "failure_reasons": [
+        "timeout_10s",
+        "torso_height_below_0.5m"
+      ],
+      "checkpoint_sha256": "22f389039512e97a542403702e391b3d7efde619a78008026d849144dadd860c"
+    },
+    {
+      "name": "new_independent_45000",
+      "episodes": 100,
+      "falls": 3,
+      "complete": 97,
+      "fall_rate": 0.03,
+      "complete_rate": 0.97,
+      "complete_wilson_95": [
+        0.9154806357094724,
+        0.9897454759759611
+      ],
+      "mean_survival_s": 9.710666666666667,
+      "mean_forward_dx_m": 11.264011238813401,
+      "median_forward_dx_m": 11.684210777282715,
+      "mean_forward_speed_mps": 1.1325682119044622,
+      "reference_vx_wasserstein_mps": 0.3537581739172022,
+      "mean_target_violation_ratio": 0.007774119297573725,
+      "max_target_violation_ratio": 0.020292207792207792,
+      "worst_joint_average_violation": [
+        [
+          "left_ankle_y",
+          0.10424749163879593
+        ],
+        [
+          "right_ankle_y",
+          0.08687363445452428
+        ],
+        [
+          "right_shoulder_z",
+          0.015808937439372214
+        ],
+        [
+          "neck_y",
+          0.005233286262103248
+        ],
+        [
+          "left_hip_x",
+          0.001239884146860891
+        ],
+        [
+          "left_shoulder_y",
+          0.001003344481605351
+        ],
+        [
+          "abdomen_x",
+          0.0009413067552602436
+        ],
+        [
+          "right_hip_y",
+          0.0006354515050167225
+        ]
+      ],
+      "failure_seeds": [
+        45033,
+        45062,
+        45099
+      ],
+      "failure_reasons": [
+        "timeout_10s",
+        "torso_height_below_0.5m"
+      ],
+      "checkpoint_sha256": "22f389039512e97a542403702e391b3d7efde619a78008026d849144dadd860c"
+    }
+  ],
+  "pooled": {
+    "episodes": 110,
+    "falls": 4,
+    "complete": 106,
+    "fall_rate": 0.03636363636363636,
+    "complete_rate": 0.9636363636363636,
+    "complete_wilson_95": [
+      0.910213207186402,
+      0.985769689173482
+    ],
+    "mean_survival_s": 9.667575757575758,
+    "mean_forward_dx_m": 11.188560806621204,
+    "median_forward_dx_m": 11.67377519607544,
+    "mean_forward_speed_mps": 1.1240574191161594
+  },
+  "success_video": "reports/r1_eval_freeze_40m/success_45000/episode_001.mp4",
+  "failure_video": "reports/r1_eval_freeze_40m/failure_45033/episode_001.mp4",
+  "all_actions_finite": true
+}
