@@ -107,7 +107,7 @@
 date: 2026-11-25
 stage: R1 — 官方 AMP seed42 2048 环境连续训练与阶段评估
 status: PARTIAL
-code_sha: 2bad715（正式训练基于此提交运行）
+code_sha: 8396b13（正式训练脚本、监控和评估报告提交）
 environment: Ubuntu 22.04.5; RTX 3070 8 GiB; driver 580.178.04; Isaac Sim 4.5.0; official Isaac Lab v2.1.1; Kit Python 3.10.15; torch 2.5.1+cu118; isolated venv skrl 1.4.3; gymnasium 0.29.1; hydra-core 1.3.2; numpy 1.26.0; tensorboard 2.19.0; flatdict 4.0.1; h5py 3.13.0
 commands_run: prior AMP/PPO smoke and formal reward runs; capacity sweep seed42 --num_envs 2,8,16,32,64,128,256,512,1024,2048 --max_iterations 50; monitored AMP seed42 --num_envs 2 --max_iterations 1 smoke; monitored AMP seed42 --num_envs 2048 --max_iterations 625; official AMP resume for final 5 updates; 500 ms GPU sampling; four 10-episode evaluations with seeds 42000–42009
 evidence_paths: reports/R1_amp_baseline.md; reports/R1_reassessment.md; reports/R1_capacity_and_small_batch.md; reports/r1_capacity_sweep_20261124.json; reports/r1_capacity_sweep_high_20261124.json; reports/R1_formal_seed42_env2048.md; reports/r1_formal_eval_env2048/summary.json; scripts/r1_capacity_sweep.sh; scripts/r1_capacity_sweep_high.sh; scripts/r1_amp_train_monitored.py; reports/r1_single_seed_official_20261124.json; reports/r1_single_seed_official_20261124_budget5000.json; runs/r1_capacity/; runs/r1_formal_seed42_env2048_updates625/; logs/skrl/r1_capacity_sweep_high_20261124/; logs/skrl/r1_amp_formal_seed42_20261124/
