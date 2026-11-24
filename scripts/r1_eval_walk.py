@@ -125,10 +125,21 @@ def evaluate(args, agent_config):
                 initial_position = env.robot.data.body_pos_w[0, env.ref_body_index].clone()
                 poses = [env.robot.data.body_pos_w[0].clone()] if args.video and index == 0 else None
                 speeds = []
+                target_violation_count = torch.zeros(env.robot.num_joints, device=env.device)
+                target_error_sum = 0.0
+                target_error_max = 0.0
+                target_sample_count = 0
                 for step in range(1, env.max_episode_length + 1):
                     actions, _, _ = policy.compute({"states": normalizer(obs["policy"])}, role="policy")
                     if not torch.isfinite(actions).all():
                         raise ValueError(f"non-finite action in episode {index + 1}, step {step}")
+                    target = env.action_offset + env.action_scale * actions
+                    limits = env.robot.data.soft_joint_pos_limits[0]
+                    target_violation_count += ((target[0] < limits[:, 0]) | (target[0] > limits[:, 1])).float()
+                    target_error = (env.robot.data.joint_pos[0] - target[0]).abs()
+                    target_error_sum += target_error.mean().item()
+                    target_error_max = max(target_error_max, target_error.max().item())
+                    target_sample_count += 1
                     obs, _, terminated, truncated, _ = env.step(actions)
                     speeds.append(env.step_velocity[:2])
                     if poses is not None:
@@ -159,11 +170,19 @@ def evaluate(args, agent_config):
                     "terminated": bool(terminated.item()),
                     "truncated": bool(truncated.item()),
                     "end_reason": "fall" if terminated.item() else "timeout",
+                    "failure_reason": "torso_height_below_0.5m" if terminated.item() else "timeout_10s",
                     "forward_dx_m": delta[0],
                     "net_forward_speed_mps": delta[0] / elapsed,
                     "mean_xy_speed_mps": speeds.norm(dim=1).mean().item(),
                     "torso_vx_mps": speeds[:, 0].cpu().tolist(),
                     "terminal_torso_height_m": terminal_position[2].item(),
+                    "target_angle_violation_ratio": float(target_violation_count.sum().item() / max(target_sample_count * env.robot.num_joints, 1)),
+                    "target_angle_violation_by_joint": {
+                        name: float(value / max(target_sample_count, 1))
+                        for name, value in zip(env.robot.data.joint_names, target_violation_count.cpu().tolist())
+                    },
+                    "target_position_error_mean_rad": float(target_error_sum / max(target_sample_count, 1)),
+                    "target_position_error_max_rad": float(target_error_max),
                 }
                 print(json.dumps({key: value for key, value in result.items() if key != "torso_vx_mps"},
                                  allow_nan=False), flush=True)

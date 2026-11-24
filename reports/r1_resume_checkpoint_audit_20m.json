@@ -1,0 +1,30 @@
+{
+  "checkpoint": "logs/skrl/r1_amp_formal_seed42_20261124_final5_official/2026-11-25_00-23-05_amp_torch_resume_agent9920_updates5/checkpoints/agent_80.pt",
+  "sha256": "01ff324c5454c157f743b3abab8f3fba6cdea978781bafa46686cd8d6291b356",
+  "keys": [
+    "amp_state_preprocessor",
+    "discriminator",
+    "optimizer",
+    "policy",
+    "state_preprocessor",
+    "value",
+    "value_preprocessor"
+  ],
+  "has_policy": true,
+  "has_value": true,
+  "has_discriminator": true,
+  "has_optimizer": true,
+  "has_state_preprocessor": true,
+  "has_value_preprocessor": true,
+  "has_amp_state_preprocessor": true,
+  "has_motion_dataset": false,
+  "has_reply_buffer": false,
+  "optimizer_param_groups": 1,
+  "optimizer_state_entries": 18,
+  "agent_yaml": "logs/skrl/r1_amp_formal_seed42_20261124_final5_official/2026-11-25_00-23-05_amp_torch_resume_agent9920_updates5/params/agent.yaml",
+  "seed": 42,
+  "rollouts": 16,
+  "amp_batch_size": 512,
+  "motion_dataset_memory_size": 200000,
+  "reply_buffer_memory_size": 1000000
+}

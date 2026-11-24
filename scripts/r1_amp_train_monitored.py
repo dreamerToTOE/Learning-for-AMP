@@ -26,6 +26,7 @@ parser.add_argument("--max_iterations", type=int, default=None)
 parser.add_argument("--ml_framework", type=str, default="torch", choices=["torch", "jax", "jax-numpy"])
 parser.add_argument("--algorithm", type=str, default="AMP", choices=["AMP", "PPO", "IPPO", "MAPPO"])
 parser.add_argument("--monitor_sample_size", type=int, default=512)
+parser.add_argument("--monitor_interval", type=int, default=1, help="Record extra AMP metrics every N updates")
 AppLauncher.add_app_launcher_args(parser)
 args_cli, hydra_args = parser.parse_known_args()
 if args_cli.video:
@@ -111,12 +112,18 @@ def _save_rng():
     return torch.get_rng_state(), cuda_state, np.random.get_state(), random.getstate()
 
 
-def install_amp_monitor(agent, metric_env: TrainingMetricsWrapper, sample_size: int, metric_path: Path):
+def install_amp_monitor(agent, metric_env: TrainingMetricsWrapper, sample_size: int, monitor_interval: int, metric_path: Path):
     metric_path.parent.mkdir(parents=True, exist_ok=True)
     original_update = agent._update
     previous_time = [time.perf_counter()]
+    if monitor_interval < 1:
+        raise ValueError("monitor_interval must be >= 1")
 
     def monitored_update(timestep, timesteps):
+        update_number = int((timestep + 1) // agent.memory.memory_size)
+        if monitor_interval > 1 and update_number != 1 and update_number % monitor_interval != 0:
+            original_update(timestep, timesteps)
+            return
         rng = _save_rng()
         try:
             memory = agent.memory
@@ -127,8 +134,14 @@ def install_amp_monitor(agent, metric_env: TrainingMetricsWrapper, sample_size: 
             flat_actions = actions.reshape(-1, actions.shape[-1])
             flat_states = states.reshape(-1, states.shape[-1])
             flat_amp_states = amp_states.reshape(-1, amp_states.shape[-1])
+            monitor_count = min(sample_size, flat_amp_states.shape[0])
+            if monitor_count < flat_amp_states.shape[0]:
+                monitor_indices = torch.linspace(0, flat_amp_states.shape[0] - 1, monitor_count, device=flat_amp_states.device).long()
+                monitor_amp_states = flat_amp_states[monitor_indices]
+            else:
+                monitor_amp_states = flat_amp_states
             with torch.no_grad():
-                policy_input = agent._amp_state_preprocessor(flat_amp_states)
+                policy_input = agent._amp_state_preprocessor(monitor_amp_states)
                 policy_logits, _, _ = agent.discriminator.act({"states": policy_input}, role="discriminator")
                 policy_score = torch.sigmoid(policy_logits)
                 policy_style_reward = -torch.log(torch.clamp(policy_score, min=1.0e-4)) * agent._discriminator_reward_scale
@@ -178,6 +191,7 @@ def install_amp_monitor(agent, metric_env: TrainingMetricsWrapper, sample_size: 
                     "timestep": int(timestep),
                     "trainer_timesteps": int(timesteps),
                     "samples_per_update": int(rewards.numel()),
+                    "monitor_amp_score_samples": int(monitor_count),
                     "environment_reward_mean": float(rewards.mean().item()),
                     "amp_style_reward_mean": float(policy_style_reward.mean().item()),
                     "amp_weighted_reward_mean": float((policy_style_reward * agent._style_reward_weight).mean().item()),
@@ -256,7 +270,7 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     env = SkrlVecEnvWrapper(metric_env, ml_framework=args_cli.ml_framework)
     runner = Runner(env, agent_cfg)
     install_amp_monitor(
-        runner.agent, metric_env, args_cli.monitor_sample_size, Path(log_dir) / "amp_metrics.jsonl"
+        runner.agent, metric_env, args_cli.monitor_sample_size, args_cli.monitor_interval, Path(log_dir) / "amp_metrics.jsonl"
     )
     if resume_path:
         print(f"[INFO] Loading model checkpoint from: {resume_path}")

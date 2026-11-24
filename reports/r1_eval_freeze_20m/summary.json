@@ -1,0 +1,158 @@
+{
+  "checkpoint_sha256": "01ff324c5454c157f743b3abab8f3fba6cdea978781bafa46686cd8d6291b356",
+  "baseline_and_new_sets": [
+    {
+      "name": "baseline_42000",
+      "episodes": 10,
+      "falls": 4,
+      "complete": 6,
+      "fall_rate": 0.4,
+      "complete_rate": 0.6,
+      "complete_wilson_95": [
+        0.31267376973365824,
+        0.8318196702937638
+      ],
+      "mean_survival_s": 6.32,
+      "mean_forward_dx_m": 7.0722542107105255,
+      "median_forward_dx_m": 11.277092456817627,
+      "mean_forward_speed_mps": 0.9145559113366301,
+      "reference_vx_wasserstein_mps": 0.3922624366303737,
+      "mean_target_violation_ratio": 0.0031096469524264556,
+      "max_target_violation_ratio": 0.006696428571428571,
+      "worst_joint_average_violation": [
+        [
+          "right_shoulder_z",
+          0.04381270903010034
+        ],
+        [
+          "left_ankle_y",
+          0.021425585284280936
+        ],
+        [
+          "right_ankle_y",
+          0.008146201624462493
+        ],
+        [
+          "left_hip_x",
+          0.005003344481605351
+        ],
+        [
+          "neck_y",
+          0.004
+        ],
+        [
+          "right_hip_x",
+          0.0030100334448160534
+        ],
+        [
+          "right_shoulder_y",
+          0.0016722408026755853
+        ],
+        [
+          "abdomen_x",
+          0.0
+        ]
+      ],
+      "failure_seeds": [
+        42001,
+        42002,
+        42003,
+        42005
+      ],
+      "failure_reasons": [
+        "timeout_10s",
+        "torso_height_below_0.5m"
+      ],
+      "checkpoint_sha256": "01ff324c5454c157f743b3abab8f3fba6cdea978781bafa46686cd8d6291b356"
+    },
+    {
+      "name": "new_independent_45000",
+      "episodes": 100,
+      "falls": 11,
+      "complete": 89,
+      "fall_rate": 0.11,
+      "complete_rate": 0.89,
+      "complete_wilson_95": [
+        0.8136870349691969,
+        0.9374580364293543
+      ],
+      "mean_survival_s": 9.038333333333334,
+      "mean_forward_dx_m": 10.15931627869606,
+      "median_forward_dx_m": 11.466322422027588,
+      "mean_forward_speed_mps": 1.075848971601485,
+      "reference_vx_wasserstein_mps": 0.38773460612334343,
+      "mean_target_violation_ratio": 0.0027644021997152786,
+      "max_target_violation_ratio": 0.01038961038961039,
+      "worst_joint_average_violation": [
+        [
+          "right_shoulder_z",
+          0.059439126091300025
+        ],
+        [
+          "left_ankle_y",
+          0.005801134453308364
+        ],
+        [
+          "left_hip_x",
+          0.004051487581240596
+        ],
+        [
+          "right_ankle_y",
+          0.003195500152021891
+        ],
+        [
+          "right_hip_x",
+          0.002639215856607161
+        ],
+        [
+          "right_shoulder_y",
+          0.0014406770562119852
+        ],
+        [
+          "right_hip_y",
+          0.0006020066889632107
+        ],
+        [
+          "neck_y",
+          0.00020066889632107025
+        ]
+      ],
+      "failure_seeds": [
+        45009,
+        45021,
+        45022,
+        45033,
+        45062,
+        45064,
+        45072,
+        45083,
+        45086,
+        45088,
+        45099
+      ],
+      "failure_reasons": [
+        "timeout_10s",
+        "torso_height_below_0.5m"
+      ],
+      "checkpoint_sha256": "01ff324c5454c157f743b3abab8f3fba6cdea978781bafa46686cd8d6291b356"
+    }
+  ],
+  "pooled": {
+    "episodes": 110,
+    "falls": 15,
+    "complete": 95,
+    "fall_rate": 0.13636363636363635,
+    "complete_rate": 0.8636363636363636,
+    "complete_wilson_95": [
+      0.7871432478694177,
+      0.9155884355500993
+    ],
+    "mean_survival_s": 8.791212121212121,
+    "mean_forward_dx_m": 9.878674272515557,
+    "median_forward_dx_m": 11.466322422027588,
+    "mean_forward_speed_mps": 1.0611859661228618
+  },
+  "success_video": "reports/r1_eval_freeze_20m/success_45000/episode_001.mp4",
+  "failure_video": "reports/r1_eval_freeze_20m/failure_45009/episode_001.mp4",
+  "all_actions_finite": true
+}
