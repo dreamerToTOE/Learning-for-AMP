@@ -2,8 +2,8 @@
 
 - **状态：PARTIAL**
 - **日期：2026-11-24**
-- **当前阶段为 R1，官方 AMP 单种子 2000 和 5000 更新趋势已完成，正式三 seed 结果仍仅作为历史 smoke/奖励消融记录**
-- **最新提交包含本轮官方 AMP 单种子结果**
+- **当前阶段为 R1，已完成官方 AMP 单种子预算验证和并行环境容量/小样本机制审计，正式三 seed 结果仍仅作为历史 smoke/奖励消融记录**
+- **容量测试基于提交 `7565295`，结果和可复现实验入口已纳入本轮提交**
 - **本轮训练运行前项目 SHA 为 `0d4ffdf`**
 - **正式训练为两种风格权重各 3 个 seed，每组 2 环境、500 次更新、16,000 个环境交互步**
 - **每个最终 checkpoint 使用同一组 100 个评估 seed，六组共 600 个评估回合**
@@ -75,18 +75,22 @@
 - 5000 更新阶段记录 100 个 TensorBoard 标量点和 1041 个 GPU 显存样本。总奖励均值为 22.482（800 timesteps）到 15.714（80000 timesteps），判别器损失为 1.662 到 1.930，未形成持续改善。整卡显存峰值 4203 MiB，最低空闲 3637 MiB。
 - 用最终 checkpoint 完成同一 10 回合评估，10/10 跌倒，平均存活 24.0 控制步、0.800 秒，平均前进距离 0.847 m。5000 更新结果不支持宣称稳定行走或 AMP 复现成功。
 - 保存单种子预算验证摘要 `reports/r1_single_seed_official_20261124_budget5000.json`。
+- 完成 2、8、16、32、64、128、256 并行环境各 50 次更新的容量测试。所有组退出码为 0，未出现 OOM、NaN 或 Inf。256 环境达到 6606.45 环境步/s，峰值显存 4859 MiB，最低空闲 2974 MiB。
+- 核对 skrl AMP 的 rollout、GAE、优势归一化、motion dataset、reply buffer 和判别器采样。2 环境每次更新只有 32 个 PPO rollout 样本，每个 mini-batch 16 个样本，判别器每个 mini-batch 实际使用 16 个策略、16 个回放和 16 个专家状态。
+- 保存容量与小样本审计报告 `reports/R1_capacity_and_small_batch.md`、机器可读摘要 `reports/r1_capacity_sweep_20261124.json` 和可复现实验脚本 `scripts/r1_capacity_sweep.sh`。
 
 ## 下一步
 
-1. 暂停底层物理参数搜索。单种子 160000 环境交互步仍未显示清晰学习趋势，不启动三种子对照。
-2. R2 先确认 G1 USD、专家动作、retarget 数据和许可证，再决定是否使用 `legged_lab` 的 Isaac Lab 2.3.x 路线。未满足前不启动 G1 AMP 训练。
+1. 暂停底层物理参数搜索。容量审计显示 256 环境是当前已验证的最高稳定测试点，先用该配置做带显存监控的分阶段单种子趋势验证，不启动三种子对照。
+2. 长跑先补齐风格奖励、专家/策略判别器评分、动作幅度、关节目标超限比例、跟踪误差和中间 checkpoint 评估，再决定是否推进约 1M 环境交互步。
+3. R2 并行确认 G1 USD、专家动作、retarget 数据和许可证，再决定是否使用 `legged_lab` 的 Isaac Lab 2.3.x 路线。未满足前不启动 G1 AMP 训练。
 
 ## 阶段记录
 
 | 阶段 | 状态 | 证据 |
 |---|---|---|
 | R0 环境与上游审计 | PARTIAL | `reports/R0_environment_audit.md`、项目外部 `../r0_smoke_output.txt`、官方 v2.1.1 Walk smoke 日志 |
-| R1 官方 AMP baseline | PARTIAL | [R1 报告](reports/R1_amp_baseline.md)、[路线纠偏](reports/R1_reassessment.md)、[2000 更新摘要](reports/r1_single_seed_official_20261124.json)、[5000 更新摘要](reports/r1_single_seed_official_20261124_budget5000.json)、[正式评估汇总](reports/r1_formal_eval/summary.csv)、[正式对照协议](docs/EXPERIMENT_PROTOCOL.md#6-r1-walk-正式对照预注册) |
+| R1 官方 AMP baseline | PARTIAL | [R1 报告](reports/R1_amp_baseline.md)、[路线纠偏](reports/R1_reassessment.md)、[容量与小样本审计](reports/R1_capacity_and_small_batch.md)、[容量摘要](reports/r1_capacity_sweep_20261124.json)、[2000 更新摘要](reports/r1_single_seed_official_20261124.json)、[5000 更新摘要](reports/r1_single_seed_official_20261124_budget5000.json)、[正式评估汇总](reports/r1_formal_eval/summary.csv)、[正式对照协议](docs/EXPERIMENT_PROTOCOL.md#6-r1-walk-正式对照预注册) |
 | R2 G1 单技能 | BLOCKED | G1 动作/USD 对象需要 Git LFS，数据来源和授权尚未闭合，候选版本面向 Isaac Lab 2.3.x / Isaac Sim 5.1 |
 | R3 多技能诊断与消融 | NOT_STARTED | — |
 | R4 报告与求职材料 | NOT_STARTED | — |
@@ -95,13 +99,13 @@
 
 ```text
 date: 2026-11-24
-stage: R1 — 官方 AMP 单种子趋势 B（5000 更新）
+stage: R1 — 官方 AMP 并行容量与小样本机制审计
 status: PARTIAL
-code_sha: 0d4ffdf
+code_sha: 7565295（容量审计基于此提交运行）
 environment: Ubuntu 22.04.5; RTX 3070 8 GiB; driver 580.178.04; Isaac Sim 4.5.0; official Isaac Lab v2.1.1; Kit Python 3.10.15; torch 2.5.1+cu118; isolated venv skrl 1.4.3; gymnasium 0.29.1; hydra-core 1.3.2; numpy 1.26.0; tensorboard 2.19.0; flatdict 4.0.1; h5py 3.13.0
-commands_run: prior six AMP/PPO smoke and formal reward runs; official AMP seed42 --num_envs 2 --max_iterations 2000 and 5000 with 16-step rollouts; 10-episode evaluations with seeds 42000–42009; 500 ms GPU sampling
-evidence_paths: reports/R1_amp_baseline.md; reports/R1_reassessment.md; reports/r1_single_seed_official_20261124.json; reports/r1_single_seed_official_20261124_budget5000.json; runs/r1_single_seed_official/20261124T113000+0900_seed42_env2_updates2000/; runs/r1_single_seed_official/20261124T132500+0900_seed42_env2_updates5000/; logs/skrl/r1_single_seed_official_20261124/; logs/skrl/r1_single_seed_official_20261124_budget5000/
-key_metrics: 5000 update training exit 0 with no OOM/NaN/Inf; 80000 trainer timesteps and 160000 environment transitions; reward total mean 22.482 at 800 and 15.714 at 80000 with range 13.147–22.482; discriminator loss 1.662 at 800 and 1.930 at 80000 with range 1.435–1.986; GPU peak 4203 MiB and minimum free 3637 MiB; final agent_80000 raw action range -0.544–1.446, target joint range -2.916–4.500 rad and max target delta 4.693 rad; final evaluation 10/10 falls, mean survival 24.0 steps / 0.800 s, mean forward distance 0.847 m, reference velocity W1 0.525 m/s
+commands_run: prior six AMP/PPO smoke and formal reward runs; official AMP seed42 --num_envs 2 --max_iterations 2000 and 5000 with 16-step rollouts; capacity sweep seed42 --num_envs 2,8,16,32,64,128,256 --max_iterations 50; 500 ms GPU sampling; 10-episode evaluations with seeds 42000–42009
+evidence_paths: reports/R1_amp_baseline.md; reports/R1_reassessment.md; reports/R1_capacity_and_small_batch.md; reports/r1_capacity_sweep_20261124.json; scripts/r1_capacity_sweep.sh; reports/r1_single_seed_official_20261124.json; reports/r1_single_seed_official_20261124_budget5000.json; runs/r1_capacity/20261124_env_sweep/; logs/skrl/r1_capacity_sweep_20261124/; runs/r1_single_seed_official/20261124T113000+0900_seed42_env2_updates2000/; runs/r1_single_seed_official/20261124T132500+0900_seed42_env2_updates5000/; logs/skrl/r1_single_seed_official_20261124/; logs/skrl/r1_single_seed_official_20261124_budget5000/
+key_metrics: capacity sweep 2/8/16/32/64/128/256 environments all exit 0 with no OOM/NaN/Inf; 256 environments reached 6606.45 environment steps/s with peak 4859 MiB and minimum free 2974 MiB; at 2 environments each update has 32 PPO rollout samples and 16 samples per mini-batch, while each discriminator mini-batch uses 16 policy + 16 replay + 16 expert states; 5000 update training exit 0 with no OOM/NaN/Inf; 80000 trainer timesteps and 160000 environment transitions; reward total mean 22.482 at 800 and 15.714 at 80000 with range 13.147–22.482; discriminator loss 1.662 at 800 and 1.930 at 80000 with range 1.435–1.986; GPU peak 4203 MiB and minimum free 3637 MiB; final agent_80000 raw action range -0.544–1.446, target joint range -2.916–4.500 rad and max target delta 4.693 rad; final evaluation 10/10 falls, mean survival 24.0 steps / 0.800 s, mean forward distance 0.847 m, reference velocity W1 0.525 m/s
 blockers: single-seed 160000 environment transitions do not show a clear learning trend or stable walk; official Humanoid AMP Walk checkpoint remains unavailable; G1 assets/data require LFS and separate license/hash verification
-next_action: do not launch three-seed comparison or expand Humanoid28 physics search; continue G1 2.3.2/Sim5.1 asset, expert-motion, LFS and license verification in parallel; do not claim R1 PASS
+next_action: use 256 environments for a monitored longer single-seed pilot after adding the requested AMP diagnostics; target approximately 1M environment transitions before deciding on 2M/5M; do not launch three-seed comparison or expand Humanoid28 physics search; continue G1 2.3.2/Sim5.1 asset, expert-motion, LFS and license verification in parallel; do not claim R1 PASS
 ```

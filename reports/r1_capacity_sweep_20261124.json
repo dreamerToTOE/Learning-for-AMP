@@ -1,0 +1,534 @@
+[
+  {
+    "num_envs": 2,
+    "wall_s": 47.0,
+    "transitions": 1600,
+    "throughput_env_steps_s": 34.04255319148936,
+    "gpu_samples": 93,
+    "gpu_peak_used_mib": 4652,
+    "gpu_min_free_mib": 3181,
+    "gpu_util_mean": 12.35483870967742,
+    "gpu_util_max": 45,
+    "exit_code": 0,
+    "checks": {
+      "oom": false,
+      "nan": false,
+      "inf": false
+    },
+    "event_file": "logs/skrl/r1_capacity_sweep_20261124/2026-11-24_19-00-06_amp_torch_seed42_env2_updates50/events.out.tfevents.1795514414.ubuntu2004.172625.0",
+    "scalar_tags": [
+      "Reward / Instantaneous reward (max)",
+      "Reward / Instantaneous reward (min)",
+      "Reward / Instantaneous reward (mean)",
+      "Reward / Total reward (max)",
+      "Reward / Total reward (min)",
+      "Reward / Total reward (mean)",
+      "Episode / Total timesteps (max)",
+      "Episode / Total timesteps (min)",
+      "Episode / Total timesteps (mean)",
+      "Loss / Policy loss",
+      "Loss / Value loss",
+      "Loss / Discriminator loss",
+      "Policy / Standard deviation"
+    ],
+    "scalars": {
+      "Reward / Total reward (mean)": {
+        "points": 55,
+        "first": 16.0,
+        "last": 8.0,
+        "min": 3.0,
+        "max": 67.0,
+        "last_step": 800
+      },
+      "Loss / Policy loss": {
+        "points": 50,
+        "first": 0.3369435667991638,
+        "last": -0.06566435098648071,
+        "min": -0.14075613021850586,
+        "max": 0.3369435667991638,
+        "last_step": 800
+      },
+      "Loss / Value loss": {
+        "points": 50,
+        "first": 3.266759157180786,
+        "last": 0.01592700555920601,
+        "min": 0.01074070855975151,
+        "max": 3.266759157180786,
+        "last_step": 800
+      },
+      "Loss / Discriminator loss": {
+        "points": 50,
+        "first": 3.5191903114318848,
+        "last": 1.462152361869812,
+        "min": 1.2803394794464111,
+        "max": 3.5191903114318848,
+        "last_step": 800
+      },
+      "Policy / Standard deviation": {
+        "points": 50,
+        "first": 0.05502321198582649,
+        "last": 0.05502321198582649,
+        "min": 0.05502321198582649,
+        "max": 0.05502321198582649,
+        "last_step": 800
+      }
+    },
+    "checkpoint_count": 10
+  },
+  {
+    "num_envs": 8,
+    "wall_s": 25.0,
+    "transitions": 6400,
+    "throughput_env_steps_s": 256.0,
+    "gpu_samples": 50,
+    "gpu_peak_used_mib": 4650,
+    "gpu_min_free_mib": 3182,
+    "gpu_util_mean": 18.22,
+    "gpu_util_max": 39,
+    "exit_code": 0,
+    "checks": {
+      "oom": false,
+      "nan": false,
+      "inf": false
+    },
+    "event_file": "logs/skrl/r1_capacity_sweep_20261124/2026-11-24_19-00-42_amp_torch_seed42_env8_updates50/events.out.tfevents.1795514444.ubuntu2004.173084.0",
+    "scalar_tags": [
+      "Reward / Instantaneous reward (max)",
+      "Reward / Instantaneous reward (min)",
+      "Reward / Instantaneous reward (mean)",
+      "Reward / Total reward (max)",
+      "Reward / Total reward (min)",
+      "Reward / Total reward (mean)",
+      "Episode / Total timesteps (max)",
+      "Episode / Total timesteps (min)",
+      "Episode / Total timesteps (mean)",
+      "Loss / Policy loss",
+      "Loss / Value loss",
+      "Loss / Discriminator loss",
+      "Policy / Standard deviation"
+    ],
+    "scalars": {
+      "Reward / Total reward (mean)": {
+        "points": 93,
+        "first": 13.375,
+        "last": 24.0,
+        "min": 5.125,
+        "max": 48.54166793823242,
+        "last_step": 800
+      },
+      "Loss / Policy loss": {
+        "points": 50,
+        "first": 0.34500738978385925,
+        "last": -0.10275603085756302,
+        "min": -0.13217444717884064,
+        "max": 0.34500738978385925,
+        "last_step": 800
+      },
+      "Loss / Value loss": {
+        "points": 50,
+        "first": 3.6400136947631836,
+        "last": 0.1527968943119049,
+        "min": 0.04089966416358948,
+        "max": 3.6400136947631836,
+        "last_step": 800
+      },
+      "Loss / Discriminator loss": {
+        "points": 50,
+        "first": 3.51013445854187,
+        "last": 1.6066480875015259,
+        "min": 1.4949650764465332,
+        "max": 3.51013445854187,
+        "last_step": 800
+      },
+      "Policy / Standard deviation": {
+        "points": 50,
+        "first": 0.05502321198582649,
+        "last": 0.05502321198582649,
+        "min": 0.05502321198582649,
+        "max": 0.05502321198582649,
+        "last_step": 800
+      }
+    },
+    "checkpoint_count": 10
+  },
+  {
+    "num_envs": 16,
+    "wall_s": 26.0,
+    "transitions": 12800,
+    "throughput_env_steps_s": 492.3076923076923,
+    "gpu_samples": 52,
+    "gpu_peak_used_mib": 4646,
+    "gpu_min_free_mib": 3186,
+    "gpu_util_mean": 20.5,
+    "gpu_util_max": 39,
+    "exit_code": 0,
+    "checks": {
+      "oom": false,
+      "nan": false,
+      "inf": false
+    },
+    "event_file": "logs/skrl/r1_capacity_sweep_20261124/2026-11-24_19-01-07_amp_torch_seed42_env16_updates50/events.out.tfevents.1795514469.ubuntu2004.173345.0",
+    "scalar_tags": [
+      "Reward / Instantaneous reward (max)",
+      "Reward / Instantaneous reward (min)",
+      "Reward / Instantaneous reward (mean)",
+      "Reward / Total reward (max)",
+      "Reward / Total reward (min)",
+      "Reward / Total reward (mean)",
+      "Episode / Total timesteps (max)",
+      "Episode / Total timesteps (min)",
+      "Episode / Total timesteps (mean)",
+      "Loss / Policy loss",
+      "Loss / Value loss",
+      "Loss / Discriminator loss",
+      "Policy / Standard deviation"
+    ],
+    "scalars": {
+      "Reward / Total reward (mean)": {
+        "points": 99,
+        "first": 13.25,
+        "last": 28.399999618530273,
+        "min": 2.4166667461395264,
+        "max": 37.10118865966797,
+        "last_step": 800
+      },
+      "Loss / Policy loss": {
+        "points": 50,
+        "first": 0.3456517457962036,
+        "last": -0.09837153553962708,
+        "min": -0.12225811928510666,
+        "max": 0.3456517457962036,
+        "last_step": 800
+      },
+      "Loss / Value loss": {
+        "points": 50,
+        "first": 3.822248697280884,
+        "last": 0.17506451904773712,
+        "min": 0.03782716393470764,
+        "max": 3.822248697280884,
+        "last_step": 800
+      },
+      "Loss / Discriminator loss": {
+        "points": 50,
+        "first": 3.5014727115631104,
+        "last": 1.6024999618530273,
+        "min": 1.5033924579620361,
+        "max": 3.5014727115631104,
+        "last_step": 800
+      },
+      "Policy / Standard deviation": {
+        "points": 50,
+        "first": 0.05502321571111679,
+        "last": 0.05502321571111679,
+        "min": 0.05502321571111679,
+        "max": 0.05502321571111679,
+        "last_step": 800
+      }
+    },
+    "checkpoint_count": 10
+  },
+  {
+    "num_envs": 32,
+    "wall_s": 28.0,
+    "transitions": 25600,
+    "throughput_env_steps_s": 914.2857142857143,
+    "gpu_samples": 56,
+    "gpu_peak_used_mib": 4652,
+    "gpu_min_free_mib": 3180,
+    "gpu_util_mean": 21.089285714285715,
+    "gpu_util_max": 38,
+    "exit_code": 0,
+    "checks": {
+      "oom": false,
+      "nan": false,
+      "inf": false
+    },
+    "event_file": "logs/skrl/r1_capacity_sweep_20261124/2026-11-24_19-01-34_amp_torch_seed42_env32_updates50/events.out.tfevents.1795514496.ubuntu2004.173651.0",
+    "scalar_tags": [
+      "Reward / Instantaneous reward (max)",
+      "Reward / Instantaneous reward (min)",
+      "Reward / Instantaneous reward (mean)",
+      "Reward / Total reward (max)",
+      "Reward / Total reward (min)",
+      "Reward / Total reward (mean)",
+      "Episode / Total timesteps (max)",
+      "Episode / Total timesteps (min)",
+      "Episode / Total timesteps (mean)",
+      "Loss / Policy loss",
+      "Loss / Value loss",
+      "Loss / Discriminator loss",
+      "Policy / Standard deviation"
+    ],
+    "scalars": {
+      "Reward / Total reward (mean)": {
+        "points": 99,
+        "first": 12.25,
+        "last": 26.652381896972656,
+        "min": 12.25,
+        "max": 43.1875,
+        "last_step": 800
+      },
+      "Loss / Policy loss": {
+        "points": 50,
+        "first": 0.34290170669555664,
+        "last": -0.06379032880067825,
+        "min": -0.11884328722953796,
+        "max": 0.34290170669555664,
+        "last_step": 800
+      },
+      "Loss / Value loss": {
+        "points": 50,
+        "first": 3.9753780364990234,
+        "last": 0.749737024307251,
+        "min": 0.041296493262052536,
+        "max": 3.9753780364990234,
+        "last_step": 800
+      },
+      "Loss / Discriminator loss": {
+        "points": 50,
+        "first": 3.496593475341797,
+        "last": 1.710603952407837,
+        "min": 1.5259220600128174,
+        "max": 3.496593475341797,
+        "last_step": 800
+      },
+      "Policy / Standard deviation": {
+        "points": 50,
+        "first": 0.05502321571111679,
+        "last": 0.05502321571111679,
+        "min": 0.05502321571111679,
+        "max": 0.05502321571111679,
+        "last_step": 800
+      }
+    },
+    "checkpoint_count": 10
+  },
+  {
+    "num_envs": 64,
+    "wall_s": 29.0,
+    "transitions": 51200,
+    "throughput_env_steps_s": 1765.5172413793102,
+    "gpu_samples": 57,
+    "gpu_peak_used_mib": 4677,
+    "gpu_min_free_mib": 3156,
+    "gpu_util_mean": 22.912280701754387,
+    "gpu_util_max": 44,
+    "exit_code": 0,
+    "checks": {
+      "oom": false,
+      "nan": false,
+      "inf": false
+    },
+    "event_file": "logs/skrl/r1_capacity_sweep_20261124/2026-11-24_19-02-01_amp_torch_seed42_env64_updates50/events.out.tfevents.1795514523.ubuntu2004.173957.0",
+    "scalar_tags": [
+      "Reward / Instantaneous reward (max)",
+      "Reward / Instantaneous reward (min)",
+      "Reward / Instantaneous reward (mean)",
+      "Reward / Total reward (max)",
+      "Reward / Total reward (min)",
+      "Reward / Total reward (mean)",
+      "Episode / Total timesteps (max)",
+      "Episode / Total timesteps (min)",
+      "Episode / Total timesteps (mean)",
+      "Loss / Policy loss",
+      "Loss / Value loss",
+      "Loss / Discriminator loss",
+      "Policy / Standard deviation"
+    ],
+    "scalars": {
+      "Reward / Total reward (mean)": {
+        "points": 99,
+        "first": 11.532150268554688,
+        "last": 25.53156852722168,
+        "min": 11.532150268554688,
+        "max": 39.2398567199707,
+        "last_step": 800
+      },
+      "Loss / Policy loss": {
+        "points": 50,
+        "first": 0.34543442726135254,
+        "last": -0.06914112716913223,
+        "min": -0.10880480706691742,
+        "max": 0.34543442726135254,
+        "last_step": 800
+      },
+      "Loss / Value loss": {
+        "points": 50,
+        "first": 4.206050872802734,
+        "last": 0.25087788701057434,
+        "min": 0.0481518991291523,
+        "max": 4.206050872802734,
+        "last_step": 800
+      },
+      "Loss / Discriminator loss": {
+        "points": 50,
+        "first": 3.498572826385498,
+        "last": 1.6183085441589355,
+        "min": 1.521141529083252,
+        "max": 3.498572826385498,
+        "last_step": 800
+      },
+      "Policy / Standard deviation": {
+        "points": 50,
+        "first": 0.05502321571111679,
+        "last": 0.05502321571111679,
+        "min": 0.05502321571111679,
+        "max": 0.05502321571111679,
+        "last_step": 800
+      }
+    },
+    "checkpoint_count": 10
+  },
+  {
+    "num_envs": 128,
+    "wall_s": 29.0,
+    "transitions": 102400,
+    "throughput_env_steps_s": 3531.0344827586205,
+    "gpu_samples": 59,
+    "gpu_peak_used_mib": 4779,
+    "gpu_min_free_mib": 3054,
+    "gpu_util_mean": 23.796610169491526,
+    "gpu_util_max": 44,
+    "exit_code": 0,
+    "checks": {
+      "oom": false,
+      "nan": false,
+      "inf": false
+    },
+    "event_file": "logs/skrl/r1_capacity_sweep_20261124/2026-11-24_19-02-30_amp_torch_seed42_env128_updates50/events.out.tfevents.1795514552.ubuntu2004.174290.0",
+    "scalar_tags": [
+      "Reward / Instantaneous reward (max)",
+      "Reward / Instantaneous reward (min)",
+      "Reward / Instantaneous reward (mean)",
+      "Reward / Total reward (max)",
+      "Reward / Total reward (min)",
+      "Reward / Total reward (mean)",
+      "Episode / Total timesteps (max)",
+      "Episode / Total timesteps (min)",
+      "Episode / Total timesteps (mean)",
+      "Loss / Policy loss",
+      "Loss / Value loss",
+      "Loss / Discriminator loss",
+      "Policy / Standard deviation"
+    ],
+    "scalars": {
+      "Reward / Total reward (mean)": {
+        "points": 100,
+        "first": 8.0,
+        "last": 25.475223541259766,
+        "min": 8.0,
+        "max": 32.08559036254883,
+        "last_step": 800
+      },
+      "Loss / Policy loss": {
+        "points": 50,
+        "first": 0.346141517162323,
+        "last": -0.07335318624973297,
+        "min": -0.09496772289276123,
+        "max": 0.346141517162323,
+        "last_step": 800
+      },
+      "Loss / Value loss": {
+        "points": 50,
+        "first": 4.280318737030029,
+        "last": 0.48922067880630493,
+        "min": 0.04337814077734947,
+        "max": 4.280318737030029,
+        "last_step": 800
+      },
+      "Loss / Discriminator loss": {
+        "points": 50,
+        "first": 3.502742290496826,
+        "last": 1.7876116037368774,
+        "min": 1.524304986000061,
+        "max": 3.502742290496826,
+        "last_step": 800
+      },
+      "Policy / Standard deviation": {
+        "points": 50,
+        "first": 0.05502321198582649,
+        "last": 0.05502321198582649,
+        "min": 0.05502321198582649,
+        "max": 0.05502321198582649,
+        "last_step": 800
+      }
+    },
+    "checkpoint_count": 10
+  },
+  {
+    "num_envs": 256,
+    "wall_s": 31.0,
+    "transitions": 204800,
+    "throughput_env_steps_s": 6606.451612903225,
+    "gpu_samples": 62,
+    "gpu_peak_used_mib": 4859,
+    "gpu_min_free_mib": 2974,
+    "gpu_util_mean": 29.677419354838708,
+    "gpu_util_max": 64,
+    "exit_code": 0,
+    "checks": {
+      "oom": false,
+      "nan": false,
+      "inf": false
+    },
+    "event_file": "logs/skrl/r1_capacity_sweep_20261124/2026-11-24_19-02-59_amp_torch_seed42_env256_updates50/events.out.tfevents.1795514582.ubuntu2004.174604.0",
+    "scalar_tags": [
+      "Reward / Instantaneous reward (max)",
+      "Reward / Instantaneous reward (min)",
+      "Reward / Instantaneous reward (mean)",
+      "Reward / Total reward (max)",
+      "Reward / Total reward (min)",
+      "Reward / Total reward (mean)",
+      "Episode / Total timesteps (max)",
+      "Episode / Total timesteps (min)",
+      "Episode / Total timesteps (mean)",
+      "Loss / Policy loss",
+      "Loss / Value loss",
+      "Loss / Discriminator loss",
+      "Policy / Standard deviation"
+    ],
+    "scalars": {
+      "Reward / Total reward (mean)": {
+        "points": 100,
+        "first": 8.0,
+        "last": 28.680320739746094,
+        "min": 8.0,
+        "max": 30.778854370117188,
+        "last_step": 800
+      },
+      "Loss / Policy loss": {
+        "points": 50,
+        "first": 0.3461345136165619,
+        "last": -0.05993446707725525,
+        "min": -0.07895441353321075,
+        "max": 0.3461345136165619,
+        "last_step": 800
+      },
+      "Loss / Value loss": {
+        "points": 50,
+        "first": 4.3482184410095215,
+        "last": 0.3096558749675751,
+        "min": 0.03492594510316849,
+        "max": 4.3482184410095215,
+        "last_step": 800
+      },
+      "Loss / Discriminator loss": {
+        "points": 50,
+        "first": 3.5055813789367676,
+        "last": 1.684450626373291,
+        "min": 1.4965465068817139,
+        "max": 3.5055813789367676,
+        "last_step": 800
+      },
+      "Policy / Standard deviation": {
+        "points": 50,
+        "first": 0.055023204535245895,
+        "last": 0.055023204535245895,
+        "min": 0.055023204535245895,
+        "max": 0.055023204535245895,
+        "last_step": 800
+      }
+    },
+    "checkpoint_count": 10
+  }
+]
