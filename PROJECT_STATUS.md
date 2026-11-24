@@ -113,7 +113,7 @@
 date: 2026-11-25
 stage: R1 — 官方 AMP seed42 2048 环境训练至累计 40.96M 与冻结评估
 status: PARTIAL
-code_sha: 2ed75bc
+code_sha: 1528ba9
 environment: Ubuntu 22.04.5; RTX 3070 8 GiB; driver 580.178.04; Isaac Sim 4.5.0; official Isaac Lab v2.1.1; Kit Python 3.10.15; torch 2.5.1+cu118; isolated venv skrl 1.4.3; gymnasium 0.29.1; hydra-core 1.3.2; numpy 1.26.0; tensorboard 2.19.0; flatdict 4.0.1; h5py 3.13.0
 commands_run: monitored AMP resume from 20.48M with --num_envs 2048 --seed 42 --max_iterations 625 --monitor_interval 31 --monitor_sample_size 128; official Isaac Lab skrl entrypoint for final 5 updates; frozen evaluations with baseline seeds 42000–42009 and new independent seeds 45000–45099
 evidence_paths: reports/R1_eval_freeze_20m.md; reports/r1_eval_freeze_20m/summary.json; reports/r1_resume_checkpoint_audit_20m.json; reports/R1_resume_to_40m.md; reports/r1_resume_to_40m_summary.json; reports/R1_eval_freeze_40m.md; reports/r1_eval_freeze_40m/summary.json; reports/r1_monitor_joint_smoke_20261125.json; runs/r1_resume_seed42_env2048_to4096_updates625/; logs/skrl/r1_amp_resume_seed42_20251125/; logs/skrl/r1_amp_resume_seed42_20251125_final5/; final_checkpoint: logs/skrl/r1_amp_resume_seed42_20251125_final5/2026-11-25_02-40-09_amp_torch_resume40m_final5/checkpoints/agent_80.pt; final_checkpoint_sha256: 22f389039512e97a542403702e391b3d7efde619a78008026d849144dadd860c
