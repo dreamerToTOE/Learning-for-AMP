@@ -2,7 +2,7 @@
 
 - **状态：PARTIAL**
 - **日期：2026-11-24**
-- **当前阶段为 R1，官方 AMP 单种子 2000 更新趋势已完成，正式三 seed 结果仍仅作为历史 smoke/奖励消融记录**
+- **当前阶段为 R1，官方 AMP 单种子 2000 和 5000 更新趋势已完成，正式三 seed 结果仍仅作为历史 smoke/奖励消融记录**
 - **最新提交包含本轮官方 AMP 单种子结果**
 - **本轮训练运行前项目 SHA 为 `0d4ffdf`**
 - **正式训练为两种风格权重各 3 个 seed，每组 2 环境、500 次更新、16,000 个环境交互步**
@@ -71,10 +71,14 @@
 - 记录了 100 个 TensorBoard 标量点、471 个 GPU 显存样本和最终动作探针。总奖励均值从 22.289 波动到 20.449，判别器损失从 1.985 波动到 1.724，均未形成清晰收敛趋势。整卡显存峰值 4507 MiB，最低空闲 3334 MiB。
 - 用最终 checkpoint 完成 10 回合独立评估，10/10 跌倒，平均存活 25.7 控制步、0.857 秒，平均前进距离 0.902 m。该结果不支持宣称稳定行走或 AMP 复现成功。
 - 保存单种子可复核摘要 `reports/r1_single_seed_official_20261124.json`，原始日志和 checkpoint 保留在被忽略的 `runs/` 与 `logs/` 目录。
+- 按同一官方配置完成 5000 更新单种子预算验证。skrl trainer 完成 80000 timesteps，环境共交互 160000 步，训练正常退出并保存了 `agent_80000.pt` 和中间 checkpoint。
+- 5000 更新阶段记录 100 个 TensorBoard 标量点和 1041 个 GPU 显存样本。总奖励均值为 22.482（800 timesteps）到 15.714（80000 timesteps），判别器损失为 1.662 到 1.930，未形成持续改善。整卡显存峰值 4203 MiB，最低空闲 3637 MiB。
+- 用最终 checkpoint 完成同一 10 回合评估，10/10 跌倒，平均存活 24.0 控制步、0.800 秒，平均前进距离 0.847 m。5000 更新结果不支持宣称稳定行走或 AMP 复现成功。
+- 保存单种子预算验证摘要 `reports/r1_single_seed_official_20261124_budget5000.json`。
 
 ## 下一步
 
-1. 暂停底层物理参数搜索。单种子 64000 环境交互步未显示清晰学习趋势，不启动三种子对照。若继续 Humanoid28，下一候选是对齐官方 trainer timesteps 的 5000 更新预算验证。
+1. 暂停底层物理参数搜索。单种子 160000 环境交互步仍未显示清晰学习趋势，不启动三种子对照。
 2. R2 先确认 G1 USD、专家动作、retarget 数据和许可证，再决定是否使用 `legged_lab` 的 Isaac Lab 2.3.x 路线。未满足前不启动 G1 AMP 训练。
 
 ## 阶段记录
@@ -82,7 +86,7 @@
 | 阶段 | 状态 | 证据 |
 |---|---|---|
 | R0 环境与上游审计 | PARTIAL | `reports/R0_environment_audit.md`、项目外部 `../r0_smoke_output.txt`、官方 v2.1.1 Walk smoke 日志 |
-| R1 官方 AMP baseline | PARTIAL | [R1 报告](reports/R1_amp_baseline.md)、[路线纠偏](reports/R1_reassessment.md)、[单种子摘要](reports/r1_single_seed_official_20261124.json)、[正式评估汇总](reports/r1_formal_eval/summary.csv)、[正式对照协议](docs/EXPERIMENT_PROTOCOL.md#6-r1-walk-正式对照预注册) |
+| R1 官方 AMP baseline | PARTIAL | [R1 报告](reports/R1_amp_baseline.md)、[路线纠偏](reports/R1_reassessment.md)、[2000 更新摘要](reports/r1_single_seed_official_20261124.json)、[5000 更新摘要](reports/r1_single_seed_official_20261124_budget5000.json)、[正式评估汇总](reports/r1_formal_eval/summary.csv)、[正式对照协议](docs/EXPERIMENT_PROTOCOL.md#6-r1-walk-正式对照预注册) |
 | R2 G1 单技能 | BLOCKED | G1 动作/USD 对象需要 Git LFS，数据来源和授权尚未闭合，候选版本面向 Isaac Lab 2.3.x / Isaac Sim 5.1 |
 | R3 多技能诊断与消融 | NOT_STARTED | — |
 | R4 报告与求职材料 | NOT_STARTED | — |
@@ -91,13 +95,13 @@
 
 ```text
 date: 2026-11-24
-stage: R1 — 官方 AMP 单种子趋势 A（2000 更新）
+stage: R1 — 官方 AMP 单种子趋势 B（5000 更新）
 status: PARTIAL
 code_sha: 0d4ffdf
 environment: Ubuntu 22.04.5; RTX 3070 8 GiB; driver 580.178.04; Isaac Sim 4.5.0; official Isaac Lab v2.1.1; Kit Python 3.10.15; torch 2.5.1+cu118; isolated venv skrl 1.4.3; gymnasium 0.29.1; hydra-core 1.3.2; numpy 1.26.0; tensorboard 2.19.0; flatdict 4.0.1; h5py 3.13.0
-commands_run: prior six AMP/PPO smoke and formal reward runs; current official AMP seed42 --num_envs 2 --max_iterations 2000 with 16-step rollouts; 10-episode evaluation with seeds 42000–42009; 500 ms GPU sampling
-evidence_paths: reports/R1_amp_baseline.md; reports/R1_reassessment.md; reports/r1_single_seed_official_20261124.json; runs/r1_single_seed_official/20261124T113000+0900_seed42_env2_updates2000/; logs/skrl/r1_single_seed_official_20261124/
-key_metrics: training exit 0 with no OOM/NaN/Inf; 32000 trainer timesteps and 64000 environment transitions; reward total mean 22.289 first and 20.449 final with range 11.636–24.473; discriminator loss 1.985 first and 1.724 final with range 1.379–1.985; GPU peak 4507 MiB and minimum free 3334 MiB; final agent_32000 raw action range -0.544–1.078, target joint range -2.915–3.057 rad and max target delta 3.250 rad; final evaluation 10/10 falls, mean survival 25.7 steps / 0.857 s, mean forward distance 0.902 m, reference velocity W1 0.553 m/s
-blockers: single-seed 64000 environment transitions do not show a clear learning trend or stable walk; official Humanoid AMP Walk checkpoint remains unavailable; G1 assets/data require LFS and separate license/hash verification
-next_action: do not launch three-seed comparison; if Humanoid28 remains the active route, consider the 5000-update budget-alignment stage as a separate trend experiment while keeping G1 2.3.2/Sim5.1 and asset verification in parallel; do not claim R1 PASS
+commands_run: prior six AMP/PPO smoke and formal reward runs; official AMP seed42 --num_envs 2 --max_iterations 2000 and 5000 with 16-step rollouts; 10-episode evaluations with seeds 42000–42009; 500 ms GPU sampling
+evidence_paths: reports/R1_amp_baseline.md; reports/R1_reassessment.md; reports/r1_single_seed_official_20261124.json; reports/r1_single_seed_official_20261124_budget5000.json; runs/r1_single_seed_official/20261124T113000+0900_seed42_env2_updates2000/; runs/r1_single_seed_official/20261124T132500+0900_seed42_env2_updates5000/; logs/skrl/r1_single_seed_official_20261124/; logs/skrl/r1_single_seed_official_20261124_budget5000/
+key_metrics: 5000 update training exit 0 with no OOM/NaN/Inf; 80000 trainer timesteps and 160000 environment transitions; reward total mean 22.482 at 800 and 15.714 at 80000 with range 13.147–22.482; discriminator loss 1.662 at 800 and 1.930 at 80000 with range 1.435–1.986; GPU peak 4203 MiB and minimum free 3637 MiB; final agent_80000 raw action range -0.544–1.446, target joint range -2.916–4.500 rad and max target delta 4.693 rad; final evaluation 10/10 falls, mean survival 24.0 steps / 0.800 s, mean forward distance 0.847 m, reference velocity W1 0.525 m/s
+blockers: single-seed 160000 environment transitions do not show a clear learning trend or stable walk; official Humanoid AMP Walk checkpoint remains unavailable; G1 assets/data require LFS and separate license/hash verification
+next_action: do not launch three-seed comparison or expand Humanoid28 physics search; continue G1 2.3.2/Sim5.1 asset, expert-motion, LFS and license verification in parallel; do not claim R1 PASS
 ```

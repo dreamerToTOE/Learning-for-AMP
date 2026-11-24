@@ -1,0 +1,224 @@
+{
+  "run_id": "20261124T132500+0900_seed42_env2_updates5000",
+  "code_sha": "0d4ffdf",
+  "task": "Isaac-Humanoid-AMP-Walk-Direct-v0",
+  "algorithm": "AMP",
+  "seed": 42,
+  "num_envs": 2,
+  "max_iterations": 5000,
+  "rollouts": 16,
+  "trainer_timesteps": 80000,
+  "environment_transitions": 160000,
+  "device": "cuda:0",
+  "headless": true,
+  "task_reward_weight": 0.0,
+  "style_reward_weight": 1.0,
+  "exit_code": 0,
+  "event_file": "logs/skrl/r1_single_seed_official_20261124_budget5000/2026-11-24_14-11-11_amp_torch_seed42_env2_updates5000/events.out.tfevents.1795497073.ubuntu2004.92085.0",
+  "event_sha256": "85788e1cc4a2e559d5035f060febee11011ac4860cfe5320d23bc3764398f2c9",
+  "checkpoints": [
+    {
+      "name": "agent_16000.pt",
+      "sha256": "d9a763fcd97033e1c8abe93a9a772ab360f65b0a4e2e0bbb9a3563aada2fcff2",
+      "bytes": 23124600
+    },
+    {
+      "name": "agent_24000.pt",
+      "sha256": "0b56861be09470b26c641f5e1190c2bee496c716dce9c7b4d60df9939efebbf9",
+      "bytes": 23124600
+    },
+    {
+      "name": "agent_32000.pt",
+      "sha256": "a632d268ec20caca75d4e126527a055bec34b133e4a701f0e2daf8beff947534",
+      "bytes": 23124600
+    },
+    {
+      "name": "agent_40000.pt",
+      "sha256": "f3edd0ad84db5cbc6bb1c3079762e5b708911d93ff3cf1c49e61f8d59cd32745",
+      "bytes": 23124600
+    },
+    {
+      "name": "agent_48000.pt",
+      "sha256": "46ee97ef7dc2b05ec180a0493101a0cd99c09dfb93db9324f16c3cb5ee41cee0",
+      "bytes": 23124600
+    },
+    {
+      "name": "agent_56000.pt",
+      "sha256": "ab946006b891246b126d9735312740b149e59144295a35459dc17ca2024d5f45",
+      "bytes": 23124600
+    },
+    {
+      "name": "agent_64000.pt",
+      "sha256": "6e23eb1dda2b78f5f0f9b45a7d083499a8c9b5553b366d8d6efad2687fa0ac86",
+      "bytes": 23124600
+    },
+    {
+      "name": "agent_72000.pt",
+      "sha256": "cfd7039b24ba55e862a2b6ad360dbb60a046f84d0f7ab757820a2171f3c58bc4",
+      "bytes": 23124600
+    },
+    {
+      "name": "agent_8000.pt",
+      "sha256": "13cab072daf3b50c1c9deca97940f6a375e6b1cc17fa2bfc9367ba2364a74e40",
+      "bytes": 23124514
+    },
+    {
+      "name": "agent_80000.pt",
+      "sha256": "f648fc4264ca09710e3a0b6d4a4ccbd3c3f99df85a4b2fd431bb40ae4588a6a2",
+      "bytes": 23124600
+    }
+  ],
+  "final_checkpoint": {
+    "name": "agent_80000.pt",
+    "sha256": "f648fc4264ca09710e3a0b6d4a4ccbd3c3f99df85a4b2fd431bb40ae4588a6a2",
+    "bytes": 23124600
+  },
+  "gpu": {
+    "samples": 1041,
+    "peak_used_mib": 4203,
+    "min_free_mib": 3637,
+    "first_used_mib": 729,
+    "last_used_mib": 2490
+  },
+  "scalars": {
+    "Reward / Instantaneous reward (max)": {
+      "points": 100,
+      "first_step": 800,
+      "first": 1.0,
+      "last_step": 80000,
+      "last": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    "Reward / Instantaneous reward (min)": {
+      "points": 100,
+      "first_step": 800,
+      "first": 1.0,
+      "last_step": 80000,
+      "last": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    "Reward / Instantaneous reward (mean)": {
+      "points": 100,
+      "first_step": 800,
+      "first": 1.0,
+      "last_step": 80000,
+      "last": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    "Reward / Total reward (max)": {
+      "points": 100,
+      "first_step": 800,
+      "first": 67.0,
+      "last_step": 80000,
+      "last": 39.0,
+      "min": 29.0,
+      "max": 67.0
+    },
+    "Reward / Total reward (min)": {
+      "points": 100,
+      "first_step": 800,
+      "first": 2.0,
+      "last_step": 80000,
+      "last": 1.0,
+      "min": 1.0,
+      "max": 3.0
+    },
+    "Reward / Total reward (mean)": {
+      "points": 100,
+      "first_step": 800,
+      "first": 22.4815616607666,
+      "last_step": 80000,
+      "last": 15.714085578918457,
+      "min": 13.14725399017334,
+      "max": 22.4815616607666
+    },
+    "Episode / Total timesteps (max)": {
+      "points": 100,
+      "first_step": 800,
+      "first": 67.0,
+      "last_step": 80000,
+      "last": 39.0,
+      "min": 29.0,
+      "max": 67.0
+    },
+    "Episode / Total timesteps (min)": {
+      "points": 100,
+      "first_step": 800,
+      "first": 2.0,
+      "last_step": 80000,
+      "last": 1.0,
+      "min": 1.0,
+      "max": 3.0
+    },
+    "Episode / Total timesteps (mean)": {
+      "points": 100,
+      "first_step": 800,
+      "first": 22.4815616607666,
+      "last_step": 80000,
+      "last": 15.714085578918457,
+      "min": 13.14725399017334,
+      "max": 22.4815616607666
+    },
+    "Loss / Policy loss": {
+      "points": 100,
+      "first_step": 800,
+      "first": -0.06455658376216888,
+      "last_step": 80000,
+      "last": -0.0917118564248085,
+      "min": -0.11445513367652893,
+      "max": -0.06455658376216888
+    },
+    "Loss / Value loss": {
+      "points": 100,
+      "first_step": 800,
+      "first": 0.4059455990791321,
+      "last_step": 80000,
+      "last": 0.3089264929294586,
+      "min": 0.0588037334382534,
+      "max": 0.9823960065841675
+    },
+    "Loss / Discriminator loss": {
+      "points": 100,
+      "first_step": 800,
+      "first": 1.6619601249694824,
+      "last_step": 80000,
+      "last": 1.9301084280014038,
+      "min": 1.4354578256607056,
+      "max": 1.9862053394317627
+    },
+    "Policy / Standard deviation": {
+      "points": 100,
+      "first_step": 800,
+      "first": 0.05502321198582649,
+      "last_step": 80000,
+      "last": 0.05502321198582649,
+      "min": 0.05502321198582649,
+      "max": 0.05502321198582649
+    }
+  },
+  "action_diagnostics": {
+    "raw_action_min": -0.5442914366722107,
+    "raw_action_max": 1.4460291862487793,
+    "target_joint_min": -2.9162116050720215,
+    "target_joint_max": 4.500446319580078,
+    "max_target_delta": 4.693277359008789,
+    "observation_finite": true,
+    "initial_amp_logit": 1.1625893115997314,
+    "initial_style_reward": 2.8693137168884277
+  },
+  "evaluation": {
+    "episodes": 10,
+    "falls": 10,
+    "timeouts": 0,
+    "fall_rate": 1.0,
+    "mean_steps": 24,
+    "mean_duration_s": 0.7999999999999999,
+    "mean_forward_dx_m": 0.8470309674739838,
+    "mean_net_forward_speed_mps": 1.0773689548343939,
+    "reference_vx_wasserstein_mps": 0.5246071794929055,
+    "checkpoint_sha256": "f648fc4264ca09710e3a0b6d4a4ccbd3c3f99df85a4b2fd431bb40ae4588a6a2"
+  }
+}
