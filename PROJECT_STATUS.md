@@ -107,7 +107,7 @@
 | 阶段 | 状态 | 证据 |
 |---|---|---|
 | R0 环境与上游审计 | PARTIAL | `reports/R0_environment_audit.md`、项目外部 `../r0_smoke_output.txt`、官方 v2.1.1 Walk smoke 日志 |
-| R1 官方 AMP baseline | PARTIAL | [R1 报告](reports/R1_amp_baseline.md)、[路线纠偏](reports/R1_reassessment.md)、[容量与小样本审计](reports/R1_capacity_and_small_batch.md)、[高并行容量补测](reports/r1_capacity_sweep_high_20261124.json)、[20.48M 冻结评估](reports/R1_eval_freeze_20m.md)、[20.48M 到 40.96M 恢复报告](reports/R1_resume_to_40m.md)、[40.96M 冻结评估](reports/R1_eval_freeze_40m.md)、[速度跟踪 PPO/AMP 协议](reports/R1_speed_tracking_comparison_protocol.md)、[速度跟踪 smoke](reports/R1_speed_tracking_smoke.md)、[正式对照协议](docs/EXPERIMENT_PROTOCOL.md#6-r1-walk-正式对照预注册) |
+| R1 官方 AMP baseline | PARTIAL | [R1 报告](reports/R1_amp_baseline.md)、[路线纠偏](reports/R1_reassessment.md)、[容量与小样本审计](reports/R1_capacity_and_small_batch.md)、[高并行容量补测](reports/r1_capacity_sweep_high_20261124.json)、[20.48M 冻结评估](reports/R1_eval_freeze_20m.md)、[20.48M 到 40.96M 恢复报告](reports/R1_resume_to_40m.md)、[40.96M 冻结评估](reports/R1_eval_freeze_40m.md)、[速度跟踪 PPO/AMP 协议](reports/R1_speed_tracking_comparison_protocol.md)、[速度跟踪 smoke](reports/R1_speed_tracking_smoke.md)、[速度跟踪对照章节](docs/EXPERIMENT_PROTOCOL.md#7-r1-明确速度跟踪-ppoamp-对照) |
 | R2 G1 单技能 | BLOCKED | G1 动作/USD 对象需要 Git LFS，数据来源和授权尚未闭合，候选版本面向 Isaac Lab 2.3.x / Isaac Sim 5.1 |
 | R3 多技能诊断与消融 | NOT_STARTED | — |
 | R4 报告与求职材料 | NOT_STARTED | — |
@@ -118,7 +118,7 @@
 date: 2026-11-25
 stage: R1 — 官方 AMP 40.96M 基线与速度跟踪 PPO/AMP smoke
 status: PARTIAL
-code_sha: 1528ba9
+code_sha: b7875fa
 environment: Ubuntu 22.04.5; RTX 3070 8 GiB; driver 580.178.04; Isaac Sim 4.5.0; official Isaac Lab v2.1.1; Kit Python 3.10.15; torch 2.5.1+cu118; isolated venv skrl 1.4.3; gymnasium 0.29.1; hydra-core 1.3.2; numpy 1.26.0; tensorboard 2.19.0; flatdict 4.0.1; h5py 3.13.0
 commands_run: prior AMP baseline and resume; speed-tracking wrapper smoke with AMP/PPO --num_envs 2 --seed 42 --max_iterations 50; frozen smoke evaluations with seeds 42000–42009 and --target-vx 1.5; official AMP baseline evaluations with seeds 42000–42099
 evidence_paths: reports/R1_eval_freeze_20m.md; reports/r1_eval_freeze_20m/summary.json; reports/r1_resume_checkpoint_audit_20m.json; reports/R1_resume_to_40m.md; reports/r1_resume_to_40m_summary.json; reports/R1_eval_freeze_40m.md; reports/r1_eval_freeze_40m/summary.json; reports/r1_monitor_joint_smoke_20261125.json; reports/R1_speed_tracking_comparison_protocol.md; reports/R1_speed_tracking_smoke.md; reports/r1_speed_tracking_smoke_summary.json; reports/R1_speed_tracking_smoke_eval/amp/episodes.json; reports/R1_speed_tracking_smoke_eval/ppo/episodes.json; scripts/r1_speed_tracking_train.py; scripts/r1_speed_tracking_smoke.sh; configs/r1/skrl_ppo_speed_tracking.yaml; runs/r1_resume_seed42_env2048_to4096_updates625/; logs/skrl/r1_amp_resume_seed42_20251125/; logs/skrl/r1_amp_resume_seed42_20251125_final5/; final_checkpoint: logs/skrl/r1_amp_resume_seed42_20251125_final5/2026-11-25_02-40-09_amp_torch_resume40m_final5/checkpoints/agent_80.pt; final_checkpoint_sha256: 22f389039512e97a542403702e391b3d7efde619a78008026d849144dadd860c
