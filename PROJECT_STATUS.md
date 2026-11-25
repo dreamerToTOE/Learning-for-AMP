@@ -1,8 +1,8 @@
 # Project Status
 
-- **当前阶段 R2 / IN_PROGRESS，更新于 2026-11-25**
-- **R2 已跑通 29 DoF G1 的单技能 AMP 训练。** 采用独立的 MimicKit / Newton 环境。DeepMimic 参考权重在固定初态下完成 5/5 个 10 秒步行回合，确认 G1 仿真与策略推理链路。 [R2 资产审计及实测](reports/R2_g1_single_skill.md)
-- **G1 AMP seed42 已完成 1,048,576 步。** RTX 3070 上使用 128 环境、256 次更新，整卡峰值 4,666 MiB。同初态评估的平均存活由首档 0.83 s 增至最佳档 1.86 s，末档 1.60 s。四档共 20 回合均跌倒，稳定步行仍待复现。 [逐回合数据](reports/r2_g1_single_skill/amp_1m_checkpoint_evals.json)
+- **当前阶段 R2 / PARTIAL，更新于 2026-11-25。** 单技能 AMP 仿真行走已通过基础验收，专家片段的原始来源和许可待核验。
+- **G1 纯风格 AMP 的 4,194,304 步 checkpoint 已冻结。** seed42 在独立 MimicKit / Newton 环境完成连续 1,024 次更新。100 个新初态均直立行走至 10 秒，完整率 100%（Wilson 95% 区间 96.3%–100%），无跌倒，平均前进 9.21 m、横向位移 −2.51 m。 [独立评估](reports/r2_g1_single_skill/amp_4m_heldout_100.json)
+- **固定初态下，2.052M 档 0/5 完整，3.281M 档首次达到 5/5。** RTX 3070 实测 128 环境总耗时 22 分 10 秒，整卡显存峰值 5,277 MiB。 [阶段证据与录像说明](reports/R2_g1_single_skill.md)
 - **R1 / COMPLETE_WITH_LIMITATIONS。** 训练、推理与独立评估链路已复现。R1 对照训练、PPO 奖励修改和 seed43、44 复验已取消。
 - **官方纯风格 AMP 行走已通过基础验收。40.96M checkpoint 已冻结，100 个独立初态中有 97 个跑满约 10 秒。**
 - **1.5 m/s 速度任务的 seed42 对照已完成。** 两组各采样 40,009,728 步。约 40M 的评估 checkpoint 上，PPO 持续前进 82/100，AMP 为 0/100。实景回放显示 PPO 代表回合采用低姿爬行。两组直立行走均为 0/100。 [seed42 对照报告](reports/R1_speed_tracking_seed42.md)
@@ -101,8 +101,8 @@
 
 ## 下一步
 
-1. 保持 128 环境、seed42 和纯风格配置，向约 2M 与 4M 环境步推进。固定初态比较时长、前进距离和足端支撑，形成稳定候选后扩大评估。
-2. 跟进 `g1_walk.pkl` 的原始数据来源和许可。带哈希的镜像副本用于当前本地验证。
+1. 跟进 `g1_walk.pkl` 的原始数据来源和许可。带哈希的镜像副本用于当前本地验证。
+2. 核查后续多技能实验可用的步行、跑步和转向专家片段，沿用冻结 G1 步行策略和固定初态作为技术基线。
 
 ## 阶段记录
 
@@ -110,7 +110,7 @@
 |---|---|---|
 | R0 环境与上游审计 | PARTIAL | `reports/R0_environment_audit.md`、项目外部 `../r0_smoke_output.txt`、官方 v2.1.1 Walk smoke 日志 |
 | R1 官方 AMP baseline | COMPLETE_WITH_LIMITATIONS | [R1 报告](reports/R1_amp_baseline.md)、[路线纠偏](reports/R1_reassessment.md)、[容量与小样本审计](reports/R1_capacity_and_small_batch.md)、[高并行容量补测](reports/r1_capacity_sweep_high_20261124.json)、[20.48M 冻结评估](reports/R1_eval_freeze_20m.md)、[20.48M 到 40.96M 恢复报告](reports/R1_resume_to_40m.md)、[40.96M 冻结评估](reports/R1_eval_freeze_40m.md)、[速度跟踪 PPO/AMP 协议](reports/R1_speed_tracking_comparison_protocol.md)、[速度跟踪 smoke](reports/R1_speed_tracking_smoke.md)、[seed42 速度对照](reports/R1_speed_tracking_seed42.md)、[奖励漏洞诊断](reports/R1_reward_hacking_audit.md) |
-| R2 G1 单技能 | IN_PROGRESS | [上游选择、独立环境、AMP 训练及步行评估](reports/R2_g1_single_skill.md) |
+| R2 G1 单技能 | PARTIAL | 仿真步行验收通过，数据来源与许可待核验。 [冻结评估](reports/R2_g1_single_skill.md) |
 | R3 多技能诊断与消融 | NOT_STARTED | — |
 | R4 报告与求职材料 | NOT_STARTED | — |
 

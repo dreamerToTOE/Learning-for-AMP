@@ -79,14 +79,18 @@ def main():
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--seeds", type=int, nargs="+", required=True)
+    parser.add_argument("--video", type=Path, help="Save an MP4 for a single evaluation seed.")
     parser.add_argument("--env-config", default="data/envs/amp_g1_env.yaml")
     parser.add_argument("--agent-config", default="data/agents/amp_g1_agent.yaml")
     parser.add_argument("--device", default="cuda:0")
     args = parser.parse_args()
+    if args.video and len(args.seeds) != 1:
+        parser.error("--video requires one evaluation seed")
 
     upstream = args.mimickit.resolve(strict=True)
     checkpoint = args.checkpoint.resolve(strict=True)
     output = args.output.resolve()
+    video_path = args.video.resolve() if args.video else None
     os.chdir(upstream)
     sys.path.insert(0, str(upstream / "mimickit"))
     from envs.env_builder import build_env
@@ -95,7 +99,10 @@ def main():
     from util import mp_util
 
     mp_util.init(0, 1, args.device, None)
-    env = build_env(args.env_config, "data/engines/newton_engine.yaml", 1, args.device, visualize=False)
+    env = build_env(
+        args.env_config, "data/engines/newton_engine.yaml", 1, args.device,
+        visualize=False, record_video=video_path is not None,
+    )
     agent = build_agent(args.agent_config, env, args.device)
     agent.load(str(checkpoint))
     agent.eval()
@@ -104,6 +111,14 @@ def main():
     contact_threshold = 5.0
     with torch.no_grad():
         episodes = [evaluate_episode(env, agent, seed, max_steps, contact_threshold) for seed in args.seeds]
+
+    if video_path:
+        recording = env.record_diagnostics()["sim_recording"]
+        frames = recording.get_frames()
+        if len(frames) != episodes[0]["steps"] or not any(np.any(frame) for frame in frames):
+            raise RuntimeError("The Newton recorder did not capture a complete visible episode")
+        video_path.parent.mkdir(parents=True, exist_ok=True)
+        recording.save(str(video_path))
 
     result = {
         "checkpoint_sha256": hashlib.sha256(checkpoint.read_bytes()).hexdigest(),

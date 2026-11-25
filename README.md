@@ -1,6 +1,6 @@
 # Learning-for-AMP
 
-> **当前阶段为 R2 / G1 单技能 AMP** · R1 已归档为 COMPLETE_WITH_LIMITATIONS · 更新于 2026-11-25
+> **当前阶段为 R2 / G1 单技能 AMP** · 4.19M checkpoint 在 100 个新初态中均完成 10 秒仿真行走 · 更新于 2026-11-25
 
 ## 项目目标
 
