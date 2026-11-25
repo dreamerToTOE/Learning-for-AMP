@@ -7,6 +7,7 @@ from pathlib import Path
 import imageio_ffmpeg
 import mujoco
 import numpy as np
+from PIL import Image, ImageDraw
 from scipy.spatial.transform import Rotation
 
 
@@ -14,6 +15,9 @@ def render(path, model, output):
     with path.open("rb") as stream:
         motion = pickle.load(stream)
     frames = np.asarray(motion["frames"])
+    annotations = motion.get("annotations")
+    if annotations is not None and len(annotations) != len(frames):
+        raise ValueError(f"Incorrect annotation count in {path}")
     poses = np.column_stack((
         frames[:, :3],
         Rotation.from_rotvec(frames[:, 3:6]).as_quat(scalar_first=True),
@@ -37,7 +41,16 @@ def render(path, model, output):
                 mujoco.mj_forward(model, data)
                 camera.lookat[:] = (*poses[index, :2], 0.70)
                 renderer.update_scene(data, camera=camera)
-                video.send(renderer.render())
+                frame = renderer.render()
+                if annotations is not None:
+                    labeled = Image.fromarray(frame)
+                    draw = ImageDraw.Draw(labeled)
+                    label = annotations[index]
+                    right = draw.textbbox((12, 8), label)[2] + 6
+                    draw.rectangle((6, 4, right, 24), fill="#131c28")
+                    draw.text((12, 8), label, fill="white")
+                    frame = np.asarray(labeled)
+                video.send(frame)
     finally:
         video.close()
 

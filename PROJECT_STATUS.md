@@ -1,6 +1,7 @@
 # Project Status
 
-- **当前阶段 R3 / IN_PROGRESS，更新于 2026-11-25。** R3-0 数据与冻结 R2 的漂移诊断已完成。R3-1 原始混合 AMP 以 `PARTIAL` 归档。seed42 累计 8.389M 步，末档 30/30 步行初态走满 10 秒；30 个慢跑初态中 21 个减速后走满、9 个跌倒，持续慢跑 0/30。下一项为条件 Actor 与普通判别器。 [基线报告](reports/R3_walk_jog_baseline.md)
+- **当前阶段 R3 / IN_PROGRESS，更新于 2026-11-25。** R3-2 加入 1.0 和 1.9 m/s 速度指令并保留普通判别器。32,768 步 smoke 通过，seed42 的 4.194M 正式训练正在运行。 [速度任务和独立评估协议](reports/R3_speed_amp.md)
+- **R3-0 已完成，R3-1 `PARTIAL` 已冻结。** 原始混合 AMP 的 8.389M 末档 30/30 步行初态走满 10 秒。30 个慢跑初态中 21 个减速后走满，9 个跌倒，持续慢跑 0/30。 [基线报告](reports/R3_walk_jog_baseline.md)
 - **R2 / COMPLETE_WITH_LIMITATIONS。** 单技能 AMP 仿真行走通过基础验收。原始专家片段的来源和许可待核验，R3 可以使用来源和许可独立核实的数据。
 - **G1 纯风格 AMP 的 4,194,304 步 checkpoint 已冻结。** seed42 在独立 MimicKit / Newton 环境完成连续 1,024 次更新。100 个新初态均直立行走至 10 秒，完整率 100%（Wilson 95% 区间 96.3%–100%），无跌倒，平均前进 9.21 m、横向位移 −2.51 m。 [独立评估](reports/r2_g1_single_skill/amp_4m_heldout_100.json)
 - **固定初态下，2.052M 档 0/5 完整，3.281M 档首次达到 5/5。** RTX 3070 实测 128 环境总耗时 22 分 10 秒，整卡显存峰值 5,277 MiB。 [阶段证据与录像说明](reports/R2_g1_single_skill.md)
