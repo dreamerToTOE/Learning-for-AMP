@@ -26,3 +26,26 @@ R3-2 使用普通判别器。R3-3 使用同一套 AMP 更新，只给判别器�
 初版 smoke 权重的 48 个指令与初态组合全部提前跌倒，确认独立评估能够识别失败、截去终止后轨迹并按固定时域计入误差。同一物理初态的四次回合使用相同观测散列。足底几何在 48 条 smoke 轨迹上的计算与 MJCF 正向运动学最大差值约 1.7 μm。合成窗口验证中，仅有零接触力且无足底离地的快速动作未被归为慢跑。
 
 进一步核对专家姿态发现，`u4_jog_002` 的躯干倾角最高达 68.9°，其中 32% 的帧超过原 50° 门限。主动停止初版预跑，最后完整记录 388 次更新、1,589,248 步，耗时 582.67 秒，退出码 143。用骨盆倾角取代躯干倾角后重新 smoke。正式 A/B 都从随机参数开始，使用修订后的同一任务。旧权重及数据单独保留于本地 `../r3/runs/r3_2_speed_seed42_4m`。
+
+修订版普通判别器 smoke 完成 32,768 步并正常退出，耗时 25.46 秒，整卡显存峰值 4,516 MiB。在相同 128 环境首步探针中，触发终止的环境从 11 减至 0，切换时序和三个网络更新检查均通过。
+
+## 复现
+
+先按 R3-1 报告准备 MimicKit 环境与 HOLD 数据。从仓库根目录运行以下命令，使用各自的新目录。 [环境与数据准备](R3_walk_jog_baseline.md#复现入口)
+
+```bash
+ordinary=../r3/runs/r3_2_speed_seed42_pelvis_4m
+conditional=../r3/runs/r3_3_speed_seed42_conditional_4m
+bash scripts/r3_train_speed_amp.sh ordinary smoke ../r3/runs/r3_2_speed_seed42_pelvis_smoke
+bash scripts/r3_train_speed_amp.sh ordinary formal "$ordinary"
+for index in 0000000000 0000000250 0000000500 0000000750 0000001000 0000001023; do
+  bash scripts/r3_eval_speed_amp.sh ordinary fixed "$ordinary" "$index"
+done
+bash scripts/r3_eval_speed_amp.sh ordinary held_out "$ordinary" 0000001023
+bash scripts/r3_train_speed_amp.sh conditional smoke ../r3/runs/r3_3_speed_seed42_conditional_smoke
+bash scripts/r3_train_speed_amp.sh conditional formal "$conditional"
+for index in 0000000000 0000000250 0000000500 0000000750 0000001000 0000001023; do
+  bash scripts/r3_eval_speed_amp.sh conditional fixed "$conditional" "$index"
+done
+bash scripts/r3_eval_speed_amp.sh conditional held_out "$conditional" 0000001023
+```

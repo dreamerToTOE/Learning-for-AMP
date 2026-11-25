@@ -27,6 +27,10 @@ def main():
     vx_id = names.index("vx_world")
     first_joint = names.index("qw") + 1
     last_joint = names.index("left_sole_force_n")
+    foot_forces = [last_joint, names.index("right_sole_force_n")]
+    soles = [names.index(f"{side}_sole_z_m") for side in ("left", "right")]
+    contact_n = evaluation["gait"]["contact_force_n"]
+    clearance = evaluation["protocol"]["evaluation"]["sole_clearance_m"]
     dt = evaluation["dt"]
     spec = mujoco.MjSpec.from_file(str(args.xml.resolve(strict=True)))
     spec.visual.global_.offwidth = 640
@@ -43,10 +47,15 @@ def main():
             pose = np.column_stack((trace[:, :3], Rotation.from_quat(trace[:, 6:10]).as_rotvec(),
                                     trace[:, first_joint:last_joint]))
             frames = np.vstack((pose, pose[-1]))
-            annotations = [
-                f"{variant.capitalize()} D  |  {t * dt:.2f}s  |  command {command:.1f} m/s  |  vx {vx:+.2f} m/s"
-                for t, (command, vx) in enumerate(trace[:, (command_id, vx_id)], start=1)
-            ]
+            annotations = []
+            for t, row in enumerate(trace, start=1):
+                supported = row[foot_forces] >= contact_n
+                left, right = "L" if supported[0] else "-", "R" if supported[1] else "-"
+                foot_state = "air" if not supported.any() and (row[soles] > clearance).all() else left + right
+                annotations.append(
+                    f"{variant.capitalize()} D  |  {t * dt:.2f}s  |  cmd {row[command_id]:.1f} m/s  |  "
+                    f"vx {row[vx_id]:+.2f} m/s  |  feet {foot_state}"
+                )
             if episode["terminal"] == "FAIL":
                 annotations[-1] += "  |  fall"
             with motion.open("wb") as stream:

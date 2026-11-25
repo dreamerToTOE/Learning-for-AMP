@@ -136,8 +136,10 @@ def window(trace, start, stop, dt, joints, gait, settings, target):
         result["mode"] = "unclassified"
     target_speed, target_mode = target
     mae = float(np.abs(segment[:, 3] - target_speed).mean())
+    torso_tilt = np.rad2deg(np.arccos(np.clip(segment[:, native_size + 2], -1, 1)))
     result.update(start_s=start * dt, forward_mae_m_s=mae,
                   flight_fraction=float(flight.mean()), flight_bouts=bouts,
+                  torso_tilt_p90_deg=float(np.quantile(torso_tilt, 0.90)),
                   passes=result["mode"] == target_mode and mae <= settings["forward_mae_limit_m_s"])
     return result
 

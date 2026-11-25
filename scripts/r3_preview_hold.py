@@ -7,7 +7,7 @@ from pathlib import Path
 import imageio_ffmpeg
 import mujoco
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from scipy.spatial.transform import Rotation
 
 
@@ -18,6 +18,7 @@ def render(path, model, output):
     annotations = motion.get("annotations")
     if annotations is not None and len(annotations) != len(frames):
         raise ValueError(f"Incorrect annotation count in {path}")
+    font = ImageFont.load_default(size=15) if annotations is not None else None
     poses = np.column_stack((
         frames[:, :3],
         Rotation.from_rotvec(frames[:, 3:6]).as_quat(scalar_first=True),
@@ -46,9 +47,9 @@ def render(path, model, output):
                     labeled = Image.fromarray(frame)
                     draw = ImageDraw.Draw(labeled)
                     label = annotations[index]
-                    right = draw.textbbox((12, 8), label)[2] + 6
-                    draw.rectangle((6, 4, right, 24), fill="#131c28")
-                    draw.text((12, 8), label, fill="white")
+                    _, _, right, bottom = draw.textbbox((12, 8), label, font=font)
+                    draw.rectangle((6, 4, right + 6, bottom + 6), fill="#131c28")
+                    draw.text((12, 8), label, fill="white", font=font)
                     frame = np.asarray(labeled)
                 video.send(frame)
     finally:
