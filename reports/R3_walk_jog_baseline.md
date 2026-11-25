@@ -1,6 +1,6 @@
 # R3-0 / R3-1 · G1 步行与慢跑 AMP
 
-更新于 2026-11-25。冻结的 R2 模型是单技能对照，R3-1 从随机权重开始。
+更新于 2026-11-25。R3-0 已完成。R3-1 原始混合 AMP 已完成训练和评估，结果记为 `PARTIAL`。冻结的 R2 模型是单技能对照，R3-1 从随机权重开始。
 
 ## 复用范围
 
@@ -60,11 +60,53 @@
 | 4,100,096 | 3.81 s | 1.01 s | 1/10 | 4 / 0 |
 | 4,194,304 | 2.93 s | 1.00 s | 0/10 | 3 / 0 |
 
-4.10M 档出现一个完整且满足持续步行判据的回合。4.19M 档只有三个步行窗口，最好的步行初态存活 5.37 秒。慢跑初态通常在不足 1 秒时跌倒，早于稳定步态判断所需的 2.5 秒。现有行为显示明显的模式覆盖不足，暂不足以用模式坍塌解释训练失败。
+4.10M 档出现一个完整且满足持续步行判据的回合。4.19M 档只有三个步行窗口，最好的步行初态存活 5.37 秒。慢跑初态通常在不足 1 秒时跌倒，早于第一个完整步态判定窗口结束的 2.5 秒。
 
 冻结的 R2 单技能模型也在这十个 HOLD 初态上运行，初始观测哈希逐一相同。2/10 跑满十秒，两例都被识别为步行，其中一例从慢跑初态转入。R2 在自己的参考初态已通过 100/100 步行验收。这个对照表明两套参考初态的难度不同，解释混合训练结果时需保留这一差别。 [R2 同初态回放](r3_walk_jog/r2_frozen_hold_resets.json)
 
 后段步行存活和步行窗口均增加，因此追加一轮相同数据、算法和环境的 4,194,304 步训练。初始权重固定为首轮 4.194M 终档。上游加载恢复 Actor、Critic、判别器和模型归一化器，优化器、replay buffer、随机数状态和环境重置为新进程状态。追加档的累计交互量以前后两段相加，实验保留两段各自的记录。
+
+### 8.389M 累计训练
+
+追加训练完成 1,024 次更新，退出码为 0，耗时 23 分 10 秒，含初始化、定期内部评估和保存的端到端吞吐约 3,017 步/s。RTX 3070 的 2,780 个显存采样覆盖该段，整卡已用峰值 4,958 MiB，最低空闲 2,861 MiB，平均 GPU 利用率 86.2%。日志未显示 OOM、非有限训练指标或容量溢出。两段正式训练合计约 48 分钟。 [训练指标、checkpoint 散列及评估](r3_walk_jog/warm_4m.json)
+
+额外 4,194,304 步沿用 128 环境、32 步 rollout、seed42。初始权重 SHA-256 为 `9106fc9626463688df5bf2230ab0be2e7a6a6288aa2b9b0e87c8f295cbe12a62`，与首轮终档一致。末档累计 8,388,608 步，SHA-256 为 `fa8004ee65152e0c1c31d5d686641358773b71a27ab54b598c8940a34a319b4a`。固定初态在两段间逐一核对观测 SHA-256。
+
+| 累计交互步 | 步行初态平均存活 | 慢跑初态平均存活 | 步行初态持续步行 | 慢跑初态减速后持续步行 | 持续慢跑 |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 4,198,400 | 3.11 s | 1.39 s | 0/5 | 0/5 | 0/10 |
+| 5,222,400 | 10.00 s | 0.63 s | 5/5 | 0/5 | 0/10 |
+| 6,246,400 | 10.00 s | 2.55 s | 5/5 | 1/5 | 0/10 |
+| 7,270,400 | 10.00 s | 4.37 s | 5/5 | 2/5 | 0/10 |
+| 8,294,400 | 10.00 s | 4.45 s | 5/5 | 2/5 | 0/10 |
+| 8,388,608 | 10.00 s | 4.52 s | 5/5 | 2/5 | 0/10 |
+
+5.22M 档起，全部固定步行初态跑满 10 秒并达到持续步行判据。后续有更多慢跑初态减速后维持步行。 [两段固定初态曲线](r3_walk_jog/fixed_skill_trends.png)
+
+### 末档独立评估
+
+确定性 Actor 在 60 个新相位上各运行一次。步行用 seed `45000–45029`，慢跑用 `45100–45129`，每段动作各 15 个初态。60 个初始观测哈希均不同，且与固定组无重叠。初态来自训练使用的四段动作。
+
+| 参考初态 | 完整 10 s | 跌倒 | 持续步行 | 持续慢跑 | 平均存活 | 平均前进 | 平均绝对横移 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 步行 | 30/30 | 0/30 | 30/30 | 0/30 | 10.00 s | 10.28 m | 1.17 m |
+| 慢跑 | 21/30 | 9/30 | 21/30 | 0/30 | 7.21 s | 8.59 m | 0.65 m |
+
+完整率的 Wilson 95% 区间分别为 88.6%–100% 和 52.1%–83.3%，仅描述这次已训练策略在相应初态分布下的抽样。横移包含提前跌倒回合，受存活时间影响。
+
+- 步行初态的 180 个完整窗口均识别为步行，局部前速的窗口中位数在第 10 至 90 百分位约为 0.98–1.05 m/s。慢跑初态的 126 个完整窗口中，117 个识别为步行，9 个未分类。所有窗口的局部前速中位数均低于 1.50 m/s。对 HOLD 逐帧前速取中位数，两段步行约 0.92–1.08 m/s，两段慢跑约 1.95–1.98 m/s。
+- 已识别步行窗口平均每 1.5 秒有约 3.5–3.6 次左右单脚支撑切换，双脚均无接触约 1%。左右膝活动幅度均值约为 1.33–1.36 rad 和 1.16–1.17 rad。没有观察到满足判据的稳定慢跑或自发的持续技能切换。环境动作裁剪在步行初态为 0，慢跑初态的逐回合比例均值约 0.05%。
+- 9 个失败都来自慢跑初态，发生于 0.30–1.03 秒。原版终止由未列入允许清单的部位触地触发。代表回合 `45100` 在 0.67 秒倒地，末帧骨盆约 0.14 m、倾角约 88°。
+
+`PARTIAL`。无指令策略在该预算下学到了可重复的步行，持续行为只覆盖两类专家技能之一。慢跑初态中的减速步行直接显示了策略对步行的偏向。其余短回合没有留下足够长的轨迹判断是否曾试图维持慢跑。单训练 seed、四段专家、同一组专家轨迹的新相位，只能说明本次模式覆盖不足，仍无法区分初态难度、动作数据覆盖和训练机制的影响。
+
+### 冻结与下一步
+
+本地冻结目录为 `artifacts/r3_walk_jog/frozen_baseline_seed42_8388608/`，包含 checkpoint、配置、数据清单、初态协议、独立评估记录及校验值。两个运行目录保存全部更新日志、各档权重和逐步状态，GitHub 保留可审查的汇总、配置、曲线和视频代表帧。 [本地模型、轨迹和视频校验值](r3_walk_jog/frozen_artifacts.sha256)
+
+本地 `videos/` 含持续步行 `walk_seed45000.mp4`、慢跑初态减速步行 `jog_init_to_walk_seed45101.mp4` 和提前跌倒 `jog_init_fall_seed45100.mp4`。视频由 Newton 闭环评估录下的根姿态和关节位置离线渲染。 [成功与失败代表帧](r3_walk_jog/held_out_frames.png)
+
+R3-2 优先复用 MimicKit 的速度与方向指令入口，给 G1 Actor 加入实际速度指令，先保留普通判别器。步行和慢跑命令初选 1.0 和 1.9 m/s，依据 HOLD 片段速度范围。先用带直立与允许接触约束的速度跟踪任务做 smoke。正式评估把速度命令与参考初态交叉组合，另测回合中途的走跑切换。 [MimicKit `TaskSteeringEnv`](https://github.com/xbpeng/MimicKit/blob/a2c41528c2a34b638611f6c618e4a59f0e151179/mimickit/envs/task_steering_env.py)
 
 ## 复现入口
 
@@ -81,4 +123,26 @@ bash scripts/r3_train_amp_walk_jog.sh ../r3/assets/walk_jog ../r3/runs/r3_1_walk
 bash scripts/r3_train_amp_walk_jog.sh ../r3/assets/walk_jog ../r3/runs/r3_1_walk_jog_seed42_4m 4194304
 bash scripts/r3_train_amp_walk_jog.sh ../r3/assets/walk_jog ../r3/runs/r3_1_walk_jog_seed42_warm_4m \
   4194304 ../r3/runs/r3_1_walk_jog_seed42_4m/int_models/model_0000001023.pt
+
+r2=$(realpath ../r2)
+r3=$(realpath ../r3)
+evaluate() {
+  local checkpoint=$1 split=$2 output=$3
+  env -u PYTHONPATH -u PYTHONHOME XDG_CACHE_HOME="$r3/cache" TORCH_COMPILE_DISABLE=1 \
+    "$r2/mimickit-venv/bin/python" scripts/r3_eval_amp_modes.py --upstream "$r2/upstream/MimicKit" \
+    --data "$r3/assets/walk_jog" --checkpoint "$checkpoint" \
+    --protocol configs/r3/walk_jog_eval.json --split "$split" --output "$output"
+}
+for segment in 4m warm_4m; do
+  run="$r3/runs/r3_1_walk_jog_seed42_$segment"
+  for checkpoint in "$run"/int_models/model_*.pt; do
+    index=${checkpoint##*/model_}
+    evaluate "$checkpoint" fixed "$run/eval_fixed_${index%.pt}.json"
+  done
+done
+run="$r3/runs/r3_1_walk_jog_seed42_warm_4m"
+evaluate "$run/int_models/model_0000001023.pt" held_out "$run/eval_held_out_0000001023.json"
+python3 scripts/r3_summarize_walk_jog.py "$r3/runs/r3_1_walk_jog_seed42_4m" reports/r3_walk_jog/formal_4m.json
+python3 scripts/r3_summarize_walk_jog.py "$run" reports/r3_walk_jog/warm_4m.json
+"$r3/data-venv/bin/python" scripts/r3_plot_walk_jog.py reports/r3_walk_jog
 ```
