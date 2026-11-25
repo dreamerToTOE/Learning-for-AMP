@@ -190,7 +190,7 @@ def describe_episode(case, trace, origin, dt, joints, gait, protocol):
     heading = np.arctan2(rotation[:, 1, 0], rotation[:, 0, 0])
     result = {
         **case, "steps": count, "duration_s": count * dt, "terminal": terminal,
-        "fall_reasons": [label for mask, label in ((1, "low_pelvis"), (2, "torso_tilt"),
+        "fall_reasons": [label for mask, label in ((1, "low_pelvis"), (2, "pelvis_tilt"),
                                                    (4, "nonfoot_contact")) if flags & mask],
         "success": terminal == "TIME" and all(
             item is not None and item["passes"] for pair in tails for item in pair

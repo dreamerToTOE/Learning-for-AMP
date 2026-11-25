@@ -27,7 +27,7 @@ class SpeedCommandEnv(TaskSteeringEnv):
         self._speeds = torch.tensor(config["command_speeds"], dtype=torch.float, device=device)
         self._demo_commands_by_file = config["demo_commands_by_file"]
         self._min_height = config["fall"]["min_pelvis_height_m"]
-        self._min_torso_up = math.cos(math.radians(config["fall"]["max_torso_tilt_deg"]))
+        self._min_pelvis_up = math.cos(math.radians(config["fall"]["max_pelvis_tilt_deg"]))
         self._max_nonfoot_force_sq = config["fall"]["nonfoot_contact_n"] ** 2
         super().__init__(config, engine_config, num_envs, device, visualize=False)
 
@@ -82,12 +82,11 @@ class SpeedCommandEnv(TaskSteeringEnv):
         robot = self._get_char_id()
         root_pos = self._engine.get_root_pos(robot)
         root_rot = self._engine.get_root_rot(robot)
-        torso_rot = self._engine.get_body_rot(robot)[:, self._torso_id]
-        torso_up = 1.0 - 2.0 * torso_rot[:, :2].square().sum(dim=-1)
+        pelvis_up = 1.0 - 2.0 * root_rot[:, :2].square().sum(dim=-1)
         nonfoot = self._engine.get_ground_contact_forces(robot)[:, self._nonfoot_ids]
         contact = nonfoot.square().sum(dim=-1).amax(dim=-1) > self._max_nonfoot_force_sq
         low = root_pos[:, 2] < self._min_height
-        tilted = torso_up < self._min_torso_up
+        tilted = pelvis_up < self._min_pelvis_up
         self.fall_flags[:] = low.int() + 2 * tilted.int() + 4 * contact.int()
 
         reward = compute_steering_reward(

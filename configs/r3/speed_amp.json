@@ -8,7 +8,7 @@
   },
   "task_reward_weight": 0.5,
   "disc_reward_weight": 0.5,
-  "fall": {"min_pelvis_height_m": 0.66, "max_torso_tilt_deg": 50.0, "nonfoot_contact_n": 5.0},
+  "fall": {"min_pelvis_height_m": 0.66, "max_pelvis_tilt_deg": 50.0, "nonfoot_contact_n": 5.0},
   "training": {
     "seed": 42,
     "environments": 128,
