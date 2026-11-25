@@ -1,6 +1,6 @@
 # Project Status
 
-- **当前阶段 R3 / IN_PROGRESS，更新于 2026-11-25。** 首批专家数据审查与原始双技能 AMP 基线；按 v0.4 限时推进条件控制，随后转向 Motion Tracking。
+- **当前阶段 R3 / IN_PROGRESS，更新于 2026-11-25。** R3-0 已完成 HOLD 数据审查、运动学预览与混合加载验证。R3-1 正在验证原始双技能 AMP，后续按 v0.4 限时推进条件控制。 [数据与评估方案](reports/R3_walk_jog_baseline.md)
 - **R2 / COMPLETE_WITH_LIMITATIONS。** 单技能 AMP 仿真行走通过基础验收。原始专家片段的来源和许可待核验，R3 可以使用来源和许可独立核实的数据。
 - **G1 纯风格 AMP 的 4,194,304 步 checkpoint 已冻结。** seed42 在独立 MimicKit / Newton 环境完成连续 1,024 次更新。100 个新初态均直立行走至 10 秒，完整率 100%（Wilson 95% 区间 96.3%–100%），无跌倒，平均前进 9.21 m、横向位移 −2.51 m。 [独立评估](reports/r2_g1_single_skill/amp_4m_heldout_100.json)
 - **固定初态下，2.052M 档 0/5 完整，3.281M 档首次达到 5/5。** RTX 3070 实测 128 环境总耗时 22 分 10 秒，整卡显存峰值 5,277 MiB。 [阶段证据与录像说明](reports/R2_g1_single_skill.md)

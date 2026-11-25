@@ -1,0 +1,24 @@
+{
+  "fixed_evaluation_seed": 44000,
+  "held_out_evaluation_seed": 45000,
+  "fixed_episodes_per_initial_skill": 5,
+  "held_out_episodes_per_initial_skill": 30,
+  "max_steps": 300,
+  "burn_in_s": 1.0,
+  "window_s": 1.5,
+  "sustained_windows": 2,
+  "contact_force_n": 5.0,
+  "min_support_switches": 2,
+  "min_pelvis_p10_m": 0.68,
+  "max_pelvis_tilt_p90_deg": 40.0,
+  "max_abs_mean_lateral_m_s": 0.50,
+  "max_abs_mean_yaw_rate_rad_s": 0.60,
+  "walk": {
+    "forward_speed_m_s": [0.65, 1.30],
+    "no_foot_support_fraction": [0.0, 0.35]
+  },
+  "jog": {
+    "forward_speed_m_s": [1.50, 2.55],
+    "no_foot_support_fraction": [0.07, 1.0]
+  }
+}

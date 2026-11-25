@@ -1,0 +1,32 @@
+{
+  "source": "https://github.com/rai-opensource/hold",
+  "commit": "f80b04d384d4ec8922c88deada878c88597a3cf9",
+  "attribution": "HOLD by RAI Institute and Boston Dynamics",
+  "license": "CC BY 4.0",
+  "clips": [
+    {
+      "skill": "walk",
+      "path": "data/g1/locomotion/walk/S0_normal_walk_0.h5",
+      "sha256": "6dad649212b4df8ce40ddb6e4bd82228955c593c294ba9d228bbbba21fd61bfb",
+      "frames": [1432, 1849]
+    },
+    {
+      "skill": "walk",
+      "path": "data/g1/locomotion/walk/S1_normal_walk_0.h5",
+      "sha256": "a4a701e72013888e8b881039c388c842e406eb2a7a30ed360102f72ac4ea86a0",
+      "frames": [3136, 3553]
+    },
+    {
+      "skill": "jog",
+      "path": "data/g1/locomotion/jog/s3_jog_001.h5",
+      "sha256": "0a61dd869e1a7cb75394cf9b20f8f577114c2a360b5eae0b8810c7a8e6e22f6b",
+      "frames": [11584, 11907]
+    },
+    {
+      "skill": "jog",
+      "path": "data/g1/locomotion/jog/u4_jog_002.h5",
+      "sha256": "0f4bcceda34cdfca9ca09154bc9ff74d69a0805416825966ec0783c34589c06d",
+      "frames": [100, 369]
+    }
+  ]
+}
