@@ -1,5 +1,22 @@
 # Project Status
 
+**2026-11-26 · 第一轮已中期归档，AMP-G1 最终工程验收尚未通过。** R1–R3 算法学习、工程复现和有限对照已完成，七份主模型冻结。R5 接续 Motion Tracking / Motion Retargeting 学习。AMP-G1 性能优化在 R7 恢复，简历核心项目资格在 R8 判断。
+
+| 读者要找的内容 | 入口 |
+| --- | --- |
+| 当前能力、冻结基线、证据范围 | [AMP-G1 当前状态](docs/AMP_G1_CURRENT_STATE.md) |
+| 第一轮总结与问题演变 | [中期报告](reports/FINAL_REPORT.md) · [问题史](docs/AMP_G1_PROBLEM_HISTORY.md) |
+| 本地校验和、GitHub 备份与复跑 | [工件索引](docs/AMP_G1_ARTIFACT_INDEX.md) |
+| 复习、接手、再次启动 | [面试复习](docs/AMP_G1_INTERVIEW_GUIDE.md) · [交接](docs/HANDOFF.md) · [二轮计划](docs/AMP_G1_FUTURE_PLAN.md#二轮恢复入口) |
+
+| 当前能做 | 尚未验收 |
+| --- | --- |
+| 官方 Humanoid28 纯风格 AMP。40.96M 步、97/100 跑满约 10 秒 | 公平直立任务下的 PPO/AMP 性能对照及跨训练 seed |
+| G1 单技能 AMP。4.194M 步、100/100 个新参考相位持续步行 10 秒，平均前进 9.21 m、横向漂移 2.51 m | 低漂移及方向跟踪、未见源动作的可靠性 |
+| G1 初步速度指令。A/B 的 1.0 m/s 步行 25/32 和 24/32，条件 D 提高该种子高速响应 | 持续慢跑、双向完整切换、系统鲁棒性、Actor 独立推理和 Sim2Sim |
+
+## 主要实验状态
+
 - **R3 核心实验 / COMPLETE_WITH_LIMITATIONS，更新于 2026-11-25。** R3-2 普通判别器与 R3-3 条件判别器各完成 4.194M 步，末档均已冻结。1.0 m/s 指令下分别有 25/32、24/32 持续步行。两组在 1.9 m/s 指令下持续慢跑均为 0/32，两个切换方向均未完成双技能切换。条件判别器提高了高速指令响应。 [同预算对照和配对视频](reports/R3_speed_amp.md)
 - **R3-0 已完成，R3-1 `PARTIAL` 已冻结。** 原始混合 AMP 的 8.389M 末档 30/30 步行初态走满 10 秒。30 个慢跑初态中 21 个减速后走满，9 个跌倒，持续慢跑 0/30。 [基线报告](reports/R3_walk_jog_baseline.md)
 - **R2 / COMPLETE_WITH_LIMITATIONS。** 单技能 AMP 仿真行走通过基础验收。原始专家片段的来源和许可待核验，R3 可以使用来源和许可独立核实的数据。
@@ -10,7 +27,7 @@
 - **1.5 m/s 速度任务的 seed42 对照已完成。** 两组各采样 40,009,728 步。约 40M 的评估 checkpoint 上，PPO 持续前进 82/100，AMP 为 0/100。实景回放显示 PPO 代表回合采用低姿爬行。两组直立行走均为 0/100。 [seed42 对照报告](reports/R1_speed_tracking_seed42.md)
 - **R1 结论限于已完成的实验。** 现有结果不足以判定 AMP 在公平的直立行走任务中全面优于 PPO。这个限制不影响开展 G1 单技能 AMP。 [奖励漏洞诊断与冻结证据](reports/R1_reward_hacking_audit.md)
 
-## 本轮完成
+## 第一轮历史记录
 
 - 克隆并核对 `dreamerToTOE/Learning-for-AMP`，读取项目规划、实验协议、移交说明和参考资料。
 - 实测系统、GPU、显存、驱动、CUDA runtime、Python、Conda 环境、Isaac Sim、Isaac Lab、磁盘和内存。
@@ -103,9 +120,9 @@
 
 ## 下一步
 
-1. R4 收尾 AMP 报告、视频、简历与面试材料，保留奖励漏洞与慢跑覆盖不足的实测案例。
-2. R3-4 对称性和 R3-5/6 采样及门控保留为按需选做。
-3. R5 优先进入 G1 Motion Tracking / BeyondMimic 的数据重定向和 RL 跟踪部分。R6 聚焦独立推理、Sim2Sim、DR 与扰动及部署基础。均尚未开始，真机另需硬件和授权。
+1. R5-0 核对已有 G1 DeepMimic 的源配置、跟踪奖励、权重和数据出处，单独初审 BeyondMimic 的可复现入口。R5-1 准备有明确使用许可的重定向小样本。
+2. R6 补齐独立推理、Sim2Sim、DR、HIM/RMA 及部署基础。R1–R3 的训练和参数搜索已经关闭，冻结权重及失败记录作为后续参照。
+3. R7 在相关学习及基本复现就绪后，以冻结 R2/R3 基线恢复。预先冻结量化门槛，再由 R8 按实测判定是否作为简历核心项目。 [路线图](docs/ROADMAP.md#r7--amp-g1-第二轮综合完善)
 
 ## 阶段记录
 
@@ -115,9 +132,11 @@
 | R1 官方 AMP baseline | COMPLETE_WITH_LIMITATIONS | [R1 报告](reports/R1_amp_baseline.md)、[路线纠偏](reports/R1_reassessment.md)、[容量与小样本审计](reports/R1_capacity_and_small_batch.md)、[高并行容量补测](reports/r1_capacity_sweep_high_20261124.json)、[20.48M 冻结评估](reports/R1_eval_freeze_20m.md)、[20.48M 到 40.96M 恢复报告](reports/R1_resume_to_40m.md)、[40.96M 冻结评估](reports/R1_eval_freeze_40m.md)、[速度跟踪 PPO/AMP 协议](reports/R1_speed_tracking_comparison_protocol.md)、[速度跟踪 smoke](reports/R1_speed_tracking_smoke.md)、[seed42 速度对照](reports/R1_speed_tracking_seed42.md)、[奖励漏洞诊断](reports/R1_reward_hacking_audit.md) |
 | R2 G1 单技能 | COMPLETE_WITH_LIMITATIONS | 仿真步行验收通过，原始数据来源与许可待核验。 [冻结评估](reports/R2_g1_single_skill.md) |
 | R3 多技能诊断与消融 | COMPLETE_WITH_LIMITATIONS | R3-0 完成，R3-1/2 为 `PARTIAL`。R3-3 完成同预算对照，在持续慢跑及完整走跑切换上为 `NEGATIVE_RESULT`。 [混合 AMP 独立评估](reports/R3_walk_jog_baseline.md) · [条件判别器对照](reports/R3_speed_amp.md) |
-| R4 AMP 归档与求职材料 | NOT_STARTED | — |
-| R5 Motion Tracking / BeyondMimic | NOT_STARTED | [路线图](docs/ROADMAP.md) |
+| R4 AMP 第一轮中期归档 | INTERIM_ARCHIVED | [第一轮总结](reports/FINAL_REPORT.md) · [逐文件证据](reports/amp_g1_archive/local_artifacts.json) |
+| R5 Motion Tracking / BeyondMimic | READY · R5-0 | [当前学习路线](docs/ROADMAP.md#r5--g1-motion-tracking--beyondmimic当前主线) |
 | R6 鲁棒运控与部署 | NOT_STARTED | [路线图](docs/ROADMAP.md) |
+| R7 AMP-G1 第二轮综合完善 | WAITING_PREREQUISITES | [技术与恢复入口](docs/AMP_G1_FUTURE_PLAN.md#二轮恢复入口) |
+| R8 最终工程验收与求职材料 | NOT_STARTED | [验收表](docs/ROADMAP.md#r8--最终工程验收与求职材料) |
 
 ## R1 状态字段
 

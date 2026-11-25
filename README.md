@@ -1,12 +1,12 @@
 # Learning-for-AMP
 
-> **当前阶段为 R3 / G1 多技能 AMP** · R2 的 4.19M 单技能 checkpoint 已冻结 · 更新于 2026-11-25
+> **第一轮 AMP 学习与实验已归档，模型已冻结。** 当前进入 R5 Motion Tracking / Motion Retargeting。AMP-G1 最终性能目标尚未达到，简历核心项目尚未验收。更新于 2026-11-26。 [当前状态](docs/AMP_G1_CURRENT_STATE.md)
 
 ## 项目目标
 
-围绕人形机器人运控岗位，形成可复现、可解释、可量化的 AMP 项目经历，而不是仅仅“跑通一个算法”。
+复现 AMP 算法并将其用于宇树 G1 的多技能运动学习。长期目标是形成有实测指标、失败证据和复现记录的人形机器人运控求职项目。
 
-**主线：官方 AMP → G1 单技能 → 限时多技能/条件控制 → AMP 归档 → Motion Tracking / BeyondMimic → Sim2Sim 与鲁棒运控。** 当前 R3 聚焦两技能与条件控制，不要求每项 AMP 改进成功。
+**主线为官方 AMP → G1 单技能 → 多技能与条件控制 → 第一轮归档 → 跟踪、重定向与鲁棒部署学习 → AMP-G1 第二轮 → 最终工程验收。** 首轮在仿真中复现单技能行走，并用失败回放检验奖励与技能判据。 [第一轮中期报告](reports/FINAL_REPORT.md)
 
 1. 理解并验证 Actor / Critic / Discriminator、任务奖励与风格奖励的训练与部署边界。
 2. 在一致实验预算下对比 AMP 与任务奖励 PPO 的效果，**不预设 AMP 一定更优**。
@@ -15,22 +15,26 @@
 5. 优先验证技能条件 Actor、一次条件判别器对照；对称性轻量尝试，采样和多判别器按证据与预算选做。
 6. 产出 GitHub 可复现实验、消融数据、视频、失败分析与面试解释材料。
 
-## 当前边界与优先级
+## 当前实测结果
 
-- **本仓库当前执行 AMP 仿真实验**，R5/R6 为后续学习路线（可另建仓库），不修改既有 PegInsert、FR3 双臂及机械臂 Sim2Real 仓库。
-- G1 基线优先复用成熟开源工程，先核查资产、步态数据和权重，再做独立环境的小规模验证。
-- 当前已知本地设备：RTX 4070 12GB（主要）／RTX 3070 8GB（备用），Ubuntu 22.04，Isaac Sim 4.5 / Isaac Lab 2.1.1 历史环境。以上为用户既有环境信息，**接手时必须重新实测确认**。
-- 如 G1 上游项目需要其他 Isaac Lab / RSL-RL 版本，请使用独立环境，不能直接升级/污染旧环境。
-- 本项目仿真优先；**不以真实宇树机器人部署为验收条件**，除非后续新增硬件、授权和独立安全门禁。
-- 这是论文学习与工程复现项目；不能把社区已有的条件 AMP / Multi-AMP 方法描述为独创算法。
+- R1 官方 Humanoid28 纯风格 AMP 在 40.96M 步后有 97/100 个新初态跑满约 10 s。速度任务对照记录了 PPO 爬行漏洞，两组直立行走均为 0/100。 [官方冻结评估](reports/R1_eval_freeze_40m.md) · [对照与视频](reports/R1_speed_tracking_seed42.md)
+- R2 G1 4.194M 冻结基线在 100 个参考相位初态全部行走 10 s，平均前进 9.21 m、横向漂移 2.51 m。R1 与 G1 实验在 RTX 3070 8 GiB 上测得。 [G1 报告](reports/R2_g1_single_skill.md)
+- R3 两个条件控制模型对 1.0/1.9 m/s 有速度响应。低速持续步行为 25/32 和 24/32。持续慢跑及双向完整切换均为 0/32。 [同预算对照与视频](reports/R3_speed_amp.md)
+- 稳定慢跑、低漂移方向控制、双向完整切换、系统鲁棒性、Actor 独立推理和 Sim2Sim 留给后续阶段。现阶段只有仿真记录。 [技术债务](docs/AMP_G1_FUTURE_PLAN.md)
 
 ## 导航
 
 | 文件 | 内容 |
 |---|---|
-| [docs/ROADMAP.md](docs/ROADMAP.md) | R0–R6 分阶段任务、优先级、停止条件 |
+| [当前状态](docs/AMP_G1_CURRENT_STATE.md) | 七份冻结模型、可复现行为、工程验收边界 |
+| [第一轮中期报告](reports/FINAL_REPORT.md) | R0–R3 实验结果、失败经验和结论范围 |
+| [问题驱动的迭代史](docs/AMP_G1_PROBLEM_HISTORY.md) | 训练与诊断背景、方法、结果、原始证据 |
+| [技术债务与第二轮计划](docs/AMP_G1_FUTURE_PLAN.md) | 先决技能、最小恢复实验、验收指标 |
+| [面试复习](docs/AMP_G1_INTERVIEW_GUIDE.md) | 以实际实验为例的算法和工程问答 |
+| [工件与复现索引](docs/AMP_G1_ARTIFACT_INDEX.md) | 本地文件、字节数、SHA-256、远程副本及复跑命令 |
+| [docs/ROADMAP.md](docs/ROADMAP.md) | R0–R8 分阶段任务、优先级、停止条件 |
 | [docs/EXPERIMENT_PROTOCOL.md](docs/EXPERIMENT_PROTOCOL.md) | 公平对照、训练日志、统一评估、诊断与消融 |
-| [docs/HANDOFF.md](docs/HANDOFF.md) | 新 Codex 窗口接手指令、首轮执行范围、禁止事项 |
+| [docs/HANDOFF.md](docs/HANDOFF.md) | 新 Codex 窗口接手、R5 当前入口、R7 恢复顺序 |
 | [docs/REFERENCES.md](docs/REFERENCES.md) | 原始论文、Isaac Lab 与候选仓库、版本审计要求 |
 | [PROJECT_STATUS.md](PROJECT_STATUS.md) | 项目状态和下一动作（后续每步维护） |
 | [R1 速度跟踪对照](reports/R1_speed_tracking_seed42.md) | seed42 的阶段评估、资源、运动视频与学习曲线 |
@@ -58,17 +62,9 @@ Learning-for-AMP/
 └── artifacts/           # 大型日志/模型/视频不直接提交 Git
 ```
 
-## 成功标准
+## 工程验收和阶段衔接
 
-成功不是“训练曲线上升”。至少需要：
-- 可复现的运行命令与锁定版本；
-- 已固定的评估协议、任务指令和种子；
-- 已归档 AMP vs PPO 对照及结论边界；不重启 R1；
-- 各技能表现与技能覆盖率，包含失败案例；
-- R3 有限预算的条件控制及对照记录；允许负面结果，不要求所有可选实验完成；
-- 仿真结果与真实机器人结果严格分开陈述。
-
-当前实验记录与后续阶段安排见 [项目状态](PROJECT_STATUS.md)。
+R4 归档保留 R1–R3 的阶段成果和限制。R5/R6 先完成跟踪、重定向、适应和部署学习，后续 R7 从冻结基准接手。R8 检查走跑、速度方向与漂移、切换、运动质量、鲁棒性、独立闭环和完整复现。量化门槛在 R7 开始前固定。真机另需硬件与授权。实验运行环境与 PegInsert、FR3 和机械臂 Sim2Real 各自隔离。 [项目状态](PROJECT_STATUS.md) · [R7/R8 路线](docs/ROADMAP.md#r7--amp-g1-第二轮综合完善)
 
 ## 术语提示
 
