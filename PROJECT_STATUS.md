@@ -89,20 +89,25 @@
 - 恢复段峰值显存 7832 MiB，采样到的最低空闲显存 0 MiB，GPU 利用率最高 98%，无 OOM、NaN 或 Inf。为维持训练路径稳定，额外 AMP 监控降为每 31 次更新一次，抽样 128 个状态。
 - 对 40.96M checkpoint 按同一协议完成固定基准 10 回合和新增独立 100 回合评估。新增组 97/100 完整运行约 10 秒，3 回合因躯干高度低于 0.5 m 跌倒，完整率 97.0%，Wilson 95% 区间 91.5%–99.0%。
 - 保存 40.96M 评估原始数据、成功/失败视频、恢复审计和阶段报告。当前稳定行走验收达标，不推进 81.92M。
+- 冻结明确速度跟踪 PPO/AMP 对照协议。目标速度取官方 walk 专家 torso 前向速度均值约 1.506 m/s，预注册为 1.5 m/s，任务奖励为 `alive * (1 + exp(-0.5 * ((torso_vx - 1.5) / 0.5)^2))`。
+- 新增不修改 Isaac Lab checkout 的速度奖励训练入口、同网络 PPO 配置和目标速度评估字段。
+- 完成 seed42、2 环境、50 次更新的 PPO/AMP smoke，每组 1,600 环境交互步，均退出码 0 并保存 checkpoint。AMP 训练任务奖励均值 1.504，PPO 为 1.419；AMP 记录判别器 loss，PPO 记录 policy/value loss。
+- 两组 smoke checkpoint 用相同 42000–42009 评估 seed 各运行 10 回合，均在短预算下全回合跌倒。AMP 平均存活 0.547 s，PPO 0.807 s。该结果仅确认速度奖励、训练入口、评估入口和日志链路可运行，不作为算法性能结论。
+- Smoke AMP 峰值显存 7212 MiB、最低空闲 620 MiB；PPO 峰值显存 6440 MiB、最低空闲 1392 MiB。两组均无 OOM、NaN、Inf 或非有限动作。
 
 ## 下一步
 
-1. 归档 40.96M checkpoint 及固定评估协议，不立即推进 81.92M。
-2. 保持 PhysX 质量、惯量、接触参数和 USD drive 搜索暂停。
-3. 不开展三种子长训练、G1 迁移或多技能模式坍塌实验，直到 R1 的公平 PPO 对照协议重新准备完成。
-4. 后续若继续 R1，应在明确速度跟踪任务奖励下建立同环境、同网络、同预算的 PPO/AMP 对照。
+1. 保留当前 40.96M 官方 AMP checkpoint 作为 R1 稳定行走基线。
+2. 先审查速度跟踪 smoke 的日志和奖励尺度，再按已冻结协议启动 256 环境、seed42/43/44、每组每 seed 1,048,576 交互步的正式趋势阶段。
+3. 正式阶段继续使用固定评估 seeds 42000–42099 和相同的目标速度指标。
+4. 保持 PhysX 参数搜索、G1 迁移和多技能实验暂停。
 
 ## 阶段记录
 
 | 阶段 | 状态 | 证据 |
 |---|---|---|
 | R0 环境与上游审计 | PARTIAL | `reports/R0_environment_audit.md`、项目外部 `../r0_smoke_output.txt`、官方 v2.1.1 Walk smoke 日志 |
-| R1 官方 AMP baseline | PARTIAL | [R1 报告](reports/R1_amp_baseline.md)、[路线纠偏](reports/R1_reassessment.md)、[容量与小样本审计](reports/R1_capacity_and_small_batch.md)、[高并行容量补测](reports/r1_capacity_sweep_high_20261124.json)、[20.48M 冻结评估](reports/R1_eval_freeze_20m.md)、[恢复审计](reports/r1_resume_checkpoint_audit_20m.json)、[20.48M 到 40.96M 恢复报告](reports/R1_resume_to_40m.md)、[40.96M 冻结评估](reports/R1_eval_freeze_40m.md)、[正式对照协议](docs/EXPERIMENT_PROTOCOL.md#6-r1-walk-正式对照预注册) |
+| R1 官方 AMP baseline | PARTIAL | [R1 报告](reports/R1_amp_baseline.md)、[路线纠偏](reports/R1_reassessment.md)、[容量与小样本审计](reports/R1_capacity_and_small_batch.md)、[高并行容量补测](reports/r1_capacity_sweep_high_20261124.json)、[20.48M 冻结评估](reports/R1_eval_freeze_20m.md)、[20.48M 到 40.96M 恢复报告](reports/R1_resume_to_40m.md)、[40.96M 冻结评估](reports/R1_eval_freeze_40m.md)、[速度跟踪 PPO/AMP 协议](reports/R1_speed_tracking_comparison_protocol.md)、[速度跟踪 smoke](reports/R1_speed_tracking_smoke.md)、[正式对照协议](docs/EXPERIMENT_PROTOCOL.md#6-r1-walk-正式对照预注册) |
 | R2 G1 单技能 | BLOCKED | G1 动作/USD 对象需要 Git LFS，数据来源和授权尚未闭合，候选版本面向 Isaac Lab 2.3.x / Isaac Sim 5.1 |
 | R3 多技能诊断与消融 | NOT_STARTED | — |
 | R4 报告与求职材料 | NOT_STARTED | — |
@@ -111,14 +116,15 @@
 
 ```text
 date: 2026-11-25
-stage: R1 — 官方 AMP seed42 2048 环境训练至累计 40.96M 与冻结评估
+stage: R1 — 官方 AMP 40.96M 基线与速度跟踪 PPO/AMP smoke
 status: PARTIAL
 code_sha: 1528ba9
 environment: Ubuntu 22.04.5; RTX 3070 8 GiB; driver 580.178.04; Isaac Sim 4.5.0; official Isaac Lab v2.1.1; Kit Python 3.10.15; torch 2.5.1+cu118; isolated venv skrl 1.4.3; gymnasium 0.29.1; hydra-core 1.3.2; numpy 1.26.0; tensorboard 2.19.0; flatdict 4.0.1; h5py 3.13.0
-commands_run: monitored AMP resume from 20.48M with --num_envs 2048 --seed 42 --max_iterations 625 --monitor_interval 31 --monitor_sample_size 128; official Isaac Lab skrl entrypoint for final 5 updates; frozen evaluations with baseline seeds 42000–42009 and new independent seeds 45000–45099
-evidence_paths: reports/R1_eval_freeze_20m.md; reports/r1_eval_freeze_20m/summary.json; reports/r1_resume_checkpoint_audit_20m.json; reports/R1_resume_to_40m.md; reports/r1_resume_to_40m_summary.json; reports/R1_eval_freeze_40m.md; reports/r1_eval_freeze_40m/summary.json; reports/r1_monitor_joint_smoke_20261125.json; runs/r1_resume_seed42_env2048_to4096_updates625/; logs/skrl/r1_amp_resume_seed42_20251125/; logs/skrl/r1_amp_resume_seed42_20251125_final5/; final_checkpoint: logs/skrl/r1_amp_resume_seed42_20251125_final5/2026-11-25_02-40-09_amp_torch_resume40m_final5/checkpoints/agent_80.pt; final_checkpoint_sha256: 22f389039512e97a542403702e391b3d7efde619a78008026d849144dadd860c
+commands_run: prior AMP baseline and resume; speed-tracking wrapper smoke with AMP/PPO --num_envs 2 --seed 42 --max_iterations 50; frozen smoke evaluations with seeds 42000–42009 and --target-vx 1.5; official AMP baseline evaluations with seeds 42000–42099
+evidence_paths: reports/R1_eval_freeze_20m.md; reports/r1_eval_freeze_20m/summary.json; reports/r1_resume_checkpoint_audit_20m.json; reports/R1_resume_to_40m.md; reports/r1_resume_to_40m_summary.json; reports/R1_eval_freeze_40m.md; reports/r1_eval_freeze_40m/summary.json; reports/r1_monitor_joint_smoke_20261125.json; reports/R1_speed_tracking_comparison_protocol.md; reports/R1_speed_tracking_smoke.md; reports/r1_speed_tracking_smoke_summary.json; reports/R1_speed_tracking_smoke_eval/amp/episodes.json; reports/R1_speed_tracking_smoke_eval/ppo/episodes.json; scripts/r1_speed_tracking_train.py; scripts/r1_speed_tracking_smoke.sh; configs/r1/skrl_ppo_speed_tracking.yaml; runs/r1_resume_seed42_env2048_to4096_updates625/; logs/skrl/r1_amp_resume_seed42_20251125/; logs/skrl/r1_amp_resume_seed42_20251125_final5/; final_checkpoint: logs/skrl/r1_amp_resume_seed42_20251125_final5/2026-11-25_02-40-09_amp_torch_resume40m_final5/checkpoints/agent_80.pt; final_checkpoint_sha256: 22f389039512e97a542403702e391b3d7efde619a78008026d849144dadd860c
+speed_smoke_metrics: seed42; 2 environments; 50 updates; 1,600 transitions per group; AMP task reward mean 1.504, training torso vx 1.004 m/s, target MAE 0.639 m/s; PPO task reward mean 1.419, training torso vx 0.777 m/s, target MAE 0.811 m/s; smoke eval 0/10 complete for both groups; AMP peak 7212 MiB and PPO peak 6440 MiB; no OOM/NaN/Inf
 key_metrics: 40.96M cumulative environment transitions; new independent evaluation 97/100 complete, 3 falls, 97.0% complete rate, Wilson 95% CI 91.5%–99.0%; pooled baseline plus new evaluation 106/110 complete, 96.4%, Wilson 95% CI 91.0%–98.6%; new-set mean survival 9.71 s, forward distance 11.26 m, mean speed 1.13 m/s, reference-speed W1 0.354 m/s; mean target-angle violation 0.777%, maximum episode 2.029%; all actions finite and failures were torso-height termination; resumed segment peak 7832 MiB, sampled minimum free 0 MiB, GPU utilization max 98%, no OOM/NaN/Inf
 resume_boundary: policy, value, discriminator, optimizer and running preprocessors restored; motion dataset and reply buffer were absent from checkpoint and reinitialized; final 5 updates used the official entrypoint without extra monitor forwards; this is bounded resume training, not strict seamless continuity
-blockers: fair PPO versus AMP comparison with an explicit speed-tracking task reward is not completed; official pre-trained Humanoid AMP checkpoint remains unavailable; G1 assets/data still require LFS and separate license/hash verification
-next_action: keep the 40.96M checkpoint as the current R1 acceptance artifact; do not start 81.92M or PhysX search; prepare the fair speed-tracking PPO/AMP comparison only after its protocol is fixed
+blockers: speed-tracking PPO/AMP smoke is complete but formal three-seed comparison is pending; official pre-trained Humanoid AMP checkpoint remains unavailable; G1 assets/data still require LFS and separate license/hash verification
+next_action: review the locked speed-tracking smoke artifacts, then run the formal 256-environment seed42/43/44 trend stage; keep 81.92M, PhysX search, G1 migration and multi-skill work paused
 ```

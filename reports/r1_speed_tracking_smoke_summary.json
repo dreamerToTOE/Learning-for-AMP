@@ -1,0 +1,179 @@
+{
+  "protocol": "reports/R1_speed_tracking_comparison_protocol.md",
+  "task_reward": {
+    "target_vx_mps": 1.5,
+    "sigma_vx_mps": 0.5,
+    "formula": "alive * (1 + exp(-0.5 * ((torso_vx - 1.5) / 0.5)^2))",
+    "expert_torso_vx_mean_mps": 1.5064868927001953,
+    "expert_torso_vx_std_mps": 0.16754049062728882
+  },
+  "smoke_budget": {
+    "train_seed": 42,
+    "num_envs": 2,
+    "updates": 50,
+    "rollouts": 16,
+    "transitions_per_group": 1600,
+    "eval_seed_range": "42000-42009"
+  },
+  "groups": {
+    "amp": {
+      "algorithm": "AMP",
+      "train_seed": 42,
+      "num_envs": 2,
+      "updates": 50,
+      "environment_transitions": 1600,
+      "speed_metric_windows": 50,
+      "training_speed_metrics": {
+        "alive_reward": 0.953125,
+        "speed_bonus": 0.5698165210397456,
+        "task_reward": 1.503909503892064,
+        "torso_vx": 1.0036932712397537,
+        "speed_abs_error": 0.638855240046978
+      },
+      "tensorboard": {
+        "Reward / Instantaneous reward (mean)": {
+          "count": 100,
+          "first": 1.7761151790618896,
+          "last": 1.4856786727905273
+        },
+        "Reward / Total reward (mean)": {
+          "count": 63,
+          "first": 23.837116241455078,
+          "last": 14.776148796081543
+        },
+        "Episode / Total timesteps (mean)": {
+          "count": 63,
+          "first": 16.0,
+          "last": 10.375
+        },
+        "Loss / Policy loss": {
+          "count": 50,
+          "first": 0.33921751379966736,
+          "last": -0.08916384726762772
+        },
+        "Loss / Value loss": {
+          "count": 50,
+          "first": 3.395352602005005,
+          "last": 0.09747157990932465
+        },
+        "Loss / Discriminator loss": {
+          "count": 50,
+          "first": 3.5191903114318848,
+          "last": 1.4997096061706543
+        }
+      },
+      "gpu": {
+        "samples": 46,
+        "peak_used_mib": 7212.0,
+        "min_free_mib": 620.0,
+        "max_util_pct": 45.0
+      },
+      "checkpoint": "logs/skrl/r1_speed_tracking_amp_smoke/2026-11-25_09-47-44_amp_torch_seed42_env2_updates50/checkpoints/agent_800.pt",
+      "checkpoint_sha256": "56cfccfcfdf83ed01697a16df67bd690e259a4722a99310bfe7e0497b282a5a2",
+      "eval": {
+        "episodes": 10,
+        "complete": 0,
+        "falls": 10,
+        "complete_rate": 0.0,
+        "mean_survival_s": 0.5466666666666666,
+        "mean_forward_dx_m": 0.4984249919652939,
+        "target_vx_mae_mps": 0.5246795434277596,
+        "target_vx_bias_mps": -0.45602746455498583,
+        "target_vx_within_0_2_ratio": 0.4024390243902439,
+        "reference_vx_wasserstein_mps": 0.47519069075458154,
+        "all_actions_finite": true,
+        "failure_seeds": [
+          42000,
+          42001,
+          42002,
+          42003,
+          42004,
+          42005,
+          42006,
+          42007,
+          42008,
+          42009
+        ],
+        "video": "reports/R1_speed_tracking_smoke_eval/amp/episode_001.mp4"
+      },
+      "exit_code": 0
+    },
+    "ppo": {
+      "algorithm": "PPO",
+      "train_seed": 42,
+      "num_envs": 2,
+      "updates": 50,
+      "environment_transitions": 1600,
+      "speed_metric_windows": 50,
+      "training_speed_metrics": {
+        "alive_reward": 0.960625,
+        "speed_bonus": 0.47252596707818156,
+        "task_reward": 1.4188152201473714,
+        "torso_vx": 0.7773472989560105,
+        "speed_abs_error": 0.8112383823096753
+      },
+      "tensorboard": {
+        "Reward / Instantaneous reward (mean)": {
+          "count": 100,
+          "first": 1.8150323629379272,
+          "last": 1.6285548210144043
+        },
+        "Reward / Total reward (mean)": {
+          "count": 57,
+          "first": 18.147483825683594,
+          "last": 5.940656661987305
+        },
+        "Episode / Total timesteps (mean)": {
+          "count": 57,
+          "first": 12.0,
+          "last": 4.0
+        },
+        "Loss / Policy loss": {
+          "count": 50,
+          "first": 0.28804755210876465,
+          "last": -0.01243654079735279
+        },
+        "Loss / Value loss": {
+          "count": 50,
+          "first": 3.6672215461730957,
+          "last": 0.3335709869861603
+        }
+      },
+      "gpu": {
+        "samples": 38,
+        "peak_used_mib": 6440.0,
+        "min_free_mib": 1392.0,
+        "max_util_pct": 60.0
+      },
+      "checkpoint": "logs/skrl/r1_speed_tracking_ppo_smoke/2026-11-25_09-48-07_ppo_torch_seed42_env2_updates50/checkpoints/agent_800.pt",
+      "checkpoint_sha256": "c9bbb57503a0354d3d77d541432eb219d9072e5a9dd272c1821f54142e6c0372",
+      "eval": {
+        "episodes": 10,
+        "complete": 0,
+        "falls": 10,
+        "complete_rate": 0.0,
+        "mean_survival_s": 0.8066666666666666,
+        "mean_forward_dx_m": 0.9998019397258758,
+        "target_vx_mae_mps": 0.4117385012305472,
+        "target_vx_bias_mps": -0.17288829977354728,
+        "target_vx_within_0_2_ratio": 0.3305785123966942,
+        "reference_vx_wasserstein_mps": 0.3107199203200999,
+        "all_actions_finite": true,
+        "failure_seeds": [
+          42000,
+          42001,
+          42002,
+          42003,
+          42004,
+          42005,
+          42006,
+          42007,
+          42008,
+          42009
+        ],
+        "video": "reports/R1_speed_tracking_smoke_eval/ppo/episode_001.mp4"
+      },
+      "exit_code": 0
+    }
+  }
+}

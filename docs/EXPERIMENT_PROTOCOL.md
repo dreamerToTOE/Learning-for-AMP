@@ -80,3 +80,17 @@ peak_gpu_mem_mb, code_sha, checkpoint_path, notes
 - 主指标为固定 10 秒窗口内躯干世界坐标 +X 的净位移，跌倒后剩余时间计零位移，终止帧取自动重置前的状态。同步报告跌倒率、超时率、存活时间、实际水平速度。若跌倒和超时同时触发，归入跌倒并保留两个原始标志。
 - 正式风格指标使用躯干逐步世界坐标 `v_x` 分布到官方 Walk 参考速度分布的 1-Wasserstein 距离（m/s），只用实际执行的步并同时披露跌倒率。该指标测量速度分布相似度，步态质量还需用视频和运动学描述。当前任务无速度指令，速度跟踪 MAE 不适用。
 - 先逐训练 seed 聚合，再报告成对差值及跨 seed 离散度。正式结果包括每回合 JSON、汇总指标、checkpoint SHA 和固定首个回合的视频。资源 pilot 仅用于验证训练链路和估算成本。
+
+## 7. R1 明确速度跟踪 PPO/AMP 对照
+
+本节冻结一个有明确前向速度目标的公平对照。历史无速度目标的 PPO smoke、task-only 训练和官方 AMP 行走训练不纳入本节的算法优劣结论。
+
+- 环境固定为 Isaac Lab v2.1.1 的 `Isaac-Humanoid-AMP-Walk-Direct-v0`，机器人、观测、动作、动力学、10 秒 episode、`dt=1/60`、decimation=2 和动作目标映射完全一致。
+- 世界坐标 +X 目标速度固定为 `1.5 m/s`。官方 `humanoid_walk.npz` 的 torso 前向速度均值为 `1.5064869 m/s`，该值在训练前冻结。
+- 两组共享任务奖励 `r_task = alive * (1 + exp(-0.5 * ((torso_vx - 1.5) / 0.5)^2))`，其中 `alive` 在 torso 高度低于 0.5 m 时为 0。速度项尺度固定为 0.5 m/s。
+- Actor/Critic 网络固定为 `[1024, 512]`，共享 rollouts=16、learning epochs=6、mini-batches=2、learning rate=5e-5、gamma=0.99、GAE lambda=0.95、PPO clip=0.2、RunningStandardScaler 和动作方差配置。
+- PPO 只优化 `r_task`。AMP 使用相同 `r_task`，并设置 `task_reward_weight=1`、`style_reward_weight=1`，保留官方判别器和专家动作数据。
+- Smoke 固定 seed42、2 环境、50 次更新、每组 1,600 环境交互步。Smoke 只验证奖励注入、入口、日志、checkpoint 和有限性。
+- 正式趋势阶段固定训练 seeds 42、43、44，采用 256 个并行环境，每个 seed 和算法 256 次更新，即 1,048,576 个环境交互步，检查点为 64、128、256 次更新。
+- Smoke 评估固定 seeds 42000–42009。正式评估固定 seeds 42000–42099，每个最终 checkpoint 100 回合。
+- 评估报告完整率、跌倒率、存活时间、+X 位移、目标速度 MAE、目标速度偏差、`|vx-target| < 0.2 m/s` 比例、参考速度 W1、动作有限性、目标角超限比例、关节跟踪误差和视频。目标速度 MAE 与参考速度 W1 分开解释。

@@ -14,6 +14,7 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--episodes", type=int, default=10)
     parser.add_argument("--seed", type=int, default=1000, help="Seed for the first evaluation reset")
+    parser.add_argument("--target-vx", type=float, default=None, help="Optional fixed world +X speed target in m/s")
     parser.add_argument("--video", action="store_true", help="Render a side-view skeleton of the first episode")
     parser.add_argument(
         "--action-range-correction",
@@ -160,6 +161,7 @@ def evaluate(args, agent_config):
                 delta = (terminal_position - initial_position).cpu().tolist()
                 elapsed = step * env.step_dt
                 speeds = torch.stack(speeds)
+                torso_vx = speeds[:, 0].cpu().numpy()
                 result = {
                     "episode": index + 1,
                     "seed": seed,
@@ -174,7 +176,7 @@ def evaluate(args, agent_config):
                     "forward_dx_m": delta[0],
                     "net_forward_speed_mps": delta[0] / elapsed,
                     "mean_xy_speed_mps": speeds.norm(dim=1).mean().item(),
-                    "torso_vx_mps": speeds[:, 0].cpu().tolist(),
+                    "torso_vx_mps": torso_vx.tolist(),
                     "terminal_torso_height_m": terminal_position[2].item(),
                     "target_angle_violation_ratio": float(target_violation_count.sum().item() / max(target_sample_count * env.robot.num_joints, 1)),
                     "target_angle_violation_by_joint": {
@@ -184,6 +186,12 @@ def evaluate(args, agent_config):
                     "target_position_error_mean_rad": float(target_error_sum / max(target_sample_count, 1)),
                     "target_position_error_max_rad": float(target_error_max),
                 }
+                if args.target_vx is not None:
+                    speed_error = torso_vx - args.target_vx
+                    result["target_vx_mps"] = args.target_vx
+                    result["target_vx_mae_mps"] = float(abs(speed_error).mean())
+                    result["target_vx_bias_mps"] = float(speed_error.mean())
+                    result["target_vx_within_0_2_ratio"] = float((abs(speed_error) < 0.2).mean())
                 print(json.dumps({key: value for key, value in result.items() if key != "torso_vx_mps"},
                                  allow_nan=False), flush=True)
                 episodes.append(result)
@@ -203,6 +211,12 @@ def evaluate(args, agent_config):
             "reference_vx_wasserstein_mps": float(wasserstein_distance(rollout_vx, reference_vx)),
             "episodes": episodes,
         }
+        if args.target_vx is not None:
+            target_error = rollout_vx - args.target_vx
+            result["target_vx_mps"] = args.target_vx
+            result["target_vx_mae_mps"] = float(abs(target_error).mean())
+            result["target_vx_bias_mps"] = float(target_error.mean())
+            result["target_vx_within_0_2_ratio"] = float((abs(target_error) < 0.2).mean())
         (args.output / "episodes.json").write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")
     finally:
         env.close()
