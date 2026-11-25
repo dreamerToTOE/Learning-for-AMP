@@ -1,6 +1,6 @@
 # Project Status
 
-- **当前阶段 R3 / IN_PROGRESS，更新于 2026-11-25。** 首批专家数据审查与原始双技能 AMP 基线。
+- **当前阶段 R3 / IN_PROGRESS，更新于 2026-11-25。** 首批专家数据审查与原始双技能 AMP 基线；按 v0.4 限时推进条件控制，随后转向 Motion Tracking。
 - **R2 / COMPLETE_WITH_LIMITATIONS。** 单技能 AMP 仿真行走通过基础验收。原始专家片段的来源和许可待核验，R3 可以使用来源和许可独立核实的数据。
 - **G1 纯风格 AMP 的 4,194,304 步 checkpoint 已冻结。** seed42 在独立 MimicKit / Newton 环境完成连续 1,024 次更新。100 个新初态均直立行走至 10 秒，完整率 100%（Wilson 95% 区间 96.3%–100%），无跌倒，平均前进 9.21 m、横向位移 −2.51 m。 [独立评估](reports/r2_g1_single_skill/amp_4m_heldout_100.json)
 - **固定初态下，2.052M 档 0/5 完整，3.281M 档首次达到 5/5。** RTX 3070 实测 128 环境总耗时 22 分 10 秒，整卡显存峰值 5,277 MiB。 [阶段证据与录像说明](reports/R2_g1_single_skill.md)
@@ -102,8 +102,11 @@
 
 ## 下一步
 
-1. 核查带许可的 G1 行走和慢跑片段，验证格式、运动学和双技能数据加载。
-2. 用原始 MimicKit 单 Actor、单判别器和纯风格奖励跑 R3-1 基线。冻结 R2 权重用于后续单技能对照。
+1. R3-0：核查许可明确的两类 G1 专家动作，验证数据映射和加载；对 R2 漂移仅做轻量诊断，不重训。
+2. R3-1/2：原始双技能 AMP、条件 Actor，记录独立行为和指令/切换评估。
+3. R3-3：条件判别器一次对照；R3-4 对称性轻量尝试，R3-5/6 按实际问题选做。单项一轮诊断、一轮修正；不以全部成功为退出门槛。R3 新增正式训练建议 2–3 小时，超此前 4–5 小时授权预算先汇报。
+4. R4：收尾 AMP 报告、视频、简历与面试材料，保留负结果与限制。
+5. R5：优先进入 G1 Motion Tracking / BeyondMimic 的数据重定向和 RL 跟踪部分；R6：独立推理、Sim2Sim、DR/扰动与部署基础。均尚未开始；真机另需硬件和授权。
 
 ## 阶段记录
 
@@ -112,8 +115,10 @@
 | R0 环境与上游审计 | PARTIAL | `reports/R0_environment_audit.md`、项目外部 `../r0_smoke_output.txt`、官方 v2.1.1 Walk smoke 日志 |
 | R1 官方 AMP baseline | COMPLETE_WITH_LIMITATIONS | [R1 报告](reports/R1_amp_baseline.md)、[路线纠偏](reports/R1_reassessment.md)、[容量与小样本审计](reports/R1_capacity_and_small_batch.md)、[高并行容量补测](reports/r1_capacity_sweep_high_20261124.json)、[20.48M 冻结评估](reports/R1_eval_freeze_20m.md)、[20.48M 到 40.96M 恢复报告](reports/R1_resume_to_40m.md)、[40.96M 冻结评估](reports/R1_eval_freeze_40m.md)、[速度跟踪 PPO/AMP 协议](reports/R1_speed_tracking_comparison_protocol.md)、[速度跟踪 smoke](reports/R1_speed_tracking_smoke.md)、[seed42 速度对照](reports/R1_speed_tracking_seed42.md)、[奖励漏洞诊断](reports/R1_reward_hacking_audit.md) |
 | R2 G1 单技能 | COMPLETE_WITH_LIMITATIONS | 仿真步行验收通过，原始数据来源与许可待核验。 [冻结评估](reports/R2_g1_single_skill.md) |
-| R3 多技能诊断与消融 | IN_PROGRESS | [阶段路线图](docs/ROADMAP.md#r3--多技能-amp-与分阶段实验) |
-| R4 报告与求职材料 | NOT_STARTED | — |
+| R3 多技能诊断与消融 | IN_PROGRESS | [阶段路线图](docs/ROADMAP.md) |
+| R4 AMP 归档与求职材料 | NOT_STARTED | — |
+| R5 Motion Tracking / BeyondMimic | NOT_STARTED | [路线图](docs/ROADMAP.md) |
+| R6 鲁棒运控与部署 | NOT_STARTED | [路线图](docs/ROADMAP.md) |
 
 ## R1 状态字段
 
