@@ -16,7 +16,8 @@ def main():
     args = parser.parse_args()
     data = json.loads(args.summary.read_text())
     figure, axes = plt.subplots(2, 2, figsize=(11.2, 6.2), layout="constrained", sharex=True)
-    figure.suptitle("G1 speed commands · Fixed initial states · Seed 42", loc="left", fontweight="bold")
+    figure.suptitle("G1 speed commands · Fixed initial states · Seed 42",
+                    x=0.02, ha="left", fontweight="bold")
     for variant, color, marker in (("ordinary", "#13689c", "o"), ("conditional", "#b15821", "s")):
         checkpoints = data[variant]["checkpoints"]
         millions = [checkpoint["environment_steps"] / 1e6 for checkpoint in checkpoints]

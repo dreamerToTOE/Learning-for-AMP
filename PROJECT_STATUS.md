@@ -1,6 +1,6 @@
 # Project Status
 
-- **当前阶段 R3 / IN_PROGRESS，更新于 2026-11-25。** R3-2 普通判别器已冻结为 `PARTIAL`。4.194M 步末档的 1.0 m/s 指令下 25/32 持续步行，1.9 m/s 指令下 25/32 完整运行、0/32 持续慢跑。R3-3 的条件标签 smoke 已通过，正在进行同预算对照。 [速度任务、评估和视频](reports/R3_speed_amp.md)
+- **R3 核心实验 / COMPLETE_WITH_LIMITATIONS，更新于 2026-11-25。** R3-2 普通判别器与 R3-3 条件判别器各完成 4.194M 步，末档均已冻结。1.0 m/s 指令下分别有 25/32、24/32 持续步行。两组在 1.9 m/s 指令下持续慢跑均为 0/32，两个切换方向均未完成双技能切换。条件判别器提高了高速指令响应。 [同预算对照和配对视频](reports/R3_speed_amp.md)
 - **R3-0 已完成，R3-1 `PARTIAL` 已冻结。** 原始混合 AMP 的 8.389M 末档 30/30 步行初态走满 10 秒。30 个慢跑初态中 21 个减速后走满，9 个跌倒，持续慢跑 0/30。 [基线报告](reports/R3_walk_jog_baseline.md)
 - **R2 / COMPLETE_WITH_LIMITATIONS。** 单技能 AMP 仿真行走通过基础验收。原始专家片段的来源和许可待核验，R3 可以使用来源和许可独立核实的数据。
 - **G1 纯风格 AMP 的 4,194,304 步 checkpoint 已冻结。** seed42 在独立 MimicKit / Newton 环境完成连续 1,024 次更新。100 个新初态均直立行走至 10 秒，完整率 100%（Wilson 95% 区间 96.3%–100%），无跌倒，平均前进 9.21 m、横向位移 −2.51 m。 [独立评估](reports/r2_g1_single_skill/amp_4m_heldout_100.json)
@@ -103,10 +103,9 @@
 
 ## 下一步
 
-1. 完成 R3-3 条件判别器的同预算对照，用同一批初态评估两档指令和切换。
-2. R3-4 做轻量对称性尝试，R3-5/6 按实际问题选做。每项一轮诊断、一轮修正。R3 正式训练建议累计 2–3 小时，预计超出此前 4–5 小时授权预算先汇报。
-3. R4 收尾 AMP 报告、视频、简历与面试材料，保留负结果与限制。
-4. R5 优先进入 G1 Motion Tracking / BeyondMimic 的数据重定向和 RL 跟踪部分。R6 聚焦独立推理、Sim2Sim、DR 与扰动及部署基础。均尚未开始，真机另需硬件和授权。
+1. R4 收尾 AMP 报告、视频、简历与面试材料，保留奖励漏洞与慢跑覆盖不足的实测案例。
+2. R3-4 对称性和 R3-5/6 采样及门控保留为按需选做。
+3. R5 优先进入 G1 Motion Tracking / BeyondMimic 的数据重定向和 RL 跟踪部分。R6 聚焦独立推理、Sim2Sim、DR 与扰动及部署基础。均尚未开始，真机另需硬件和授权。
 
 ## 阶段记录
 
@@ -115,7 +114,7 @@
 | R0 环境与上游审计 | PARTIAL | `reports/R0_environment_audit.md`、项目外部 `../r0_smoke_output.txt`、官方 v2.1.1 Walk smoke 日志 |
 | R1 官方 AMP baseline | COMPLETE_WITH_LIMITATIONS | [R1 报告](reports/R1_amp_baseline.md)、[路线纠偏](reports/R1_reassessment.md)、[容量与小样本审计](reports/R1_capacity_and_small_batch.md)、[高并行容量补测](reports/r1_capacity_sweep_high_20261124.json)、[20.48M 冻结评估](reports/R1_eval_freeze_20m.md)、[20.48M 到 40.96M 恢复报告](reports/R1_resume_to_40m.md)、[40.96M 冻结评估](reports/R1_eval_freeze_40m.md)、[速度跟踪 PPO/AMP 协议](reports/R1_speed_tracking_comparison_protocol.md)、[速度跟踪 smoke](reports/R1_speed_tracking_smoke.md)、[seed42 速度对照](reports/R1_speed_tracking_seed42.md)、[奖励漏洞诊断](reports/R1_reward_hacking_audit.md) |
 | R2 G1 单技能 | COMPLETE_WITH_LIMITATIONS | 仿真步行验收通过，原始数据来源与许可待核验。 [冻结评估](reports/R2_g1_single_skill.md) |
-| R3 多技能诊断与消融 | IN_PROGRESS | R3-0 完成，R3-1 `PARTIAL` 已冻结。 [混合 AMP 独立评估](reports/R3_walk_jog_baseline.md) · [阶段路线图](docs/ROADMAP.md) |
+| R3 多技能诊断与消融 | COMPLETE_WITH_LIMITATIONS | R3-0 完成，R3-1/2 为 `PARTIAL`。R3-3 完成同预算对照，在持续慢跑及完整走跑切换上为 `NEGATIVE_RESULT`。 [混合 AMP 独立评估](reports/R3_walk_jog_baseline.md) · [条件判别器对照](reports/R3_speed_amp.md) |
 | R4 AMP 归档与求职材料 | NOT_STARTED | — |
 | R5 Motion Tracking / BeyondMimic | NOT_STARTED | [路线图](docs/ROADMAP.md) |
 | R6 鲁棒运控与部署 | NOT_STARTED | [路线图](docs/ROADMAP.md) |

@@ -64,6 +64,48 @@ R3-2 使用普通判别器。R3-3 使用同一套 AMP 更新，只给判别器�
 
 Smoke 正常完成 32,768 步，耗时 24.85 秒，GPU 整卡峰值 4,415 MiB。Actor 观测仍为 238 维，判别器从 2,390 增为 2,391 维。两组的 Actor/Critic 初始权重散列相同。逐条验证了 rollout 指令与生成动作的指令一致，四段专家标签与源文件一致，replay 样本同时含两个速度标签。末次 rollout 的两档标签数为 2,013 和 2,083，随机抽取 2,048 个 replay 样本的计数为 1,068 和 980。 [Smoke 检查](r3_speed_amp/conditional_smoke.json)
 
+### 末档同预算对照
+
+两组均完成 1,024 次更新和 4,194,304 步，均正常退出。训练入口、环境配置、种子、资产和采样配置逐项核对，环境配置唯一差异是判别器是否接收速度。两组的固定组共享 12 个物理初态，末档独立组共享另外 32 个。每个初态在四条指令序列中都核对了指令以外的初始观测散列。 [阶段曲线](r3_speed_amp/fixed_command_trends.png) · [对照汇总](r3_speed_amp/comparison.json)
+
+| 物理初态 | 指令 | 普通 D 成功 / 跌倒 | 条件 D 成功 / 跌倒 | 普通 D 速度 MAE | 条件 D 速度 MAE |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 步行 | 1.0 m/s | 16/16 · 0/16 | 16/16 · 0/16 | 0.171 | 0.178 |
+| 步行 | 1.9 m/s | 0/16 · 0/16 | 0/16 · 0/16 | 0.543 | 0.462 |
+| 慢跑 | 1.0 m/s | 9/16 · 7/16 | 8/16 · 8/16 | 0.570 | 0.635 |
+| 慢跑 | 1.9 m/s | 0/16 · 7/16 | 0/16 · 8/16 | 1.083 | 1.117 |
+
+合并物理初态后，条件 D 的 1.0 m/s 步行成功率为 24/32（75.0%），普通 D 为 25/32（78.1%）。1.9 m/s 指令下，两组慢跑成功均为 0/32，跌倒率分别为 25.0% 和 21.9%。固定 10 秒的高速指令 MAE 为条件 D 0.790 m/s、普通 D 0.813 m/s。限制为完成回合末段，MAE 分别为 0.409 和 0.499 m/s。 [条件 D 逐回合数据](r3_speed_amp/conditional_held_out.json) · [普通 D 逐回合数据](r3_speed_amp/ordinary_held_out.json)
+
+| 第 5 秒切换 | 普通 D 活到切换 | 条件 D 活到切换 | 切换后达标，普通 D / 条件 D | 完整双技能切换，普通 D / 条件 D |
+| --- | ---: | ---: | ---: | ---: |
+| 1.0 → 1.9 m/s | 25/32 | 24/32 | 0/25 · 0/24 | 0/32 · 0/32 |
+| 1.9 → 1.0 m/s | 25/32 | 24/32 | 25/25 · 24/24 | 0/32 · 0/32 |
+
+降速后的首次达标窗口平均在切换后 1.50 / 1.96 秒结束（普通 D / 条件 D），其中 1.50 秒是评估可分辨的最短窗口。降速前都没有建立持续慢跑，因此该项只说明回到目标步行的能力。
+
+### 慢跑覆盖诊断与结论
+
+- 共有 23 个物理初态在两组、两种恒定指令下都完整运行。只比较这些相同初态，提高指令使末段的局部前速增加约 0.28 m/s（普通 D）和 0.44 m/s（条件 D）。这支持速度响应来自指令。慢跑初态下仍更容易早期失稳。
+- 条件 D 的 48 个高速指令末段窗口中有 4 个进入 1.50–2.55 m/s 的慢跑速度区间，普通 D 为 0/50。两组完整回合的末段窗口均无双脚同时离地至少 1 cm 的帧。高速指令的 7 / 8 个跌倒均来自慢跑初态，均在 1.5 秒内触发。条件 D 的 8 次都触发了骨盆倾角终止。
+- 高速指令下，完整回合末段的前速分布距 HOLD 慢跑的 W1 从 0.569 降至 0.462 m/s，平均关节角 W1 从 0.155 升至 0.162 rad，平均关节角速度 W1 从 0.822 升至 0.934 rad/s。这里比较的是普通 D 的 25 个与条件 D 的 24 个完整回合。速度更接近示范，关节运动整体没有显示相同方向的改善。
+
+R3-3 在持续慢跑及完整走跑切换上记为 `NEGATIVE_RESULT`。条件判别器使这个种子的策略更明显地响应高速指令，稳定性与运动风格没有一致改善。两组在后期的慢跑成功率和末段腾空指标一直为零，正式对照在 4.194M 步归档。保留普通判别器的控速步行权重和条件判别器实现。结果来自一个训练 seed，独立相位取自已使用的四段动作。
+
+条件 D 正式训练耗时 1,476.26 秒，整卡峰值 4,590 MiB，最低空闲 3,228 MiB，端到端约 2,841 步/s。A/B 共耗时约 50 分 35 秒。加上 R3-1 两段正式训练和这次停止的预跑，累计约 1 小时 48 分钟。两组在不同的外部 GPU 负载下执行，整卡资源差异仅作运行记录。条件 D 末档 SHA-256 为 `fb67f453264ecab452ae21555bd180d48d66a0ea7efa4dc5664c6ef7765ed8c8`，两组权重、配置和轨迹分别冻结于本地 `artifacts/r3_speed_amp/frozen_seed42_4194304/` 下。 [冻结工件校验值](r3_speed_amp/frozen_artifacts.sha256)
+
+### 同初态配对录像
+
+与 R3-2 录像表逐行共享初态和指令。每段画面来自实际 Newton 闭环轨迹，以 MuJoCo 离线渲染。 [条件 D 带时间标注的代表帧](r3_speed_amp/conditional_frames.png) · [配对录像校验值](r3_speed_amp/media/video.sha256)
+
+| 条件 D 回合 | 评估 seed | 视频 |
+| --- | ---: | --- |
+| 1.0 m/s 持续步行 | 47101 | [下载 MP4](https://raw.githubusercontent.com/dreamerToTOE/Learning-for-AMP/main/reports/r3_speed_amp/media/conditional_47101_walk.mp4) |
+| 1.9 m/s 指令下的步伐 | 47012 | [下载 MP4](https://raw.githubusercontent.com/dreamerToTOE/Learning-for-AMP/main/reports/r3_speed_amp/media/conditional_47012_jog.mp4) |
+| 1.0 → 1.9 m/s 指令切换 | 47000 | [下载 MP4](https://raw.githubusercontent.com/dreamerToTOE/Learning-for-AMP/main/reports/r3_speed_amp/media/conditional_47000_walk_to_jog.mp4) |
+| 1.9 → 1.0 m/s 指令切换 | 47110 | [下载 MP4](https://raw.githubusercontent.com/dreamerToTOE/Learning-for-AMP/main/reports/r3_speed_amp/media/conditional_47110_jog_to_walk.mp4) |
+| 1.9 m/s 指令下提前跌倒 | 47106 | [下载 MP4](https://raw.githubusercontent.com/dreamerToTOE/Learning-for-AMP/main/reports/r3_speed_amp/media/conditional_47106_jog.mp4) |
+
 ## 复现
 
 先按 R3-1 报告准备 MimicKit 环境与 HOLD 数据。从仓库根目录运行以下命令，使用各自的新目录。 [环境与数据准备](R3_walk_jog_baseline.md#复现入口)
@@ -83,4 +125,14 @@ for index in 0000000000 0000000250 0000000500 0000000750 0000001000 0000001023; 
   bash scripts/r3_eval_speed_amp.sh conditional fixed "$conditional" "$index"
 done
 bash scripts/r3_eval_speed_amp.sh conditional held_out "$conditional" 0000001023
+../r3/data-venv/bin/python scripts/r3_summarize_speed_amp.py "$ordinary" "$conditional" reports/r3_speed_amp/comparison.json
+../r3/data-venv/bin/python scripts/r3_plot_speed_amp.py reports/r3_speed_amp/comparison.json
+```
+
+```bash
+MUJOCO_GL=egl ../r3/data-venv/bin/python scripts/r3_render_speed_amp.py \
+  ../r3/runs/r3_3_speed_seed42_conditional_4m/eval_held_out_0000001023.json \
+  --xml ../r2/upstream/MimicKit/data/assets/g1/g1.xml \
+  --output ../r3/runs/r3_3_speed_seed42_conditional_4m/videos \
+  47101_walk 47012_jog 47000_walk_to_jog 47110_jog_to_walk 47106_jog
 ```

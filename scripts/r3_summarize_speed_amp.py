@@ -1,6 +1,7 @@
 """Archive comparisons from matching G1 training budgets and physical resets."""
 
 import argparse
+from collections import Counter
 import csv
 import hashlib
 import json
@@ -78,6 +79,43 @@ def check_comparison(ordinary, conditional):
     return {split: len(set(starts.values())) for split, starts in reset_sets.items()}
 
 
+def command_response(run, index):
+    result = json.loads((run / f"eval_held_out_{index}.json").read_text())
+    episodes = result["episodes"]
+    commands = {
+        skill: {e["seed"]: e for e in episodes if e["schedule"] == skill}
+        for skill in ("walk", "jog")
+    }
+    common = [(walk, commands["jog"][seed]) for seed, walk in commands["walk"].items()
+              if walk["terminal"] == commands["jog"][seed]["terminal"] == "TIME"]
+    deltas = {
+        walk["seed"]: mean(w["median_forward_m_s"] for w in jog["tail_windows"][0])
+        - mean(w["median_forward_m_s"] for w in walk["tail_windows"][0])
+        for walk, jog in common
+    }
+    windows = [w for e in commands["jog"].values()
+               if e["terminal"] == "TIME" for w in e["tail_windows"][0]]
+    setup = result["protocol"]["evaluation"]
+    jog_band = result["gait"]["jog"]
+    lo, hi = jog_band["forward_speed_m_s"]
+    failures = [e for e in commands["jog"].values() if e["terminal"] == "FAIL"]
+    return {
+        "paired_phases_completing_both_constant_commands": len(common),
+        "mean_paired_change_in_tail_local_vx_m_s": mean(deltas.values()) if deltas else None,
+        "change_in_tail_local_vx_by_seed_m_s": deltas,
+        "jog_command_completed_tail_windows": len(windows),
+        "jog_command_windows_in_jog_speed_band": sum(lo <= w["median_forward_m_s"] <= hi for w in windows),
+        "jog_command_windows_with_flight": sum(w["flight_fraction"] > 0 for w in windows),
+        "jog_command_windows_meeting_flight_criteria": sum(
+            w["flight_fraction"] >= jog_band["no_foot_support_fraction"][0]
+            and w["flight_bouts"] >= setup["min_jog_flight_bouts_per_window"] for w in windows
+        ),
+        "jog_command_falls_by_initial_skill": dict(Counter(e["initial_skill"] for e in failures)),
+        "jog_command_fall_reasons": dict(Counter(reason for e in failures for reason in e["fall_reasons"])),
+        "jog_command_falls_within_1_5_s": sum(e["duration_s"] <= 1.5 for e in failures),
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("ordinary", type=Path)
@@ -89,7 +127,21 @@ def main():
         assert a["initial_parameters"][key] == b["initial_parameters"][key]
     assert a["environment_steps"] == b["environment_steps"]
     reset_counts = check_comparison(args.ordinary, args.conditional)
-    output = {"ordinary": a, "conditional": b, "matched_unique_reset_counts": reset_counts}
+    responses = {
+        result["variant"]: command_response(run, result["checkpoints"][-1]["index"])
+        for run, result in ((args.ordinary, a), (args.conditional, b))
+    }
+    delta_key = "change_in_tail_local_vx_by_seed_m_s"
+    shared = sorted(responses["ordinary"][delta_key].keys() & responses["conditional"][delta_key].keys())
+    output = {
+        "ordinary": a, "conditional": b, "matched_unique_reset_counts": reset_counts,
+        "command_response": responses,
+        "resets_completing_both_constant_commands_in_both_variants": shared,
+        "mean_change_in_tail_local_vx_on_those_resets_m_s": {
+            variant: mean(row[delta_key][seed] for seed in shared) if shared else None
+            for variant, row in responses.items()
+        },
+    }
     args.output.write_text(json.dumps(output, indent=2, allow_nan=False) + "\n")
     print(a["run"], a["startup_to_exit_s"], "s")
     print(b["run"], b["startup_to_exit_s"], "s")
