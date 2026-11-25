@@ -37,6 +37,7 @@
 | [R1 奖励漏洞诊断与归档](reports/R1_reward_hacking_audit.md) | 接触实测、冻结模型及阶段限制 |
 | [R2 G1 单技能 AMP](reports/R2_g1_single_skill.md) | 上游选择、资产与动作溯源、复现记录 |
 | [R3 G1 步行与慢跑基线](reports/R3_walk_jog_baseline.md) | HOLD 数据、原始多技能 AMP 与独立评估 |
+| [R3 G1 速度指令与条件判别器](reports/R3_speed_amp.md) | 两档指令、交叉初态、走跑切换与仿真视频 |
 
 ## 规划中的目录结构（不代表已有实现）
 

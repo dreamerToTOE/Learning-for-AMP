@@ -1,0 +1,7 @@
+{
+  "walk": "47101_walk",
+  "jog": "47012_jog",
+  "walk_to_jog": "47000_walk_to_jog",
+  "jog_to_walk": "47110_jog_to_walk",
+  "jog_fall": "47106_jog"
+}

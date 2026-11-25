@@ -29,6 +29,41 @@ R3-2 使用普通判别器。R3-3 使用同一套 AMP 更新，只给判别器�
 
 修订版普通判别器 smoke 完成 32,768 步并正常退出，耗时 25.46 秒，整卡显存峰值 4,516 MiB。在相同 128 环境首步探针中，触发终止的环境从 11 减至 0，切换时序和三个网络更新检查均通过。
 
+## R3-2 普通判别器
+
+取得可控步行和对速度指令的部分响应，阶段记为 `PARTIAL`。固定组在 2.052M 档仍全部跌倒，3.076M 档开始在步行指令下有 9/12 回合达标，4.100M 和 4.194M 档分别为 10/12 和 9/12。三个后期检查点的 1.9 m/s 指令下均无慢跑达标回合。 [固定初态与训练记录](r3_speed_amp/ordinary_summary.json)
+
+4,194,304 步末档在 32 个新初态上逐一运行四条指令序列，共 128 回合。误差为世界前向速度的绝对误差均值，跌倒后以 0 m/s 补齐到 10 秒。
+
+| 物理初态 | 恒定指令 | 完整 10 s | 目标步态成功 | 跌倒 | 速度 MAE (m/s) |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 步行 | 1.0 m/s | 16/16 | 16/16 | 0/16 | 0.171 |
+| 步行 | 1.9 m/s | 16/16 | 0/16 | 0/16 | 0.543 |
+| 慢跑 | 1.0 m/s | 9/16 | 9/16 | 7/16 | 0.570 |
+| 慢跑 | 1.9 m/s | 9/16 | 0/16 | 7/16 | 1.083 |
+
+完整回合的末段局部前速由 1.0 指令下的平均 1.07 m/s 提高到 1.9 指令下的 1.36 m/s。1.9 指令下的 50 个末段窗口没有达到 1 cm 的双脚腾空判据，50 个窗口中有 49 个未分类、1 个为步行。完整回合末段的速度分布与对应 HOLD 的 W1 差距为步行 0.126 m/s、慢跑目标 0.569 m/s，关节角速度平均 W1 分别为 0.730 和 0.822 rad/s。两项风格估计均来自每档完整的 25 个回合。
+
+两种切换均有 25/32 回合活到切换点并完成 10 秒。升至 1.9 m/s 后慢跑达标为 0/25。降至 1.0 m/s 后有 25/25 在第一个 1.5 秒窗口达到步行判据，切换前均无持续慢跑，因此两个方向的完整技能切换均为 0/32。 [末档逐回合结果](r3_speed_amp/ordinary_held_out.json)
+
+正式训练耗时 1,558.95 秒，约 2,690 环境步/s，整卡峰值 7,035 MiB。峰值包含并行的另一 Isaac Sim 进程，当时观察到对方占约 2.4 GiB。训练正常退出，日志无 OOM 或非有限指标。末档本地冻结在 `artifacts/r3_speed_amp/frozen_seed42_4194304/ordinary/`，SHA-256 为 `7e5e4deedf99116b752604c27522dbfde4c7cdee26bfb052ab347b4520a03314`。
+
+### R3-2 录像
+
+四条指令序列从能完成该回合的样本中选取接近该组中位速度误差的案例，加一例慢跑指令下的典型跌倒。配对实验沿用相同初态和命令。画面显示实际速度、指令和左右脚接触，`air` 代表双脚无支撑并且足底离地。 [带时间标注的代表帧](r3_speed_amp/ordinary_frames.png) · [视频校验值](r3_speed_amp/media/video.sha256)
+
+| 行为 | 评估 seed | 视频 |
+| --- | ---: | --- |
+| 慢跑初态在 1.0 m/s 指令下稳定步行 | 47101 | [下载 MP4](https://raw.githubusercontent.com/dreamerToTOE/Learning-for-AMP/main/reports/r3_speed_amp/media/ordinary_47101_walk.mp4) |
+| 步行初态收到 1.9 m/s 后加快步行 | 47012 | [下载 MP4](https://raw.githubusercontent.com/dreamerToTOE/Learning-for-AMP/main/reports/r3_speed_amp/media/ordinary_47012_jog.mp4) |
+| 5 秒时从 1.0 切到 1.9 m/s | 47000 | [下载 MP4](https://raw.githubusercontent.com/dreamerToTOE/Learning-for-AMP/main/reports/r3_speed_amp/media/ordinary_47000_walk_to_jog.mp4) |
+| 5 秒时从 1.9 切到 1.0 m/s | 47110 | [下载 MP4](https://raw.githubusercontent.com/dreamerToTOE/Learning-for-AMP/main/reports/r3_speed_amp/media/ordinary_47110_jog_to_walk.mp4) |
+| 慢跑初态在 1.9 m/s 指令下提前跌倒 | 47106 | [下载 MP4](https://raw.githubusercontent.com/dreamerToTOE/Learning-for-AMP/main/reports/r3_speed_amp/media/ordinary_47106_jog.mp4) |
+
+## R3-3 条件判别器
+
+Smoke 正常完成 32,768 步，耗时 24.85 秒，GPU 整卡峰值 4,415 MiB。Actor 观测仍为 238 维，判别器从 2,390 增为 2,391 维。两组的 Actor/Critic 初始权重散列相同。逐条验证了 rollout 指令与生成动作的指令一致，四段专家标签与源文件一致，replay 样本同时含两个速度标签。末次 rollout 的两档标签数为 2,013 和 2,083，随机抽取 2,048 个 replay 样本的计数为 1,068 和 980。 [Smoke 检查](r3_speed_amp/conditional_smoke.json)
+
 ## 复现
 
 先按 R3-1 报告准备 MimicKit 环境与 HOLD 数据。从仓库根目录运行以下命令，使用各自的新目录。 [环境与数据准备](R3_walk_jog_baseline.md#复现入口)

@@ -1,0 +1,27 @@
+{
+  "actor_obs_size": 238,
+  "disc_obs_size": 2391,
+  "switch_step_command_m_s": 1.0,
+  "next_obs_command_m_s": 1.899999976158142,
+  "demo_commands_m_s": [
+    1.0,
+    1.0,
+    1.899999976158142,
+    1.899999976158142
+  ],
+  "preflight_failed_envs": 0,
+  "last_rollout_command_counts": [
+    2013,
+    2083
+  ],
+  "replay_command_counts": [
+    1068,
+    980
+  ],
+  "gradient_penalty_excludes_command": true,
+  "parameters_updated": {
+    "actor": true,
+    "critic": true,
+    "discriminator": true
+  }
+}
