@@ -1,0 +1,31 @@
+{
+  "commands_m_s": {"walk": 1.0, "jog": 1.9},
+  "command_duration_s": [3.0, 5.0],
+  "steering_reward": {
+    "reward_steering_tar_w": 0.7,
+    "reward_steering_face_w": 0.3,
+    "reward_steering_vel_scale": 2.0
+  },
+  "task_reward_weight": 0.5,
+  "disc_reward_weight": 0.5,
+  "fall": {"min_pelvis_height_m": 0.66, "max_torso_tilt_deg": 50.0, "nonfoot_contact_n": 5.0},
+  "training": {
+    "seed": 42,
+    "environments": 128,
+    "smoke_steps": 32768,
+    "formal_steps": 4194304,
+    "iters_per_output": 250
+  },
+  "evaluation": {
+    "fixed_seed": 46000,
+    "held_out_seed": 47000,
+    "fixed_phases_per_initial_skill": 6,
+    "held_out_phases_per_initial_skill": 16,
+    "switch_s": 5.0,
+    "switch_check_stride_s": 0.5,
+    "forward_mae_limit_m_s": 0.35,
+    "sole_clearance_m": 0.01,
+    "min_jog_flight_bouts_per_window": 2,
+    "max_walk_flight_frames_per_window": 1
+  }
+}
