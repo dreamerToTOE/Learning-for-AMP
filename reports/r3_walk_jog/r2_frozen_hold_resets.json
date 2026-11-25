@@ -1,0 +1,436 @@
+{
+  "checkpoint_sha256": "81e0d7de6f62fd38eba67cf94357a2744bf42b2197e04ef8adce756dae973bc1",
+  "split": "fixed",
+  "protocol": {
+    "fixed_evaluation_seed": 44000,
+    "held_out_evaluation_seed": 45000,
+    "fixed_episodes_per_initial_skill": 5,
+    "held_out_episodes_per_initial_skill": 30,
+    "max_steps": 300,
+    "burn_in_s": 1.0,
+    "window_s": 1.5,
+    "sustained_windows": 2,
+    "contact_force_n": 5.0,
+    "min_support_switches": 2,
+    "min_pelvis_p10_m": 0.68,
+    "max_pelvis_tilt_p90_deg": 40.0,
+    "max_abs_mean_lateral_m_s": 0.5,
+    "max_abs_mean_yaw_rate_rad_s": 0.6,
+    "walk": {
+      "forward_speed_m_s": [
+        0.65,
+        1.3
+      ],
+      "no_foot_support_fraction": [
+        0.0,
+        0.35
+      ]
+    },
+    "jog": {
+      "forward_speed_m_s": [
+        1.5,
+        2.55
+      ],
+      "no_foot_support_fraction": [
+        0.07,
+        1.0
+      ]
+    }
+  },
+  "trace_columns": [
+    "x",
+    "y",
+    "z",
+    "vx_world",
+    "vy_world",
+    "vz_world",
+    "qx",
+    "qy",
+    "qz",
+    "qw",
+    "left_hip_pitch_joint",
+    "left_hip_roll_joint",
+    "left_hip_yaw_joint",
+    "left_knee_joint",
+    "left_ankle_pitch_joint",
+    "left_ankle_roll_joint",
+    "right_hip_pitch_joint",
+    "right_hip_roll_joint",
+    "right_hip_yaw_joint",
+    "right_knee_joint",
+    "right_ankle_pitch_joint",
+    "right_ankle_roll_joint",
+    "waist_yaw_joint",
+    "waist_roll_joint",
+    "waist_pitch_joint",
+    "left_shoulder_pitch_joint",
+    "left_shoulder_roll_joint",
+    "left_shoulder_yaw_joint",
+    "left_elbow_joint",
+    "left_wrist_roll_joint",
+    "left_wrist_pitch_joint",
+    "left_wrist_yaw_joint",
+    "right_shoulder_pitch_joint",
+    "right_shoulder_roll_joint",
+    "right_shoulder_yaw_joint",
+    "right_elbow_joint",
+    "right_wrist_roll_joint",
+    "right_wrist_pitch_joint",
+    "right_wrist_yaw_joint",
+    "left_sole_force_n",
+    "right_sole_force_n",
+    "nonfoot_max_force_n",
+    "clipped_fraction",
+    "done"
+  ],
+  "episodes": [
+    {
+      "initial_skill": "walk",
+      "motion_id": 0,
+      "seed": 44000,
+      "initial_phase": 0.2677440382469608,
+      "initial_observation_sha256": "c1179da24bd33a339fda648fd780bb94c3f0ce14887a43fc58abce654cc1ae4e",
+      "terminal": "FAIL",
+      "steps": 35,
+      "duration_s": 1.1666666666666667,
+      "world_forward_m": 2.285858154296875,
+      "world_lateral_m": 0.27381935715675354,
+      "target_clip_fraction": 0.0,
+      "sustained_skills": [],
+      "windows": []
+    },
+    {
+      "initial_skill": "walk",
+      "motion_id": 1,
+      "seed": 44001,
+      "initial_phase": 0.7617746425837214,
+      "initial_observation_sha256": "eb2076a4f3ce741556c2a1daafe46f1588665b96284efce5a129e3f1a7297eba",
+      "terminal": "FAIL",
+      "steps": 23,
+      "duration_s": 0.7666666666666666,
+      "world_forward_m": 1.2749741077423096,
+      "world_lateral_m": 0.24052110314369202,
+      "target_clip_fraction": 0.0,
+      "sustained_skills": [],
+      "windows": []
+    },
+    {
+      "initial_skill": "walk",
+      "motion_id": 0,
+      "seed": 44002,
+      "initial_phase": 0.22060590337707875,
+      "initial_observation_sha256": "af212db0ed3c6e13ca3a2ab55730bb9d8b82222b487415e390b9bb1cdd9e07a3",
+      "terminal": "TIME",
+      "steps": 300,
+      "duration_s": 10.0,
+      "world_forward_m": 10.222308158874512,
+      "world_lateral_m": -1.3918240070343018,
+      "target_clip_fraction": 0.0,
+      "sustained_skills": [
+        "walk"
+      ],
+      "windows": [
+        {
+          "start_s": 1.0,
+          "mode": "walk",
+          "median_forward_m_s": 1.1329787855582822,
+          "mean_lateral_m_s": 0.04743917490292814,
+          "mean_yaw_rate_rad_s": -0.08812299156569,
+          "pelvis_height_p10_m": 0.7492959499359131,
+          "pelvis_tilt_p90_deg": 5.384798009855623,
+          "foot_support_switches": 3,
+          "no_foot_support_fraction": 0.0,
+          "nonfoot_peak_force_n": 0.0,
+          "knee_range_rad": [
+            1.285943627357483,
+            1.317196011543274
+          ]
+        },
+        {
+          "start_s": 2.5,
+          "mode": "walk",
+          "median_forward_m_s": 1.0697787628343223,
+          "mean_lateral_m_s": 0.04744345882216159,
+          "mean_yaw_rate_rad_s": -0.021217945072722094,
+          "pelvis_height_p10_m": 0.747169554233551,
+          "pelvis_tilt_p90_deg": 4.819095721941153,
+          "foot_support_switches": 3,
+          "no_foot_support_fraction": 0.022222222222222223,
+          "nonfoot_peak_force_n": 0.0,
+          "knee_range_rad": [
+            1.3165913820266724,
+            1.329620122909546
+          ]
+        },
+        {
+          "start_s": 4.0,
+          "mode": "walk",
+          "median_forward_m_s": 1.0007282381727682,
+          "mean_lateral_m_s": -0.06444070885603519,
+          "mean_yaw_rate_rad_s": -0.0741792343282942,
+          "pelvis_height_p10_m": 0.7503433227539062,
+          "pelvis_tilt_p90_deg": 5.317048313280698,
+          "foot_support_switches": 3,
+          "no_foot_support_fraction": 0.022222222222222223,
+          "nonfoot_peak_force_n": 0.0,
+          "knee_range_rad": [
+            1.3856343030929565,
+            1.2719614505767822
+          ]
+        },
+        {
+          "start_s": 5.5,
+          "mode": "walk",
+          "median_forward_m_s": 0.929230015468772,
+          "mean_lateral_m_s": -0.1672439073536178,
+          "mean_yaw_rate_rad_s": -0.07748144760307529,
+          "pelvis_height_p10_m": 0.7512614727020264,
+          "pelvis_tilt_p90_deg": 5.929348605489664,
+          "foot_support_switches": 3,
+          "no_foot_support_fraction": 0.06666666666666667,
+          "nonfoot_peak_force_n": 0.0,
+          "knee_range_rad": [
+            1.3880671262741089,
+            1.30098557472229
+          ]
+        },
+        {
+          "start_s": 7.0,
+          "mode": "walk",
+          "median_forward_m_s": 0.9532439830908911,
+          "mean_lateral_m_s": -0.16632431959976146,
+          "mean_yaw_rate_rad_s": 0.03379464814904867,
+          "pelvis_height_p10_m": 0.7501085996627808,
+          "pelvis_tilt_p90_deg": 6.149466906476868,
+          "foot_support_switches": 3,
+          "no_foot_support_fraction": 0.022222222222222223,
+          "nonfoot_peak_force_n": 0.0,
+          "knee_range_rad": [
+            1.3953049182891846,
+            1.3003722429275513
+          ]
+        },
+        {
+          "start_s": 8.5,
+          "mode": "walk",
+          "median_forward_m_s": 0.8643578855247119,
+          "mean_lateral_m_s": -0.1720710291481452,
+          "mean_yaw_rate_rad_s": 0.01044866881532856,
+          "pelvis_height_p10_m": 0.7512438297271729,
+          "pelvis_tilt_p90_deg": 6.237998051138158,
+          "foot_support_switches": 3,
+          "no_foot_support_fraction": 0.022222222222222223,
+          "nonfoot_peak_force_n": 0.0,
+          "knee_range_rad": [
+            1.3935487270355225,
+            1.2473818063735962
+          ]
+        }
+      ]
+    },
+    {
+      "initial_skill": "walk",
+      "motion_id": 1,
+      "seed": 44003,
+      "initial_phase": 0.5928209802961656,
+      "initial_observation_sha256": "f0939b506bacf75d020f19ccfe8428846985754bc42f68f8027deefcf05514f8",
+      "terminal": "FAIL",
+      "steps": 35,
+      "duration_s": 1.1666666666666667,
+      "world_forward_m": 1.3006410598754883,
+      "world_lateral_m": -1.2192230224609375,
+      "target_clip_fraction": 0.0,
+      "sustained_skills": [],
+      "windows": []
+    },
+    {
+      "initial_skill": "walk",
+      "motion_id": 0,
+      "seed": 44004,
+      "initial_phase": 0.05997553816495882,
+      "initial_observation_sha256": "19ad0475dc0780d3a9ca89f2dbd63face41d1a84b60f35a64f255eb4441e5342",
+      "terminal": "FAIL",
+      "steps": 43,
+      "duration_s": 1.4333333333333333,
+      "world_forward_m": 1.7803300619125366,
+      "world_lateral_m": -0.33440080285072327,
+      "target_clip_fraction": 0.0,
+      "sustained_skills": [],
+      "windows": []
+    },
+    {
+      "initial_skill": "jog",
+      "motion_id": 2,
+      "seed": 44100,
+      "initial_phase": 0.923194712382755,
+      "initial_observation_sha256": "b27dba9094f24901efd9b5ae028c18595ecd8946ed9a34209e5346f77c7211a4",
+      "terminal": "FAIL",
+      "steps": 8,
+      "duration_s": 0.26666666666666666,
+      "world_forward_m": 0.6524786949157715,
+      "world_lateral_m": -0.05404513329267502,
+      "target_clip_fraction": 0.0,
+      "sustained_skills": [],
+      "windows": []
+    },
+    {
+      "initial_skill": "jog",
+      "motion_id": 3,
+      "seed": 44101,
+      "initial_phase": 0.08524411880319938,
+      "initial_observation_sha256": "05744db22a29d4c571c07f170c8e96d70179175c81605094b4c938fab02b9558",
+      "terminal": "FAIL",
+      "steps": 12,
+      "duration_s": 0.4,
+      "world_forward_m": 0.7132283449172974,
+      "world_lateral_m": 0.13402442634105682,
+      "target_clip_fraction": 0.0,
+      "sustained_skills": [],
+      "windows": []
+    },
+    {
+      "initial_skill": "jog",
+      "motion_id": 2,
+      "seed": 44102,
+      "initial_phase": 0.8652594948673809,
+      "initial_observation_sha256": "3a5408fc16b71a2a6079845f8125c21d76802c2647d0083a710aba8d848f5aa5",
+      "terminal": "TIME",
+      "steps": 300,
+      "duration_s": 10.0,
+      "world_forward_m": 10.867616653442383,
+      "world_lateral_m": -1.2244793176651,
+      "target_clip_fraction": 0.0,
+      "sustained_skills": [
+        "walk"
+      ],
+      "windows": [
+        {
+          "start_s": 1.0,
+          "mode": "walk",
+          "median_forward_m_s": 1.2564388475055615,
+          "mean_lateral_m_s": 0.2049047503059923,
+          "mean_yaw_rate_rad_s": -0.1298223069424131,
+          "pelvis_height_p10_m": 0.7434593439102173,
+          "pelvis_tilt_p90_deg": 9.023706850793928,
+          "foot_support_switches": 3,
+          "no_foot_support_fraction": 0.022222222222222223,
+          "nonfoot_peak_force_n": 0.0,
+          "knee_range_rad": [
+            1.3440104722976685,
+            1.5389004945755005
+          ]
+        },
+        {
+          "start_s": 2.5,
+          "mode": "walk",
+          "median_forward_m_s": 1.0369205346427013,
+          "mean_lateral_m_s": 0.04184079103253264,
+          "mean_yaw_rate_rad_s": 0.04086574628013599,
+          "pelvis_height_p10_m": 0.7517699599266052,
+          "pelvis_tilt_p90_deg": 5.208839522229205,
+          "foot_support_switches": 3,
+          "no_foot_support_fraction": 0.0,
+          "nonfoot_peak_force_n": 0.0,
+          "knee_range_rad": [
+            1.3822743892669678,
+            1.2970263957977295
+          ]
+        },
+        {
+          "start_s": 4.0,
+          "mode": "walk",
+          "median_forward_m_s": 1.0474580268954319,
+          "mean_lateral_m_s": -0.04124865402028029,
+          "mean_yaw_rate_rad_s": -0.02110162981703717,
+          "pelvis_height_p10_m": 0.748866617679596,
+          "pelvis_tilt_p90_deg": 5.013771627809993,
+          "foot_support_switches": 4,
+          "no_foot_support_fraction": 0.022222222222222223,
+          "nonfoot_peak_force_n": 0.0,
+          "knee_range_rad": [
+            1.3660657405853271,
+            1.2936049699783325
+          ]
+        },
+        {
+          "start_s": 5.5,
+          "mode": "walk",
+          "median_forward_m_s": 0.9521574996652139,
+          "mean_lateral_m_s": -0.12111312336612637,
+          "mean_yaw_rate_rad_s": -0.07383806079404612,
+          "pelvis_height_p10_m": 0.7531423568725586,
+          "pelvis_tilt_p90_deg": 5.91810112193578,
+          "foot_support_switches": 3,
+          "no_foot_support_fraction": 0.0,
+          "nonfoot_peak_force_n": 0.0,
+          "knee_range_rad": [
+            1.4290037155151367,
+            1.2918577194213867
+          ]
+        },
+        {
+          "start_s": 7.0,
+          "mode": "walk",
+          "median_forward_m_s": 0.9236881411722971,
+          "mean_lateral_m_s": -0.1780177008565364,
+          "mean_yaw_rate_rad_s": -0.041550164301097384,
+          "pelvis_height_p10_m": 0.7516664266586304,
+          "pelvis_tilt_p90_deg": 6.436019150147374,
+          "foot_support_switches": 3,
+          "no_foot_support_fraction": 0.022222222222222223,
+          "nonfoot_peak_force_n": 0.0,
+          "knee_range_rad": [
+            1.376729965209961,
+            1.2825219631195068
+          ]
+        },
+        {
+          "start_s": 8.5,
+          "mode": "walk",
+          "median_forward_m_s": 0.8880738164976587,
+          "mean_lateral_m_s": -0.1861743331987506,
+          "mean_yaw_rate_rad_s": 0.05965225419106203,
+          "pelvis_height_p10_m": 0.7505514621734619,
+          "pelvis_tilt_p90_deg": 5.772037340150452,
+          "foot_support_switches": 3,
+          "no_foot_support_fraction": 0.0,
+          "nonfoot_peak_force_n": 0.0,
+          "knee_range_rad": [
+            1.3987075090408325,
+            1.268998146057129
+          ]
+        }
+      ]
+    },
+    {
+      "initial_skill": "jog",
+      "motion_id": 3,
+      "seed": 44103,
+      "initial_phase": 0.7546556890677554,
+      "initial_observation_sha256": "229f56da6cfd7fe47d611d9eab048a640837d9007fa1f6b3c4e6520d87724d8d",
+      "terminal": "FAIL",
+      "steps": 12,
+      "duration_s": 0.4,
+      "world_forward_m": 0.9828965663909912,
+      "world_lateral_m": 0.04002517834305763,
+      "target_clip_fraction": 0.0,
+      "sustained_skills": [],
+      "windows": []
+    },
+    {
+      "initial_skill": "jog",
+      "motion_id": 2,
+      "seed": 44104,
+      "initial_phase": 0.5117201204879896,
+      "initial_observation_sha256": "770490d31210598df34261171819acb2c2f761929dd6545dd01c2fb44a3f97b5",
+      "terminal": "FAIL",
+      "steps": 9,
+      "duration_s": 0.3,
+      "world_forward_m": 0.7212035655975342,
+      "world_lateral_m": 0.041155584156513214,
+      "target_clip_fraction": 0.0,
+      "sustained_skills": [],
+      "windows": []
+    }
+  ]
+}

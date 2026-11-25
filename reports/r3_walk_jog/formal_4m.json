@@ -1,0 +1,1814 @@
+{
+  "run": "r3_1_walk_jog_seed42_4m",
+  "mimickit_commit": "a2c41528c2a34b638611f6c618e4a59f0e151179",
+  "seed": 42,
+  "environments": 128,
+  "rollout_steps_per_environment": 32,
+  "updates": 1024,
+  "environment_steps": 4194304,
+  "exit_code": null,
+  "wall_seconds": 1490.30814743042,
+  "wall_seconds_source": "gpu_before_snapshot_to_last_checkpoint",
+  "gpu_sample_count": 885,
+  "gpu_sampling_seconds": 442.21,
+  "gpu_max_used_mib": 7770,
+  "gpu_min_free_mib": 48,
+  "gpu_average_utilization_pct": 82.08926553672316,
+  "capacity_warnings": [],
+  "checkpoints": [
+    {
+      "environment_steps": 4096,
+      "checkpoint": "model_0000000000.pt",
+      "sha256": "d89e6864b817db046c2f9e9bea16de482f7330bbc9404050d96863218dbdf641",
+      "trainer_diagnostics": {
+        "Iteration": 0.0,
+        "Wall_Time": 0.0008019302288691202,
+        "Samples": 4096.0,
+        "Samples_Per_Second": 1418.798963822911,
+        "Test_Return": 0.0,
+        "Test_Episode_Length": 14.621358871459961,
+        "Test_Episodes": 206.0,
+        "Train_Return": 0.0,
+        "Train_Episode_Length": 14.137168884277344,
+        "Train_Episodes": 226.0,
+        "Critic_Loss": 5.454118728637695,
+        "Actor_Loss": -0.016270635649561882,
+        "Clip_Frac": 0.5074219107627869,
+        "Imp_Ratio": 1.0018467903137207,
+        "Action_Bound_Loss": 0.0,
+        "Disc_Loss": 20.22841453552246,
+        "Disc_Grad_Penalty": 1.8056867122650146,
+        "Disc_Agent_Acc": 0.7996826171875,
+        "Disc_Demo_Acc": 0.7412109375,
+        "Disc_Agent_Logit": -0.7882260084152222,
+        "Disc_Demo_Logit": 0.4178408086299896,
+        "Disc_Logit_Loss": 162.6455535888672,
+        "Adv_Mean": 2.4464521408081055,
+        "Adv_Std": 1.690220832824707,
+        "Disc_Reward_Mean": 0.45163387060165405,
+        "Disc_Reward_Std": 0.5531348586082458,
+        "Obs_Norm_Mean": 0.3623269200325012,
+        "Obs_Norm_Std": 0.34991440176963806,
+        "Exp_Prob": 1.0
+      },
+      "fixed": {
+        "all": {
+          "episodes": 10,
+          "completed": 0,
+          "falls": 10,
+          "mean_duration_s": 0.48333333333333334,
+          "mean_forward_m": 0.7906361162662506,
+          "mean_abs_lateral_m": 0.10236921943724156,
+          "sustained": {
+            "walk": 0,
+            "jog": 0
+          },
+          "both_sustained": 0,
+          "observed_windows": {
+            "walk": 0,
+            "jog": 0,
+            "unclassified": 0
+          },
+          "sustained_bout_transitions_in_completed_episodes": {},
+          "window_forward_m_s_median": null,
+          "classified_window_means": {}
+        },
+        "by_initial_skill": {
+          "walk": {
+            "episodes": 5,
+            "completed": 0,
+            "falls": 5,
+            "mean_duration_s": 0.52,
+            "mean_forward_m": 0.709224534034729,
+            "mean_abs_lateral_m": 0.10969107374548911,
+            "sustained": {
+              "walk": 0,
+              "jog": 0
+            },
+            "both_sustained": 0,
+            "observed_windows": {
+              "walk": 0,
+              "jog": 0,
+              "unclassified": 0
+            },
+            "sustained_bout_transitions_in_completed_episodes": {},
+            "window_forward_m_s_median": null,
+            "classified_window_means": {}
+          },
+          "jog": {
+            "episodes": 5,
+            "completed": 0,
+            "falls": 5,
+            "mean_duration_s": 0.44666666666666666,
+            "mean_forward_m": 0.8720476984977722,
+            "mean_abs_lateral_m": 0.09504736512899399,
+            "sustained": {
+              "walk": 0,
+              "jog": 0
+            },
+            "both_sustained": 0,
+            "observed_windows": {
+              "walk": 0,
+              "jog": 0,
+              "unclassified": 0
+            },
+            "sustained_bout_transitions_in_completed_episodes": {},
+            "window_forward_m_s_median": null,
+            "classified_window_means": {}
+          }
+        },
+        "episodes": [
+          {
+            "initial_skill": "walk",
+            "motion_id": 0,
+            "seed": 44000,
+            "initial_phase": 0.2677440382469608,
+            "initial_observation_sha256": "c1179da24bd33a339fda648fd780bb94c3f0ce14887a43fc58abce654cc1ae4e",
+            "terminal": "FAIL",
+            "steps": 15,
+            "duration_s": 0.5,
+            "world_forward_m": 0.6677831411361694,
+            "world_lateral_m": -0.023614250123500824,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 1,
+            "seed": 44001,
+            "initial_phase": 0.7617746425837214,
+            "initial_observation_sha256": "eb2076a4f3ce741556c2a1daafe46f1588665b96284efce5a129e3f1a7297eba",
+            "terminal": "FAIL",
+            "steps": 15,
+            "duration_s": 0.5,
+            "world_forward_m": 0.695216178894043,
+            "world_lateral_m": -0.041904304176568985,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 0,
+            "seed": 44002,
+            "initial_phase": 0.22060590337707875,
+            "initial_observation_sha256": "af212db0ed3c6e13ca3a2ab55730bb9d8b82222b487415e390b9bb1cdd9e07a3",
+            "terminal": "FAIL",
+            "steps": 16,
+            "duration_s": 0.5333333333333333,
+            "world_forward_m": 0.71625816822052,
+            "world_lateral_m": 0.049331143498420715,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 1,
+            "seed": 44003,
+            "initial_phase": 0.5928209802961656,
+            "initial_observation_sha256": "f0939b506bacf75d020f19ccfe8428846985754bc42f68f8027deefcf05514f8",
+            "terminal": "FAIL",
+            "steps": 16,
+            "duration_s": 0.5333333333333333,
+            "world_forward_m": 0.7397739887237549,
+            "world_lateral_m": -0.2622441351413727,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 0,
+            "seed": 44004,
+            "initial_phase": 0.05997553816495882,
+            "initial_observation_sha256": "19ad0475dc0780d3a9ca89f2dbd63face41d1a84b60f35a64f255eb4441e5342",
+            "terminal": "FAIL",
+            "steps": 16,
+            "duration_s": 0.5333333333333333,
+            "world_forward_m": 0.7270911931991577,
+            "world_lateral_m": -0.1713615357875824,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 2,
+            "seed": 44100,
+            "initial_phase": 0.923194712382755,
+            "initial_observation_sha256": "b27dba9094f24901efd9b5ae028c18595ecd8946ed9a34209e5346f77c7211a4",
+            "terminal": "FAIL",
+            "steps": 10,
+            "duration_s": 0.3333333333333333,
+            "world_forward_m": 0.7600646018981934,
+            "world_lateral_m": -0.07908710837364197,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 3,
+            "seed": 44101,
+            "initial_phase": 0.08524411880319938,
+            "initial_observation_sha256": "05744db22a29d4c571c07f170c8e96d70179175c81605094b4c938fab02b9558",
+            "terminal": "FAIL",
+            "steps": 10,
+            "duration_s": 0.3333333333333333,
+            "world_forward_m": 0.5741528868675232,
+            "world_lateral_m": 0.037857845425605774,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 2,
+            "seed": 44102,
+            "initial_phase": 0.8652594948673809,
+            "initial_observation_sha256": "3a5408fc16b71a2a6079845f8125c21d76802c2647d0083a710aba8d848f5aa5",
+            "terminal": "FAIL",
+            "steps": 22,
+            "duration_s": 0.7333333333333333,
+            "world_forward_m": 1.193143367767334,
+            "world_lateral_m": 0.25322631001472473,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 3,
+            "seed": 44103,
+            "initial_phase": 0.7546556890677554,
+            "initial_observation_sha256": "229f56da6cfd7fe47d611d9eab048a640837d9007fa1f6b3c4e6520d87724d8d",
+            "terminal": "FAIL",
+            "steps": 14,
+            "duration_s": 0.4666666666666667,
+            "world_forward_m": 1.0429117679595947,
+            "world_lateral_m": 0.04476387798786163,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 2,
+            "seed": 44104,
+            "initial_phase": 0.5117201204879896,
+            "initial_observation_sha256": "770490d31210598df34261171819acb2c2f761929dd6545dd01c2fb44a3f97b5",
+            "terminal": "FAIL",
+            "steps": 11,
+            "duration_s": 0.36666666666666664,
+            "world_forward_m": 0.7899658679962158,
+            "world_lateral_m": 0.060301683843135834,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          }
+        ]
+      }
+    },
+    {
+      "environment_steps": 1028096,
+      "checkpoint": "model_0000000250.pt",
+      "sha256": "670d01c2908dbb24e714050911c46a421d10968aa16f07cdb362d5b43e6c0aa5",
+      "trainer_diagnostics": {
+        "Iteration": 250.0,
+        "Wall_Time": 0.09805419107278188,
+        "Samples": 1028096.0,
+        "Samples_Per_Second": 2912.4937863211317,
+        "Test_Return": 0.0,
+        "Test_Episode_Length": 16.543270111083984,
+        "Test_Episodes": 208.0,
+        "Train_Return": 0.0,
+        "Train_Episode_Length": 16.062335968017578,
+        "Train_Episodes": 63675.0,
+        "Critic_Loss": 0.5457794666290283,
+        "Actor_Loss": -0.042462773621082306,
+        "Clip_Frac": 0.4500488340854645,
+        "Imp_Ratio": 1.005940318107605,
+        "Action_Bound_Loss": 0.0,
+        "Disc_Loss": 0.9451255202293396,
+        "Disc_Grad_Penalty": 0.02036779746413231,
+        "Disc_Agent_Acc": 0.78070068359375,
+        "Disc_Demo_Acc": 1.0,
+        "Disc_Agent_Logit": -0.9843973517417908,
+        "Disc_Demo_Logit": 0.7870980501174927,
+        "Disc_Logit_Loss": 34.69257354736328,
+        "Adv_Mean": -0.005390114616602659,
+        "Adv_Std": 0.7631521821022034,
+        "Disc_Reward_Mean": 0.8596761226654053,
+        "Disc_Reward_Std": 0.6063473224639893,
+        "Obs_Norm_Mean": 0.3410070836544037,
+        "Obs_Norm_Std": 0.36756929755210876,
+        "Exp_Prob": 1.0
+      },
+      "fixed": {
+        "all": {
+          "episodes": 10,
+          "completed": 0,
+          "falls": 10,
+          "mean_duration_s": 0.5466666666666666,
+          "mean_forward_m": 0.8998925030231476,
+          "mean_abs_lateral_m": 0.17914966605603694,
+          "sustained": {
+            "walk": 0,
+            "jog": 0
+          },
+          "both_sustained": 0,
+          "observed_windows": {
+            "walk": 0,
+            "jog": 0,
+            "unclassified": 0
+          },
+          "sustained_bout_transitions_in_completed_episodes": {},
+          "window_forward_m_s_median": null,
+          "classified_window_means": {}
+        },
+        "by_initial_skill": {
+          "walk": {
+            "episodes": 5,
+            "completed": 0,
+            "falls": 5,
+            "mean_duration_s": 0.5866666666666667,
+            "mean_forward_m": 0.798139238357544,
+            "mean_abs_lateral_m": 0.15720927938818932,
+            "sustained": {
+              "walk": 0,
+              "jog": 0
+            },
+            "both_sustained": 0,
+            "observed_windows": {
+              "walk": 0,
+              "jog": 0,
+              "unclassified": 0
+            },
+            "sustained_bout_transitions_in_completed_episodes": {},
+            "window_forward_m_s_median": null,
+            "classified_window_means": {}
+          },
+          "jog": {
+            "episodes": 5,
+            "completed": 0,
+            "falls": 5,
+            "mean_duration_s": 0.5066666666666667,
+            "mean_forward_m": 1.0016457676887511,
+            "mean_abs_lateral_m": 0.20109005272388458,
+            "sustained": {
+              "walk": 0,
+              "jog": 0
+            },
+            "both_sustained": 0,
+            "observed_windows": {
+              "walk": 0,
+              "jog": 0,
+              "unclassified": 0
+            },
+            "sustained_bout_transitions_in_completed_episodes": {},
+            "window_forward_m_s_median": null,
+            "classified_window_means": {}
+          }
+        },
+        "episodes": [
+          {
+            "initial_skill": "walk",
+            "motion_id": 0,
+            "seed": 44000,
+            "initial_phase": 0.2677440382469608,
+            "initial_observation_sha256": "c1179da24bd33a339fda648fd780bb94c3f0ce14887a43fc58abce654cc1ae4e",
+            "terminal": "FAIL",
+            "steps": 18,
+            "duration_s": 0.6,
+            "world_forward_m": 0.8469589948654175,
+            "world_lateral_m": -0.06600973010063171,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 1,
+            "seed": 44001,
+            "initial_phase": 0.7617746425837214,
+            "initial_observation_sha256": "eb2076a4f3ce741556c2a1daafe46f1588665b96284efce5a129e3f1a7297eba",
+            "terminal": "FAIL",
+            "steps": 17,
+            "duration_s": 0.5666666666666667,
+            "world_forward_m": 0.7970767021179199,
+            "world_lateral_m": -0.026007752865552902,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 0,
+            "seed": 44002,
+            "initial_phase": 0.22060590337707875,
+            "initial_observation_sha256": "af212db0ed3c6e13ca3a2ab55730bb9d8b82222b487415e390b9bb1cdd9e07a3",
+            "terminal": "FAIL",
+            "steps": 18,
+            "duration_s": 0.6,
+            "world_forward_m": 0.7420796155929565,
+            "world_lateral_m": 0.1649700403213501,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 1,
+            "seed": 44003,
+            "initial_phase": 0.5928209802961656,
+            "initial_observation_sha256": "f0939b506bacf75d020f19ccfe8428846985754bc42f68f8027deefcf05514f8",
+            "terminal": "FAIL",
+            "steps": 17,
+            "duration_s": 0.5666666666666667,
+            "world_forward_m": 0.7833142280578613,
+            "world_lateral_m": -0.2890378534793854,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 0,
+            "seed": 44004,
+            "initial_phase": 0.05997553816495882,
+            "initial_observation_sha256": "19ad0475dc0780d3a9ca89f2dbd63face41d1a84b60f35a64f255eb4441e5342",
+            "terminal": "FAIL",
+            "steps": 18,
+            "duration_s": 0.6,
+            "world_forward_m": 0.8212666511535645,
+            "world_lateral_m": -0.2400210201740265,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 2,
+            "seed": 44100,
+            "initial_phase": 0.923194712382755,
+            "initial_observation_sha256": "b27dba9094f24901efd9b5ae028c18595ecd8946ed9a34209e5346f77c7211a4",
+            "terminal": "FAIL",
+            "steps": 12,
+            "duration_s": 0.4,
+            "world_forward_m": 0.9498071670532227,
+            "world_lateral_m": -0.1352165788412094,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 3,
+            "seed": 44101,
+            "initial_phase": 0.08524411880319938,
+            "initial_observation_sha256": "05744db22a29d4c571c07f170c8e96d70179175c81605094b4c938fab02b9558",
+            "terminal": "FAIL",
+            "steps": 12,
+            "duration_s": 0.4,
+            "world_forward_m": 0.704926073551178,
+            "world_lateral_m": 0.1408912092447281,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 2,
+            "seed": 44102,
+            "initial_phase": 0.8652594948673809,
+            "initial_observation_sha256": "3a5408fc16b71a2a6079845f8125c21d76802c2647d0083a710aba8d848f5aa5",
+            "terminal": "FAIL",
+            "steps": 23,
+            "duration_s": 0.7666666666666666,
+            "world_forward_m": 1.0933775901794434,
+            "world_lateral_m": 0.4921753704547882,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 3,
+            "seed": 44103,
+            "initial_phase": 0.7546556890677554,
+            "initial_observation_sha256": "229f56da6cfd7fe47d611d9eab048a640837d9007fa1f6b3c4e6520d87724d8d",
+            "terminal": "FAIL",
+            "steps": 16,
+            "duration_s": 0.5333333333333333,
+            "world_forward_m": 1.239511489868164,
+            "world_lateral_m": 0.10519325733184814,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 2,
+            "seed": 44104,
+            "initial_phase": 0.5117201204879896,
+            "initial_observation_sha256": "770490d31210598df34261171819acb2c2f761929dd6545dd01c2fb44a3f97b5",
+            "terminal": "FAIL",
+            "steps": 13,
+            "duration_s": 0.43333333333333335,
+            "world_forward_m": 1.020606517791748,
+            "world_lateral_m": 0.13197384774684906,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          }
+        ]
+      }
+    },
+    {
+      "environment_steps": 2052096,
+      "checkpoint": "model_0000000500.pt",
+      "sha256": "f9cd43251f28afcbf5504422315737a070f4f329d2d17125d826d9ea402a185c",
+      "trainer_diagnostics": {
+        "Iteration": 500.0,
+        "Wall_Time": 0.19420816673172844,
+        "Samples": 2052096.0,
+        "Samples_Per_Second": 2935.1323183750515,
+        "Test_Return": 0.0,
+        "Test_Episode_Length": 31.12811851501465,
+        "Test_Episodes": 320.0,
+        "Train_Return": 0.0,
+        "Train_Episode_Length": 21.447202682495117,
+        "Train_Episodes": 47638.0,
+        "Critic_Loss": 1.980436086654663,
+        "Actor_Loss": -0.04848703369498253,
+        "Clip_Frac": 0.4522949159145355,
+        "Imp_Ratio": 1.0102179050445557,
+        "Action_Bound_Loss": 0.0,
+        "Disc_Loss": 0.5945611000061035,
+        "Disc_Grad_Penalty": 0.011136379092931747,
+        "Disc_Agent_Acc": 0.830078125,
+        "Disc_Demo_Acc": 1.0,
+        "Disc_Agent_Logit": -1.1488295793533325,
+        "Disc_Demo_Logit": 0.9232379198074341,
+        "Disc_Logit_Loss": 13.194462776184082,
+        "Adv_Mean": -0.09253331273794174,
+        "Adv_Std": 1.4520014524459839,
+        "Disc_Reward_Mean": 0.7046669125556946,
+        "Disc_Reward_Std": 0.5795336365699768,
+        "Obs_Norm_Mean": 0.33118507266044617,
+        "Obs_Norm_Std": 0.39855873584747314,
+        "Exp_Prob": 1.0
+      },
+      "fixed": {
+        "all": {
+          "episodes": 10,
+          "completed": 0,
+          "falls": 10,
+          "mean_duration_s": 0.9633333333333334,
+          "mean_forward_m": 0.9303375005722045,
+          "mean_abs_lateral_m": 0.49231729879975317,
+          "sustained": {
+            "walk": 0,
+            "jog": 0
+          },
+          "both_sustained": 0,
+          "observed_windows": {
+            "walk": 0,
+            "jog": 0,
+            "unclassified": 0
+          },
+          "sustained_bout_transitions_in_completed_episodes": {},
+          "window_forward_m_s_median": null,
+          "classified_window_means": {}
+        },
+        "by_initial_skill": {
+          "walk": {
+            "episodes": 5,
+            "completed": 0,
+            "falls": 5,
+            "mean_duration_s": 1.3866666666666667,
+            "mean_forward_m": 0.7918286561965943,
+            "mean_abs_lateral_m": 0.8194070398807526,
+            "sustained": {
+              "walk": 0,
+              "jog": 0
+            },
+            "both_sustained": 0,
+            "observed_windows": {
+              "walk": 0,
+              "jog": 0,
+              "unclassified": 0
+            },
+            "sustained_bout_transitions_in_completed_episodes": {},
+            "window_forward_m_s_median": null,
+            "classified_window_means": {}
+          },
+          "jog": {
+            "episodes": 5,
+            "completed": 0,
+            "falls": 5,
+            "mean_duration_s": 0.54,
+            "mean_forward_m": 1.068846344947815,
+            "mean_abs_lateral_m": 0.1652275577187538,
+            "sustained": {
+              "walk": 0,
+              "jog": 0
+            },
+            "both_sustained": 0,
+            "observed_windows": {
+              "walk": 0,
+              "jog": 0,
+              "unclassified": 0
+            },
+            "sustained_bout_transitions_in_completed_episodes": {},
+            "window_forward_m_s_median": null,
+            "classified_window_means": {}
+          }
+        },
+        "episodes": [
+          {
+            "initial_skill": "walk",
+            "motion_id": 0,
+            "seed": 44000,
+            "initial_phase": 0.2677440382469608,
+            "initial_observation_sha256": "c1179da24bd33a339fda648fd780bb94c3f0ce14887a43fc58abce654cc1ae4e",
+            "terminal": "FAIL",
+            "steps": 44,
+            "duration_s": 1.4666666666666666,
+            "world_forward_m": 0.6741641759872437,
+            "world_lateral_m": 0.8432068824768066,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 1,
+            "seed": 44001,
+            "initial_phase": 0.7617746425837214,
+            "initial_observation_sha256": "eb2076a4f3ce741556c2a1daafe46f1588665b96284efce5a129e3f1a7297eba",
+            "terminal": "FAIL",
+            "steps": 45,
+            "duration_s": 1.5,
+            "world_forward_m": 0.7667572498321533,
+            "world_lateral_m": 0.8343424797058105,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 0,
+            "seed": 44002,
+            "initial_phase": 0.22060590337707875,
+            "initial_observation_sha256": "af212db0ed3c6e13ca3a2ab55730bb9d8b82222b487415e390b9bb1cdd9e07a3",
+            "terminal": "FAIL",
+            "steps": 35,
+            "duration_s": 1.1666666666666667,
+            "world_forward_m": 1.3993115425109863,
+            "world_lateral_m": 0.3075903356075287,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 1,
+            "seed": 44003,
+            "initial_phase": 0.5928209802961656,
+            "initial_observation_sha256": "f0939b506bacf75d020f19ccfe8428846985754bc42f68f8027deefcf05514f8",
+            "terminal": "FAIL",
+            "steps": 38,
+            "duration_s": 1.2666666666666666,
+            "world_forward_m": 0.651526689529419,
+            "world_lateral_m": -1.2484666109085083,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 0,
+            "seed": 44004,
+            "initial_phase": 0.05997553816495882,
+            "initial_observation_sha256": "19ad0475dc0780d3a9ca89f2dbd63face41d1a84b60f35a64f255eb4441e5342",
+            "terminal": "FAIL",
+            "steps": 46,
+            "duration_s": 1.5333333333333332,
+            "world_forward_m": 0.46738362312316895,
+            "world_lateral_m": -0.8634288907051086,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 2,
+            "seed": 44100,
+            "initial_phase": 0.923194712382755,
+            "initial_observation_sha256": "b27dba9094f24901efd9b5ae028c18595ecd8946ed9a34209e5346f77c7211a4",
+            "terminal": "FAIL",
+            "steps": 12,
+            "duration_s": 0.4,
+            "world_forward_m": 0.9857668876647949,
+            "world_lateral_m": -0.13400861620903015,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 3,
+            "seed": 44101,
+            "initial_phase": 0.08524411880319938,
+            "initial_observation_sha256": "05744db22a29d4c571c07f170c8e96d70179175c81605094b4c938fab02b9558",
+            "terminal": "FAIL",
+            "steps": 12,
+            "duration_s": 0.4,
+            "world_forward_m": 0.7038089036941528,
+            "world_lateral_m": 0.12354132533073425,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 2,
+            "seed": 44102,
+            "initial_phase": 0.8652594948673809,
+            "initial_observation_sha256": "3a5408fc16b71a2a6079845f8125c21d76802c2647d0083a710aba8d848f5aa5",
+            "terminal": "FAIL",
+            "steps": 28,
+            "duration_s": 0.9333333333333333,
+            "world_forward_m": 1.4079279899597168,
+            "world_lateral_m": 0.3486228883266449,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 3,
+            "seed": 44103,
+            "initial_phase": 0.7546556890677554,
+            "initial_observation_sha256": "229f56da6cfd7fe47d611d9eab048a640837d9007fa1f6b3c4e6520d87724d8d",
+            "terminal": "FAIL",
+            "steps": 16,
+            "duration_s": 0.5333333333333333,
+            "world_forward_m": 1.2351560592651367,
+            "world_lateral_m": 0.0905698612332344,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 2,
+            "seed": 44104,
+            "initial_phase": 0.5117201204879896,
+            "initial_observation_sha256": "770490d31210598df34261171819acb2c2f761929dd6545dd01c2fb44a3f97b5",
+            "terminal": "FAIL",
+            "steps": 13,
+            "duration_s": 0.43333333333333335,
+            "world_forward_m": 1.0115718841552734,
+            "world_lateral_m": 0.12939509749412537,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          }
+        ]
+      }
+    },
+    {
+      "environment_steps": 3076096,
+      "checkpoint": "model_0000000750.pt",
+      "sha256": "2adb9f55bc4b687f1b9c52923866344e8fe249641e2954ad8a2c8368df98da7a",
+      "trainer_diagnostics": {
+        "Iteration": 750.0,
+        "Wall_Time": 0.3017044729656643,
+        "Samples": 3076096.0,
+        "Samples_Per_Second": 2832.14598282855,
+        "Test_Return": 0.0,
+        "Test_Episode_Length": 34.366905212402344,
+        "Test_Episodes": 278.0,
+        "Train_Return": 0.0,
+        "Train_Episode_Length": 29.130352020263672,
+        "Train_Episodes": 35057.0,
+        "Critic_Loss": 3.255964756011963,
+        "Actor_Loss": -0.05460038781166077,
+        "Clip_Frac": 0.45097658038139343,
+        "Imp_Ratio": 1.0113897323608398,
+        "Action_Bound_Loss": 0.0,
+        "Disc_Loss": 0.48455891013145447,
+        "Disc_Grad_Penalty": 0.010023362003266811,
+        "Disc_Agent_Acc": 0.86151123046875,
+        "Disc_Demo_Acc": 1.0,
+        "Disc_Agent_Logit": -1.2191195487976074,
+        "Disc_Demo_Logit": 1.015961766242981,
+        "Disc_Logit_Loss": 5.852442264556885,
+        "Adv_Mean": -0.09091697633266449,
+        "Adv_Std": 1.8524303436279297,
+        "Disc_Reward_Mean": 0.6653061509132385,
+        "Disc_Reward_Std": 0.5772727131843567,
+        "Obs_Norm_Mean": 0.32537683844566345,
+        "Obs_Norm_Std": 0.41097262501716614,
+        "Exp_Prob": 1.0
+      },
+      "fixed": {
+        "all": {
+          "episodes": 10,
+          "completed": 0,
+          "falls": 10,
+          "mean_duration_s": 1.0233333333333332,
+          "mean_forward_m": 1.0493417143821717,
+          "mean_abs_lateral_m": 0.31091007217764854,
+          "sustained": {
+            "walk": 0,
+            "jog": 0
+          },
+          "both_sustained": 0,
+          "observed_windows": {
+            "walk": 0,
+            "jog": 0,
+            "unclassified": 0
+          },
+          "sustained_bout_transitions_in_completed_episodes": {},
+          "window_forward_m_s_median": null,
+          "classified_window_means": {}
+        },
+        "by_initial_skill": {
+          "walk": {
+            "episodes": 5,
+            "completed": 0,
+            "falls": 5,
+            "mean_duration_s": 1.4933333333333332,
+            "mean_forward_m": 0.9807485103607178,
+            "mean_abs_lateral_m": 0.46359943151474,
+            "sustained": {
+              "walk": 0,
+              "jog": 0
+            },
+            "both_sustained": 0,
+            "observed_windows": {
+              "walk": 0,
+              "jog": 0,
+              "unclassified": 0
+            },
+            "sustained_bout_transitions_in_completed_episodes": {},
+            "window_forward_m_s_median": null,
+            "classified_window_means": {}
+          },
+          "jog": {
+            "episodes": 5,
+            "completed": 0,
+            "falls": 5,
+            "mean_duration_s": 0.5533333333333333,
+            "mean_forward_m": 1.1179349184036256,
+            "mean_abs_lateral_m": 0.1582207128405571,
+            "sustained": {
+              "walk": 0,
+              "jog": 0
+            },
+            "both_sustained": 0,
+            "observed_windows": {
+              "walk": 0,
+              "jog": 0,
+              "unclassified": 0
+            },
+            "sustained_bout_transitions_in_completed_episodes": {},
+            "window_forward_m_s_median": null,
+            "classified_window_means": {}
+          }
+        },
+        "episodes": [
+          {
+            "initial_skill": "walk",
+            "motion_id": 0,
+            "seed": 44000,
+            "initial_phase": 0.2677440382469608,
+            "initial_observation_sha256": "c1179da24bd33a339fda648fd780bb94c3f0ce14887a43fc58abce654cc1ae4e",
+            "terminal": "FAIL",
+            "steps": 46,
+            "duration_s": 1.5333333333333332,
+            "world_forward_m": 0.29026269912719727,
+            "world_lateral_m": 0.8596516251564026,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 1,
+            "seed": 44001,
+            "initial_phase": 0.7617746425837214,
+            "initial_observation_sha256": "eb2076a4f3ce741556c2a1daafe46f1588665b96284efce5a129e3f1a7297eba",
+            "terminal": "FAIL",
+            "steps": 51,
+            "duration_s": 1.7,
+            "world_forward_m": 0.38578367233276367,
+            "world_lateral_m": 0.8312780857086182,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 0,
+            "seed": 44002,
+            "initial_phase": 0.22060590337707875,
+            "initial_observation_sha256": "af212db0ed3c6e13ca3a2ab55730bb9d8b82222b487415e390b9bb1cdd9e07a3",
+            "terminal": "FAIL",
+            "steps": 38,
+            "duration_s": 1.2666666666666666,
+            "world_forward_m": 1.6502642631530762,
+            "world_lateral_m": -0.057141050696372986,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 1,
+            "seed": 44003,
+            "initial_phase": 0.5928209802961656,
+            "initial_observation_sha256": "f0939b506bacf75d020f19ccfe8428846985754bc42f68f8027deefcf05514f8",
+            "terminal": "FAIL",
+            "steps": 46,
+            "duration_s": 1.5333333333333332,
+            "world_forward_m": 1.1329829692840576,
+            "world_lateral_m": 0.38912755250930786,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 0,
+            "seed": 44004,
+            "initial_phase": 0.05997553816495882,
+            "initial_observation_sha256": "19ad0475dc0780d3a9ca89f2dbd63face41d1a84b60f35a64f255eb4441e5342",
+            "terminal": "FAIL",
+            "steps": 43,
+            "duration_s": 1.4333333333333333,
+            "world_forward_m": 1.4444489479064941,
+            "world_lateral_m": -0.18079884350299835,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 2,
+            "seed": 44100,
+            "initial_phase": 0.923194712382755,
+            "initial_observation_sha256": "b27dba9094f24901efd9b5ae028c18595ecd8946ed9a34209e5346f77c7211a4",
+            "terminal": "FAIL",
+            "steps": 13,
+            "duration_s": 0.43333333333333335,
+            "world_forward_m": 1.0496563911437988,
+            "world_lateral_m": -0.13818448781967163,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 3,
+            "seed": 44101,
+            "initial_phase": 0.08524411880319938,
+            "initial_observation_sha256": "05744db22a29d4c571c07f170c8e96d70179175c81605094b4c938fab02b9558",
+            "terminal": "FAIL",
+            "steps": 12,
+            "duration_s": 0.4,
+            "world_forward_m": 0.6604903936386108,
+            "world_lateral_m": 0.1171758621931076,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 2,
+            "seed": 44102,
+            "initial_phase": 0.8652594948673809,
+            "initial_observation_sha256": "3a5408fc16b71a2a6079845f8125c21d76802c2647d0083a710aba8d848f5aa5",
+            "terminal": "FAIL",
+            "steps": 28,
+            "duration_s": 0.9333333333333333,
+            "world_forward_m": 1.464813232421875,
+            "world_lateral_m": 0.2969219386577606,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 3,
+            "seed": 44103,
+            "initial_phase": 0.7546556890677554,
+            "initial_observation_sha256": "229f56da6cfd7fe47d611d9eab048a640837d9007fa1f6b3c4e6520d87724d8d",
+            "terminal": "FAIL",
+            "steps": 16,
+            "duration_s": 0.5333333333333333,
+            "world_forward_m": 1.2849297523498535,
+            "world_lateral_m": 0.11910802870988846,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 2,
+            "seed": 44104,
+            "initial_phase": 0.5117201204879896,
+            "initial_observation_sha256": "770490d31210598df34261171819acb2c2f761929dd6545dd01c2fb44a3f97b5",
+            "terminal": "FAIL",
+            "steps": 14,
+            "duration_s": 0.4666666666666667,
+            "world_forward_m": 1.1297848224639893,
+            "world_lateral_m": 0.11971324682235718,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          }
+        ]
+      }
+    },
+    {
+      "environment_steps": 4100096,
+      "checkpoint": "model_0000001000.pt",
+      "sha256": "673e25795d7d38619f9d388f1a343acc6bc94895691a60a4d1362a0b1e541771",
+      "trainer_diagnostics": {
+        "Iteration": 1000.0,
+        "Wall_Time": 0.3997086948156357,
+        "Samples": 4100096.0,
+        "Samples_Per_Second": 2849.3639751341325,
+        "Test_Return": 0.0,
+        "Test_Episode_Length": 51.43247985839844,
+        "Test_Episodes": 622.0,
+        "Train_Return": 0.0,
+        "Train_Episode_Length": 35.83647537231445,
+        "Train_Episodes": 28457.0,
+        "Critic_Loss": 5.834287643432617,
+        "Actor_Loss": -0.05937843397259712,
+        "Clip_Frac": 0.49267578125,
+        "Imp_Ratio": 1.0137579441070557,
+        "Action_Bound_Loss": 0.0,
+        "Disc_Loss": 0.4427201747894287,
+        "Disc_Grad_Penalty": 0.010097777470946312,
+        "Disc_Agent_Acc": 0.88067626953125,
+        "Disc_Demo_Acc": 1.0,
+        "Disc_Agent_Logit": -1.2414766550064087,
+        "Disc_Demo_Logit": 1.08400559425354,
+        "Disc_Logit_Loss": 2.9966156482696533,
+        "Adv_Mean": 0.018299471586942673,
+        "Adv_Std": 2.550959587097168,
+        "Disc_Reward_Mean": 0.6576728820800781,
+        "Disc_Reward_Std": 0.5774152874946594,
+        "Obs_Norm_Mean": 0.32171377539634705,
+        "Obs_Norm_Std": 0.42023569345474243,
+        "Exp_Prob": 1.0
+      },
+      "fixed": {
+        "all": {
+          "episodes": 10,
+          "completed": 1,
+          "falls": 9,
+          "mean_duration_s": 2.41,
+          "mean_forward_m": 2.5727691054344177,
+          "mean_abs_lateral_m": 0.9299675045534969,
+          "sustained": {
+            "walk": 1,
+            "jog": 0
+          },
+          "both_sustained": 0,
+          "observed_windows": {
+            "walk": 4,
+            "jog": 0,
+            "unclassified": 4
+          },
+          "sustained_bout_transitions_in_completed_episodes": {},
+          "window_forward_m_s_median": 1.286607275508622,
+          "classified_window_means": {
+            "walk": {
+              "median_forward_m_s": 1.1590850979682206,
+              "mean_lateral_m_s": -0.2656175977508851,
+              "mean_yaw_rate_rad_s": -0.10699149972566409,
+              "foot_support_switches": 3.75,
+              "no_foot_support_fraction": 0.03333333333333333
+            }
+          }
+        },
+        "by_initial_skill": {
+          "walk": {
+            "episodes": 5,
+            "completed": 1,
+            "falls": 4,
+            "mean_duration_s": 3.8066666666666666,
+            "mean_forward_m": 3.5554383277893065,
+            "mean_abs_lateral_m": 1.769289495050907,
+            "sustained": {
+              "walk": 1,
+              "jog": 0
+            },
+            "both_sustained": 0,
+            "observed_windows": {
+              "walk": 3,
+              "jog": 0,
+              "unclassified": 4
+            },
+            "sustained_bout_transitions_in_completed_episodes": {},
+            "window_forward_m_s_median": 1.2970152660164325,
+            "classified_window_means": {
+              "walk": {
+                "median_forward_m_s": 1.2828128899282167,
+                "mean_lateral_m_s": -0.3530017897064871,
+                "mean_yaw_rate_rad_s": -0.0578834854206073,
+                "foot_support_switches": 4,
+                "no_foot_support_fraction": 0.044444444444444446
+              }
+            }
+          },
+          "jog": {
+            "episodes": 5,
+            "completed": 0,
+            "falls": 5,
+            "mean_duration_s": 1.0133333333333334,
+            "mean_forward_m": 1.5900998830795288,
+            "mean_abs_lateral_m": 0.09064551405608653,
+            "sustained": {
+              "walk": 0,
+              "jog": 0
+            },
+            "both_sustained": 0,
+            "observed_windows": {
+              "walk": 1,
+              "jog": 0,
+              "unclassified": 0
+            },
+            "sustained_bout_transitions_in_completed_episodes": {},
+            "window_forward_m_s_median": 0.7879017220882318,
+            "classified_window_means": {
+              "walk": {
+                "median_forward_m_s": 0.7879017220882318,
+                "mean_lateral_m_s": -0.0034650218840790743,
+                "mean_yaw_rate_rad_s": -0.25431554264083445,
+                "foot_support_switches": 3,
+                "no_foot_support_fraction": 0.0
+              }
+            }
+          }
+        },
+        "episodes": [
+          {
+            "initial_skill": "walk",
+            "motion_id": 0,
+            "seed": 44000,
+            "initial_phase": 0.2677440382469608,
+            "initial_observation_sha256": "c1179da24bd33a339fda648fd780bb94c3f0ce14887a43fc58abce654cc1ae4e",
+            "terminal": "FAIL",
+            "steps": 51,
+            "duration_s": 1.7,
+            "world_forward_m": 1.7094327211380005,
+            "world_lateral_m": 0.16026581823825836,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 1,
+            "seed": 44001,
+            "initial_phase": 0.7617746425837214,
+            "initial_observation_sha256": "eb2076a4f3ce741556c2a1daafe46f1588665b96284efce5a129e3f1a7297eba",
+            "terminal": "FAIL",
+            "steps": 108,
+            "duration_s": 3.6,
+            "world_forward_m": 3.314643383026123,
+            "world_lateral_m": -0.04312204569578171,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": [
+              {
+                "start_s": 1.0,
+                "mode": "unclassified",
+                "median_forward_m_s": 0.6416772828696976,
+                "mean_lateral_m_s": 0.046764845197678304,
+                "mean_yaw_rate_rad_s": 0.04554465520265703,
+                "pelvis_height_p10_m": 0.7605535387992859,
+                "pelvis_tilt_p90_deg": 8.604474275180735,
+                "foot_support_switches": 2,
+                "no_foot_support_fraction": 0.0,
+                "nonfoot_peak_force_n": 0.0,
+                "knee_range_rad": [
+                  1.6071009635925293,
+                  1.2887932062149048
+                ]
+              }
+            ]
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 0,
+            "seed": 44002,
+            "initial_phase": 0.22060590337707875,
+            "initial_observation_sha256": "af212db0ed3c6e13ca3a2ab55730bb9d8b82222b487415e390b9bb1cdd9e07a3",
+            "terminal": "TIME",
+            "steps": 300,
+            "duration_s": 10.0,
+            "world_forward_m": 10.933773040771484,
+            "world_lateral_m": -6.427719593048096,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [
+              "walk"
+            ],
+            "windows": [
+              {
+                "start_s": 1.0,
+                "mode": "unclassified",
+                "median_forward_m_s": 1.3611163345247614,
+                "mean_lateral_m_s": -0.24842560105521383,
+                "mean_yaw_rate_rad_s": -0.05966411232481228,
+                "pelvis_height_p10_m": 0.7642041444778442,
+                "pelvis_tilt_p90_deg": 19.36886191301719,
+                "foot_support_switches": 4,
+                "no_foot_support_fraction": 0.06666666666666667,
+                "nonfoot_peak_force_n": 0.0,
+                "knee_range_rad": [
+                  1.8505867719650269,
+                  1.8524446487426758
+                ]
+              },
+              {
+                "start_s": 2.5,
+                "mode": "unclassified",
+                "median_forward_m_s": 1.3085325364335914,
+                "mean_lateral_m_s": -0.15670843854116207,
+                "mean_yaw_rate_rad_s": -0.00476652748018837,
+                "pelvis_height_p10_m": 0.7636674642562866,
+                "pelvis_tilt_p90_deg": 19.115673128218322,
+                "foot_support_switches": 4,
+                "no_foot_support_fraction": 0.06666666666666667,
+                "nonfoot_peak_force_n": 0.0,
+                "knee_range_rad": [
+                  1.6907269954681396,
+                  1.8367904424667358
+                ]
+              },
+              {
+                "start_s": 4.0,
+                "mode": "walk",
+                "median_forward_m_s": 1.2761992850008115,
+                "mean_lateral_m_s": -0.21713798945670174,
+                "mean_yaw_rate_rad_s": -0.07357329196697486,
+                "pelvis_height_p10_m": 0.7584605813026428,
+                "pelvis_tilt_p90_deg": 18.476767115871805,
+                "foot_support_switches": 4,
+                "no_foot_support_fraction": 0.044444444444444446,
+                "nonfoot_peak_force_n": 0.0,
+                "knee_range_rad": [
+                  1.6096875667572021,
+                  1.8912529945373535
+                ]
+              },
+              {
+                "start_s": 5.5,
+                "mode": "walk",
+                "median_forward_m_s": 1.2970152660164325,
+                "mean_lateral_m_s": -0.35311401586112756,
+                "mean_yaw_rate_rad_s": -0.03884543846396003,
+                "pelvis_height_p10_m": 0.7639082074165344,
+                "pelvis_tilt_p90_deg": 20.144995808002413,
+                "foot_support_switches": 4,
+                "no_foot_support_fraction": 0.044444444444444446,
+                "nonfoot_peak_force_n": 0.0,
+                "knee_range_rad": [
+                  1.59111487865448,
+                  1.9158093929290771
+                ]
+              },
+              {
+                "start_s": 7.0,
+                "mode": "unclassified",
+                "median_forward_m_s": 1.322618281563969,
+                "mean_lateral_m_s": -0.45010506562851665,
+                "mean_yaw_rate_rad_s": -0.06727446143475131,
+                "pelvis_height_p10_m": 0.7578961849212646,
+                "pelvis_tilt_p90_deg": 22.317474702804716,
+                "foot_support_switches": 4,
+                "no_foot_support_fraction": 0.08888888888888889,
+                "nonfoot_peak_force_n": 0.0,
+                "knee_range_rad": [
+                  1.4794793128967285,
+                  2.037517547607422
+                ]
+              },
+              {
+                "start_s": 8.5,
+                "mode": "walk",
+                "median_forward_m_s": 1.2752241187674065,
+                "mean_lateral_m_s": -0.4887533638016321,
+                "mean_yaw_rate_rad_s": -0.06123172583088699,
+                "pelvis_height_p10_m": 0.748414933681488,
+                "pelvis_tilt_p90_deg": 19.815245704629827,
+                "foot_support_switches": 4,
+                "no_foot_support_fraction": 0.044444444444444446,
+                "nonfoot_peak_force_n": 0.0,
+                "knee_range_rad": [
+                  1.6895097494125366,
+                  1.8698750734329224
+                ]
+              }
+            ]
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 1,
+            "seed": 44003,
+            "initial_phase": 0.5928209802961656,
+            "initial_observation_sha256": "f0939b506bacf75d020f19ccfe8428846985754bc42f68f8027deefcf05514f8",
+            "terminal": "FAIL",
+            "steps": 61,
+            "duration_s": 2.033333333333333,
+            "world_forward_m": 1.1244008541107178,
+            "world_lateral_m": -1.177496075630188,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 0,
+            "seed": 44004,
+            "initial_phase": 0.05997553816495882,
+            "initial_observation_sha256": "19ad0475dc0780d3a9ca89f2dbd63face41d1a84b60f35a64f255eb4441e5342",
+            "terminal": "FAIL",
+            "steps": 51,
+            "duration_s": 1.7,
+            "world_forward_m": 0.6949416399002075,
+            "world_lateral_m": -1.037843942642212,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 2,
+            "seed": 44100,
+            "initial_phase": 0.923194712382755,
+            "initial_observation_sha256": "b27dba9094f24901efd9b5ae028c18595ecd8946ed9a34209e5346f77c7211a4",
+            "terminal": "FAIL",
+            "steps": 13,
+            "duration_s": 0.43333333333333335,
+            "world_forward_m": 1.0751433372497559,
+            "world_lateral_m": -0.13990755379199982,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 3,
+            "seed": 44101,
+            "initial_phase": 0.08524411880319938,
+            "initial_observation_sha256": "05744db22a29d4c571c07f170c8e96d70179175c81605094b4c938fab02b9558",
+            "terminal": "FAIL",
+            "steps": 8,
+            "duration_s": 0.26666666666666666,
+            "world_forward_m": 0.41914355754852295,
+            "world_lateral_m": 0.04347878694534302,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 2,
+            "seed": 44102,
+            "initial_phase": 0.8652594948673809,
+            "initial_observation_sha256": "3a5408fc16b71a2a6079845f8125c21d76802c2647d0083a710aba8d848f5aa5",
+            "terminal": "FAIL",
+            "steps": 98,
+            "duration_s": 3.2666666666666666,
+            "world_forward_m": 3.7752437591552734,
+            "world_lateral_m": 0.017312845215201378,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": [
+              {
+                "start_s": 1.0,
+                "mode": "walk",
+                "median_forward_m_s": 0.7879017220882318,
+                "mean_lateral_m_s": -0.0034650218840790743,
+                "mean_yaw_rate_rad_s": -0.25431554264083445,
+                "pelvis_height_p10_m": 0.7570459246635437,
+                "pelvis_tilt_p90_deg": 11.277861564783002,
+                "foot_support_switches": 3,
+                "no_foot_support_fraction": 0.0,
+                "nonfoot_peak_force_n": 0.0,
+                "knee_range_rad": [
+                  1.4161953926086426,
+                  1.4742577075958252
+                ]
+              }
+            ]
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 3,
+            "seed": 44103,
+            "initial_phase": 0.7546556890677554,
+            "initial_observation_sha256": "229f56da6cfd7fe47d611d9eab048a640837d9007fa1f6b3c4e6520d87724d8d",
+            "terminal": "FAIL",
+            "steps": 17,
+            "duration_s": 0.5666666666666667,
+            "world_forward_m": 1.3178234100341797,
+            "world_lateral_m": 0.11028891801834106,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 2,
+            "seed": 44104,
+            "initial_phase": 0.5117201204879896,
+            "initial_observation_sha256": "770490d31210598df34261171819acb2c2f761929dd6545dd01c2fb44a3f97b5",
+            "terminal": "FAIL",
+            "steps": 16,
+            "duration_s": 0.5333333333333333,
+            "world_forward_m": 1.363145351409912,
+            "world_lateral_m": 0.14223946630954742,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          }
+        ]
+      }
+    },
+    {
+      "environment_steps": 4194304,
+      "checkpoint": "model_0000001023.pt",
+      "sha256": "9106fc9626463688df5bf2230ab0be2e7a6a6288aa2b9b0e87c8f295cbe12a62",
+      "trainer_diagnostics": {
+        "Iteration": 1023.0,
+        "Wall_Time": 0.4108025266726812,
+        "Samples": 4194304.0,
+        "Samples_Per_Second": 2836.1180099867283,
+        "Test_Return": 0.0,
+        "Test_Episode_Length": 49.044090270996094,
+        "Test_Episodes": 590.0,
+        "Train_Return": 0.0,
+        "Train_Episode_Length": 44.336814880371094,
+        "Train_Episodes": 2034.0,
+        "Critic_Loss": 5.684535503387451,
+        "Actor_Loss": -0.058768924325704575,
+        "Clip_Frac": 0.4765625,
+        "Imp_Ratio": 1.013880729675293,
+        "Action_Bound_Loss": 0.0,
+        "Disc_Loss": 0.43415820598602295,
+        "Disc_Grad_Penalty": 0.010179717093706131,
+        "Disc_Agent_Acc": 0.89154052734375,
+        "Disc_Demo_Acc": 1.0,
+        "Disc_Agent_Logit": -1.3018155097961426,
+        "Disc_Demo_Logit": 1.0843169689178467,
+        "Disc_Logit_Loss": 2.838634490966797,
+        "Adv_Mean": -0.20300458371639252,
+        "Adv_Std": 2.48716402053833,
+        "Disc_Reward_Mean": 0.6054073572158813,
+        "Disc_Reward_Std": 0.5480737090110779,
+        "Obs_Norm_Mean": 0.32144707441329956,
+        "Obs_Norm_Std": 0.42095664143562317,
+        "Exp_Prob": 1.0
+      },
+      "fixed": {
+        "all": {
+          "episodes": 10,
+          "completed": 0,
+          "falls": 10,
+          "mean_duration_s": 1.9666666666666666,
+          "mean_forward_m": 2.1916700422763826,
+          "mean_abs_lateral_m": 0.3346902411431074,
+          "sustained": {
+            "walk": 0,
+            "jog": 0
+          },
+          "both_sustained": 0,
+          "observed_windows": {
+            "walk": 3,
+            "jog": 0,
+            "unclassified": 2
+          },
+          "sustained_bout_transitions_in_completed_episodes": {},
+          "window_forward_m_s_median": 0.782358799451371,
+          "classified_window_means": {
+            "walk": {
+              "median_forward_m_s": 0.807865282879555,
+              "mean_lateral_m_s": -0.059548548711427764,
+              "mean_yaw_rate_rad_s": 0.07700507969158356,
+              "foot_support_switches": 2.6666666666666665,
+              "no_foot_support_fraction": 0.0
+            }
+          }
+        },
+        "by_initial_skill": {
+          "walk": {
+            "episodes": 5,
+            "completed": 0,
+            "falls": 5,
+            "mean_duration_s": 2.933333333333333,
+            "mean_forward_m": 2.750779891014099,
+            "mean_abs_lateral_m": 0.4550818018615246,
+            "sustained": {
+              "walk": 0,
+              "jog": 0
+            },
+            "both_sustained": 0,
+            "observed_windows": {
+              "walk": 2,
+              "jog": 0,
+              "unclassified": 2
+            },
+            "sustained_bout_transitions_in_completed_episodes": {},
+            "window_forward_m_s_median": 0.7186811576723635,
+            "classified_window_means": {
+              "walk": {
+                "median_forward_m_s": 0.7186811576723635,
+                "mean_lateral_m_s": -0.07816033640098809,
+                "mean_yaw_rate_rad_s": 0.07167383311954256,
+                "foot_support_switches": 2.5,
+                "no_foot_support_fraction": 0.0
+              }
+            }
+          },
+          "jog": {
+            "episodes": 5,
+            "completed": 0,
+            "falls": 5,
+            "mean_duration_s": 1.0,
+            "mean_forward_m": 1.6325601935386658,
+            "mean_abs_lateral_m": 0.21429868042469025,
+            "sustained": {
+              "walk": 0,
+              "jog": 0
+            },
+            "both_sustained": 0,
+            "observed_windows": {
+              "walk": 1,
+              "jog": 0,
+              "unclassified": 0
+            },
+            "sustained_bout_transitions_in_completed_episodes": {},
+            "window_forward_m_s_median": 0.9862335332939378,
+            "classified_window_means": {
+              "walk": {
+                "median_forward_m_s": 0.9862335332939378,
+                "mean_lateral_m_s": -0.022324973332307114,
+                "mean_yaw_rate_rad_s": 0.08766757283566555,
+                "foot_support_switches": 3,
+                "no_foot_support_fraction": 0.0
+              }
+            }
+          }
+        },
+        "episodes": [
+          {
+            "initial_skill": "walk",
+            "motion_id": 0,
+            "seed": 44000,
+            "initial_phase": 0.2677440382469608,
+            "initial_observation_sha256": "c1179da24bd33a339fda648fd780bb94c3f0ce14887a43fc58abce654cc1ae4e",
+            "terminal": "FAIL",
+            "steps": 63,
+            "duration_s": 2.1,
+            "world_forward_m": 2.3516197204589844,
+            "world_lateral_m": 0.05329978093504906,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 1,
+            "seed": 44001,
+            "initial_phase": 0.7617746425837214,
+            "initial_observation_sha256": "eb2076a4f3ce741556c2a1daafe46f1588665b96284efce5a129e3f1a7297eba",
+            "terminal": "FAIL",
+            "steps": 128,
+            "duration_s": 4.266666666666667,
+            "world_forward_m": 3.530435085296631,
+            "world_lateral_m": -0.23959237337112427,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": [
+              {
+                "start_s": 1.0,
+                "mode": "unclassified",
+                "median_forward_m_s": 0.5174616259791898,
+                "mean_lateral_m_s": 0.09754117211641819,
+                "mean_yaw_rate_rad_s": -0.09810837527210733,
+                "pelvis_height_p10_m": 0.7671488523483276,
+                "pelvis_tilt_p90_deg": 5.8811405296583725,
+                "foot_support_switches": 2,
+                "no_foot_support_fraction": 0.0,
+                "nonfoot_peak_force_n": 0.0,
+                "knee_range_rad": [
+                  1.3431166410446167,
+                  0.7647781372070312
+                ]
+              },
+              {
+                "start_s": 2.5,
+                "mode": "walk",
+                "median_forward_m_s": 0.782358799451371,
+                "mean_lateral_m_s": -0.07962696843579506,
+                "mean_yaw_rate_rad_s": 0.16451058053635628,
+                "pelvis_height_p10_m": 0.7328734397888184,
+                "pelvis_tilt_p90_deg": 13.879556308282526,
+                "foot_support_switches": 3,
+                "no_foot_support_fraction": 0.0,
+                "nonfoot_peak_force_n": 0.0,
+                "knee_range_rad": [
+                  1.6520315408706665,
+                  1.6578593254089355
+                ]
+              }
+            ]
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 0,
+            "seed": 44002,
+            "initial_phase": 0.22060590337707875,
+            "initial_observation_sha256": "af212db0ed3c6e13ca3a2ab55730bb9d8b82222b487415e390b9bb1cdd9e07a3",
+            "terminal": "FAIL",
+            "steps": 161,
+            "duration_s": 5.366666666666666,
+            "world_forward_m": 5.617771148681641,
+            "world_lateral_m": -1.0219762325286865,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": [
+              {
+                "start_s": 1.0,
+                "mode": "unclassified",
+                "median_forward_m_s": 1.3630529547519983,
+                "mean_lateral_m_s": -0.2097563210053812,
+                "mean_yaw_rate_rad_s": -0.06420027416689476,
+                "pelvis_height_p10_m": 0.7500004768371582,
+                "pelvis_tilt_p90_deg": 19.364685438208568,
+                "foot_support_switches": 4,
+                "no_foot_support_fraction": 0.0,
+                "nonfoot_peak_force_n": 0.0,
+                "knee_range_rad": [
+                  1.9156593084335327,
+                  1.991776466369629
+                ]
+              },
+              {
+                "start_s": 2.5,
+                "mode": "walk",
+                "median_forward_m_s": 0.655003515893356,
+                "mean_lateral_m_s": -0.07669370436618111,
+                "mean_yaw_rate_rad_s": -0.02116291429727115,
+                "pelvis_height_p10_m": 0.7608183026313782,
+                "pelvis_tilt_p90_deg": 9.021104745544681,
+                "foot_support_switches": 2,
+                "no_foot_support_fraction": 0.0,
+                "nonfoot_peak_force_n": 0.0,
+                "knee_range_rad": [
+                  1.4512498378753662,
+                  1.5565383434295654
+                ]
+              }
+            ]
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 1,
+            "seed": 44003,
+            "initial_phase": 0.5928209802961656,
+            "initial_observation_sha256": "f0939b506bacf75d020f19ccfe8428846985754bc42f68f8027deefcf05514f8",
+            "terminal": "FAIL",
+            "steps": 41,
+            "duration_s": 1.3666666666666667,
+            "world_forward_m": 1.1125867366790771,
+            "world_lateral_m": 0.4824281334877014,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "walk",
+            "motion_id": 0,
+            "seed": 44004,
+            "initial_phase": 0.05997553816495882,
+            "initial_observation_sha256": "19ad0475dc0780d3a9ca89f2dbd63face41d1a84b60f35a64f255eb4441e5342",
+            "terminal": "FAIL",
+            "steps": 47,
+            "duration_s": 1.5666666666666667,
+            "world_forward_m": 1.1414867639541626,
+            "world_lateral_m": 0.47811248898506165,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 2,
+            "seed": 44100,
+            "initial_phase": 0.923194712382755,
+            "initial_observation_sha256": "b27dba9094f24901efd9b5ae028c18595ecd8946ed9a34209e5346f77c7211a4",
+            "terminal": "FAIL",
+            "steps": 13,
+            "duration_s": 0.43333333333333335,
+            "world_forward_m": 1.0766663551330566,
+            "world_lateral_m": -0.13324329257011414,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 3,
+            "seed": 44101,
+            "initial_phase": 0.08524411880319938,
+            "initial_observation_sha256": "05744db22a29d4c571c07f170c8e96d70179175c81605094b4c938fab02b9558",
+            "terminal": "FAIL",
+            "steps": 13,
+            "duration_s": 0.43333333333333335,
+            "world_forward_m": 0.7461828589439392,
+            "world_lateral_m": 0.12606298923492432,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 2,
+            "seed": 44102,
+            "initial_phase": 0.8652594948673809,
+            "initial_observation_sha256": "3a5408fc16b71a2a6079845f8125c21d76802c2647d0083a710aba8d848f5aa5",
+            "terminal": "FAIL",
+            "steps": 91,
+            "duration_s": 3.033333333333333,
+            "world_forward_m": 3.6871914863586426,
+            "world_lateral_m": 0.5495015978813171,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": [
+              {
+                "start_s": 1.0,
+                "mode": "walk",
+                "median_forward_m_s": 0.9862335332939378,
+                "mean_lateral_m_s": -0.022324973332307114,
+                "mean_yaw_rate_rad_s": 0.08766757283566555,
+                "pelvis_height_p10_m": 0.7472277283668518,
+                "pelvis_tilt_p90_deg": 12.483543965852885,
+                "foot_support_switches": 3,
+                "no_foot_support_fraction": 0.0,
+                "nonfoot_peak_force_n": 0.0,
+                "knee_range_rad": [
+                  1.8414623737335205,
+                  1.525376319885254
+                ]
+              }
+            ]
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 3,
+            "seed": 44103,
+            "initial_phase": 0.7546556890677554,
+            "initial_observation_sha256": "229f56da6cfd7fe47d611d9eab048a640837d9007fa1f6b3c4e6520d87724d8d",
+            "terminal": "FAIL",
+            "steps": 18,
+            "duration_s": 0.6,
+            "world_forward_m": 1.372520923614502,
+            "world_lateral_m": 0.11742259562015533,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          },
+          {
+            "initial_skill": "jog",
+            "motion_id": 2,
+            "seed": 44104,
+            "initial_phase": 0.5117201204879896,
+            "initial_observation_sha256": "770490d31210598df34261171819acb2c2f761929dd6545dd01c2fb44a3f97b5",
+            "terminal": "FAIL",
+            "steps": 15,
+            "duration_s": 0.5,
+            "world_forward_m": 1.2802393436431885,
+            "world_lateral_m": 0.1452629268169403,
+            "target_clip_fraction": 0.0,
+            "sustained_skills": [],
+            "windows": []
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -8,6 +8,7 @@ import math
 import re
 import statistics
 from collections import Counter
+from datetime import datetime
 from itertools import groupby
 from pathlib import Path
 
@@ -59,7 +60,10 @@ def summarize(run):
     with (run / "gpu.csv").open() as stream:
         reader = csv.reader(stream)
         next(reader)
-        gpu = [tuple(map(int, row[1:4])) for row in reader if len(row) == 4]
+        samples = [row for row in reader if len(row) == 4]
+    gpu = [tuple(map(int, row[1:4])) for row in samples]
+    timestamps = [datetime.fromisoformat(row[0].replace("/", "-")) for row in (samples[0], samples[-1])]
+    gpu_seconds = (timestamps[1] - timestamps[0]).total_seconds()
     stdout = (run / "stdout.log").read_text()
     header, *rows = (line.split() for line in (run / "log.txt").read_text().splitlines() if line.strip())
     checkpoints = [dict(zip(header, map(float, row), strict=True)) for row in rows]
@@ -67,13 +71,22 @@ def summarize(run):
     updates = [int(value) for value in re.findall(r"^\|\s*Samples\s*\|\s*(\d+)\s*\|", stdout, re.M)]
     assert updates == list(range(4096, updates[-1] + 1, 4096)), "Unexpected rollout step sequence"
     assert not re.search(r"\|\s*[-+]?(?:nan|inf)\s*\|", stdout, re.I), "Non-finite training log"
+    exit_file = run / "exit_code.txt"
+    timer_file = run / "wall_seconds.txt"
+    timer = timer_file.read_text().strip() if timer_file.is_file() else ""
+    last_checkpoint = run / "int_models" / f"model_{int(checkpoints[-1]['Iteration']):010d}.pt"
+    elapsed = (float(timer.splitlines()[-1]) if timer else
+               last_checkpoint.stat().st_mtime - (run / "gpu_before.csv").stat().st_mtime)
     summary = {
         "run": run.name,
         "mimickit_commit": (run / "upstream_commit.txt").read_text().strip(),
         "seed": 42, "environments": 128, "rollout_steps_per_environment": 32,
         "updates": len(updates), "environment_steps": updates[-1],
-        "exit_code": int((run / "exit_code.txt").read_text()),
-        "wall_seconds": float((run / "wall_seconds.txt").read_text().splitlines()[-1]),
+        "exit_code": int(exit_file.read_text()) if exit_file.is_file() else None,
+        "wall_seconds": elapsed,
+        "wall_seconds_source": "process_timer" if timer else "gpu_before_snapshot_to_last_checkpoint",
+        "gpu_sample_count": len(samples),
+        "gpu_sampling_seconds": gpu_seconds,
         "gpu_max_used_mib": max(row[0] for row in gpu), "gpu_min_free_mib": min(row[1] for row in gpu),
         "gpu_average_utilization_pct": statistics.mean(row[2] for row in gpu),
         "capacity_warnings": re.findall(r"(?im)^.*overflow - please increase.*$", stdout),

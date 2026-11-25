@@ -5,13 +5,68 @@ import hashlib
 import json
 import os
 import sys
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 import numpy as np
 import torch
 
 
-def evaluate_episode(env, agent, seed, max_steps, contact_threshold):
+def drift_metrics(positions, contacts, samples, dt, joint_names):
+    # Split world-Y displacement into heading-induced drift and body-frame sideslip.
+    qx, qy, qz, qw = samples[:, :4].T
+    yaw = np.unwrap(np.arctan2(2 * (qw * qz + qx * qy), 1 - 2 * (qy**2 + qz**2)))
+    sine, cosine = np.sin(yaw[1:]), np.cos(yaw[1:])
+    dx, dy = np.diff(positions[:, :2], axis=0).T
+    forward = dx * cosine + dy * sine
+    lateral = -dx * sine + dy * cosine
+    feet = samples[1:, 4:10].reshape(-1, 2, 3)
+    joints = samples[1:, 10:]
+
+    step_lengths = [[], []]
+    previous = None
+    for time, side in np.argwhere(contacts[1:] & ~contacts[:-1]) + [1, 0]:
+        if previous is not None and previous[1] != side:
+            previous_time, previous_side = previous
+            delta = feet[time, side, :2] - feet[previous_time, previous_side, :2]
+            step_lengths[side].append(float(delta @ np.array([cosine[time], sine[time]])))
+        previous = time, side
+    support_durations = []
+    for side in range(2):
+        changes = np.diff(contacts[:, side].astype(int))
+        starts = np.flatnonzero(changes == 1) + 1
+        ends = np.flatnonzero(changes == -1) + 1
+        durations = []
+        for start in starts:
+            following = ends[ends > start]
+            if following.size:
+                durations.append(float(following[0] - start) * dt)
+        support_durations.append(durations)
+    angle_excursion = np.diff(np.quantile(joints, [0.05, 0.95], axis=0), axis=0)[0]
+    leg = ("hip_pitch", "hip_roll", "hip_yaw", "knee", "ankle_pitch", "ankle_roll")
+    return {
+        "initial_yaw_deg": float(np.rad2deg(yaw[0])),
+        "yaw_change_deg": float(np.rad2deg(yaw[-1] - yaw[0])),
+        "mean_local_lateral_velocity_m_s": float(np.mean(lateral) / dt),
+        "heading_contribution_world_y_m": float(np.sum(forward * sine)),
+        "sideslip_contribution_world_y_m": float(np.sum(lateral * cosine)),
+        "yaw_deg_at_control_steps": np.rad2deg(yaw[1:]).tolist(),
+        "local_lateral_velocity_m_s_at_control_steps": (lateral / dt).tolist(),
+        "sides": {
+            side: {
+                "step_lengths_m": step_lengths[index],
+                "support_durations_s": support_durations[index],
+                "leg_joint_p95_minus_p05_rad": {
+                    name: float(angle_excursion[joint_names.index(f"{side}_{name}_joint")])
+                    for name in leg
+                },
+            }
+            for index, side in enumerate(("left", "right"))
+        },
+    }
+
+
+def evaluate_episode(env, agent, seed, max_steps, contact_threshold, joint_names=None):
     from envs.base_env import DoneFlags
     from util.util import set_rand_seed
 
@@ -27,6 +82,13 @@ def evaluate_episode(env, agent, seed, max_steps, contact_threshold):
     bound_low = env._action_bound_low
     bound_high = env._action_bound_high
 
+    def pose_sample():
+        return torch.cat((
+            engine.get_root_rot(robot)[0], engine.get_body_pos(robot)[0, foot_ids].flatten(),
+            engine.get_dof_pos(robot)[0],
+        )).cpu().numpy()
+
+    samples = [] if joint_names is None else [pose_sample()]
     root_positions = []
     foot_contacts = []
     nonfoot_force = []
@@ -42,6 +104,8 @@ def evaluate_episode(env, agent, seed, max_steps, contact_threshold):
         if not np.isfinite(pos).all() or not np.isfinite(force).all():
             raise ValueError(f"Non-finite root position/contact at seed {seed}, step {step}")
         root_positions.append(pos)
+        if joint_names is not None:
+            samples.append(pose_sample())
         foot_contacts.append(force[foot_ids] >= contact_threshold)
         nonfoot_force.append(float(force[nonfoot_ids].max()))
         action_peak = max(action_peak, action.abs().max().item())
@@ -55,7 +119,7 @@ def evaluate_episode(env, agent, seed, max_steps, contact_threshold):
     switches = int(np.count_nonzero(exclusive[1:] != exclusive[:-1]))
     elapsed = step * engine.get_timestep()
     forward = float(root_positions[-1, 0] - start[0])
-    return {
+    episode = {
         "seed": seed,
         "initial_observation_sha256": initial_sha256,
         "steps": step,
@@ -71,6 +135,11 @@ def evaluate_episode(env, agent, seed, max_steps, contact_threshold):
         "max_abs_raw_joint_target_rad": action_peak,
         "target_clip_fraction": out_of_bounds / (step * action.numel()),
     }
+    if joint_names is not None:
+        episode["drift"] = drift_metrics(
+            np.vstack((start, root_positions)), contacts, np.asarray(samples), engine.get_timestep(), joint_names,
+        )
+    return episode
 
 
 def main():
@@ -80,6 +149,7 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--seeds", type=int, nargs="+", required=True)
     parser.add_argument("--video", type=Path, help="Save an MP4 for a single evaluation seed.")
+    parser.add_argument("--analyze-drift", action="store_true", help="Record heading, lateral drift and bilateral gait.")
     parser.add_argument("--env-config", default="data/envs/amp_g1_env.yaml")
     parser.add_argument("--agent-config", default="data/agents/amp_g1_agent.yaml")
     parser.add_argument("--device", default="cuda:0")
@@ -93,7 +163,7 @@ def main():
     video_path = args.video.resolve() if args.video else None
     os.chdir(upstream)
     sys.path.insert(0, str(upstream / "mimickit"))
-    from envs.env_builder import build_env
+    from envs.env_builder import build_env, load_config
     from learning.agent_builder import build_agent
     from learning.base_agent import AgentMode
     from util import mp_util
@@ -109,8 +179,14 @@ def main():
     agent.set_mode(AgentMode.TEST)
     max_steps = round(env._episode_length / env._engine.get_timestep())
     contact_threshold = 5.0
+    joint_names = None
+    if args.analyze_drift:
+        model = ET.parse(load_config(args.env_config)["char_file"]).getroot()
+        joint_names = [joint.attrib["name"] for joint in model.find("worldbody").iter("joint")]
+        if len(joint_names) != env._engine.get_dof_pos(env._get_char_id()).shape[-1]:
+            raise ValueError("MJCF joint order does not match the simulated joint array")
     with torch.no_grad():
-        episodes = [evaluate_episode(env, agent, seed, max_steps, contact_threshold) for seed in args.seeds]
+        episodes = [evaluate_episode(env, agent, seed, max_steps, contact_threshold, joint_names) for seed in args.seeds]
 
     if video_path:
         recording = env.record_diagnostics()["sim_recording"]
