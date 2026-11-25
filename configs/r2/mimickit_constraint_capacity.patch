@@ -1,0 +1,11 @@
+diff --git a/mimickit/engines/newton_engine.py b/mimickit/engines/newton_engine.py
+--- a/mimickit/engines/newton_engine.py
++++ b/mimickit/engines/newton_engine.py
+@@ -946,6 +946,6 @@ class NewtonEngine(engine.Engine):
+         self._solver = newton.solvers.SolverMuJoCo(
+             self._sim_model,
+             solver="newton",
+-            njmax=256,
++            njmax=512,
+             nconmax=512,
+             impratio=10,

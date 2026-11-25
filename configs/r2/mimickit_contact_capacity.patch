@@ -1,0 +1,12 @@
+diff --git a/mimickit/engines/newton_engine.py b/mimickit/engines/newton_engine.py
+--- a/mimickit/engines/newton_engine.py
++++ b/mimickit/engines/newton_engine.py
+@@ -947,7 +947,7 @@ class NewtonEngine(engine.Engine):
+             self._sim_model,
+             solver="newton",
+             njmax=256,
+-            nconmax=200,
++            nconmax=512,
+             impratio=10,
+             iterations=100,
+             ls_iterations=50

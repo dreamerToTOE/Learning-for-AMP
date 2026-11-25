@@ -11,6 +11,7 @@
 | Isaac Lab v2.1.1 任务索引 | https://isaac-sim.github.io/IsaacLab/v2.1.1/source/overview/environments | 版本参考 | 是否实际安装了示例及运动数据 |
 | legged_lab | https://github.com/zitongbai/legged_lab | G1 AMP/DeepMimic 候选工程 | 对应版本、修改的 RL 框架、License、资产 |
 | AMP Running baseline | https://github.com/Jiarui-Xie/AMP_Running_baseline | G1 跑步相关方案候选 | 数据、运动任务、资产与依赖 |
+| MimicKit / Peng 2025 | https://github.com/xbpeng/MimicKit | R2 G1 单技能 AMP 训练实现 | 固定提交和 Newton 版本，核对专家数据和权重来源 |
 
 R0 必须补齐：
 1. 具体选中上游的完整 Git SHA、tag、许可证、修改许可；
