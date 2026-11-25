@@ -61,7 +61,9 @@ peak_gpu_mem_mb, code_sha, checkpoint_path, notes
 - `reports/R3_multiskill_ablation.md`：多技能诊断与对照。
 - `reports/failures/`：每个典型失败关联配置、日志、视频位置。
 
-不要上传未经授权的人体动作数据、宇树资产、第三方模型权重；大型 checkpoint/视频放在外部工件存储并记录 SHA/URL。
+每阶段将可公开的代表性成功和失败录像发布到 GitHub。小体积 MP4 放入对应报告的 `media/` 目录，较大录像可作为 GitHub Release 附件。报告提供下载链接、评估 seed、对应 checkpoint、SHA-256，以及供网页端核对的带时间标注的代表帧和评估数据。
+
+不要上传未经授权的人体动作数据、宇树资产和第三方模型权重。大型 checkpoint 放在外部工件存储并记录 SHA-256 和下载位置。
 
 ## 6. R1 Walk 正式对照预注册
 

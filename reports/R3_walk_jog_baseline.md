@@ -102,9 +102,15 @@
 
 ### 冻结与下一步
 
-本地冻结目录为 `artifacts/r3_walk_jog/frozen_baseline_seed42_8388608/`，包含 checkpoint、配置、数据清单、初态协议、独立评估记录及校验值。两个运行目录保存全部更新日志、各档权重和逐步状态，GitHub 保留可审查的汇总、配置、曲线和视频代表帧。 [本地模型、轨迹和视频校验值](r3_walk_jog/frozen_artifacts.sha256)
+本地冻结目录为 `artifacts/r3_walk_jog/frozen_baseline_seed42_8388608/`，包含 checkpoint、配置、数据清单、初态协议、独立评估记录及校验值。两个运行目录保存全部更新日志、各档权重和逐步状态。GitHub 提供汇总、配置、曲线和三段代表性视频。 [本地模型、轨迹和视频校验值](r3_walk_jog/frozen_artifacts.sha256)
 
-本地 `videos/` 含持续步行 `walk_seed45000.mp4`、慢跑初态减速步行 `jog_init_to_walk_seed45101.mp4` 和提前跌倒 `jog_init_fall_seed45100.mp4`。视频由 Newton 闭环评估录下的根姿态和关节位置离线渲染。 [成功与失败代表帧](r3_walk_jog/held_out_frames.png)
+下列视频都来自 8,388,608 步 checkpoint 的独立评估，由 Newton 闭环运行记录的根姿态和关节位置离线渲染。 [视频 SHA-256](r3_walk_jog/media/video.sha256) · [带时间标注的代表帧](r3_walk_jog/held_out_frames.png) · [逐回合评估数据](r3_walk_jog/warm_4m.json)
+
+| 实际行为 | 评估 seed | 时长 | 视频 |
+| --- | ---: | ---: | --- |
+| 步行初态持续步行 | 45000 | 10.00 s | [下载 MP4](https://raw.githubusercontent.com/dreamerToTOE/Learning-for-AMP/main/reports/r3_walk_jog/media/walk_seed45000.mp4) |
+| 慢跑初态减速后持续步行 | 45101 | 10.00 s | [下载 MP4](https://raw.githubusercontent.com/dreamerToTOE/Learning-for-AMP/main/reports/r3_walk_jog/media/jog_init_to_walk_seed45101.mp4) |
+| 慢跑初态提前跌倒 | 45100 | 0.67 s | [下载 MP4](https://raw.githubusercontent.com/dreamerToTOE/Learning-for-AMP/main/reports/r3_walk_jog/media/jog_init_fall_seed45100.mp4) |
 
 R3-2 优先复用 MimicKit 的速度与方向指令入口，给 G1 Actor 加入实际速度指令，先保留普通判别器。步行和慢跑命令初选 1.0 和 1.9 m/s，依据 HOLD 片段速度范围。先用带直立与允许接触约束的速度跟踪任务做 smoke。正式评估把速度命令与参考初态交叉组合，另测回合中途的走跑切换。 [MimicKit `TaskSteeringEnv`](https://github.com/xbpeng/MimicKit/blob/a2c41528c2a34b638611f6c618e4a59f0e151179/mimickit/envs/task_steering_env.py)
 

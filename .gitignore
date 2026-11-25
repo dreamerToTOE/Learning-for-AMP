@@ -33,4 +33,5 @@ videos/
 *.mp4
 *.mov
 *.avi
-# Keep small report tables and curated figures under reports/.
+# Keep selected experiment media in report directories.
+!reports/**/media/*.mp4
