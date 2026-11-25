@@ -12,6 +12,8 @@
 | legged_lab | https://github.com/zitongbai/legged_lab | G1 AMP/DeepMimic 候选工程 | 对应版本、修改的 RL 框架、License、资产 |
 | AMP Running baseline | https://github.com/Jiarui-Xie/AMP_Running_baseline | G1 跑步相关方案候选 | 数据、运动任务、资产与依赖 |
 | MimicKit / Peng 2025 | https://github.com/xbpeng/MimicKit | R2 G1 单技能 AMP 训练实现 | 固定提交和 Newton 版本，核对专家数据和权重来源 |
+| HOLD / RAI Institute 与 Boston Dynamics | https://github.com/rai-opensource/hold | G1 重定向数据候选，含行走、慢跑、转向和侧移 | 按固定提交核对 CC BY 4.0、关节映射和具体片段 |
+| State-Dependent AMP / Lu 等 | https://arxiv.org/abs/2605.18611 | 速度条件运动判别器、恢复判别器与训练时状态门控 | 论文方法参考。单位重力下的 `g_z` 阈值和正文角度需分别核对，代码可用性另审 |
 
 R0 必须补齐：
 1. 具体选中上游的完整 Git SHA、tag、许可证、修改许可；

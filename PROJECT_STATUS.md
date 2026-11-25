@@ -1,6 +1,7 @@
 # Project Status
 
-- **当前阶段 R2 / PARTIAL，更新于 2026-11-25。** 单技能 AMP 仿真行走已通过基础验收，专家片段的原始来源和许可待核验。
+- **当前阶段 R3 / IN_PROGRESS，更新于 2026-11-25。** 首批专家数据审查与原始双技能 AMP 基线。
+- **R2 / COMPLETE_WITH_LIMITATIONS。** 单技能 AMP 仿真行走通过基础验收。原始专家片段的来源和许可待核验，R3 可以使用来源和许可独立核实的数据。
 - **G1 纯风格 AMP 的 4,194,304 步 checkpoint 已冻结。** seed42 在独立 MimicKit / Newton 环境完成连续 1,024 次更新。100 个新初态均直立行走至 10 秒，完整率 100%（Wilson 95% 区间 96.3%–100%），无跌倒，平均前进 9.21 m、横向位移 −2.51 m。 [独立评估](reports/r2_g1_single_skill/amp_4m_heldout_100.json)
 - **固定初态下，2.052M 档 0/5 完整，3.281M 档首次达到 5/5。** RTX 3070 实测 128 环境总耗时 22 分 10 秒，整卡显存峰值 5,277 MiB。 [阶段证据与录像说明](reports/R2_g1_single_skill.md)
 - **R1 / COMPLETE_WITH_LIMITATIONS。** 训练、推理与独立评估链路已复现。R1 对照训练、PPO 奖励修改和 seed43、44 复验已取消。
@@ -101,8 +102,8 @@
 
 ## 下一步
 
-1. 跟进 `g1_walk.pkl` 的原始数据来源和许可。带哈希的镜像副本用于当前本地验证。
-2. 核查后续多技能实验可用的步行、跑步和转向专家片段，沿用冻结 G1 步行策略和固定初态作为技术基线。
+1. 核查带许可的 G1 行走和慢跑片段，验证格式、运动学和双技能数据加载。
+2. 用原始 MimicKit 单 Actor、单判别器和纯风格奖励跑 R3-1 基线。冻结 R2 权重用于后续单技能对照。
 
 ## 阶段记录
 
@@ -110,8 +111,8 @@
 |---|---|---|
 | R0 环境与上游审计 | PARTIAL | `reports/R0_environment_audit.md`、项目外部 `../r0_smoke_output.txt`、官方 v2.1.1 Walk smoke 日志 |
 | R1 官方 AMP baseline | COMPLETE_WITH_LIMITATIONS | [R1 报告](reports/R1_amp_baseline.md)、[路线纠偏](reports/R1_reassessment.md)、[容量与小样本审计](reports/R1_capacity_and_small_batch.md)、[高并行容量补测](reports/r1_capacity_sweep_high_20261124.json)、[20.48M 冻结评估](reports/R1_eval_freeze_20m.md)、[20.48M 到 40.96M 恢复报告](reports/R1_resume_to_40m.md)、[40.96M 冻结评估](reports/R1_eval_freeze_40m.md)、[速度跟踪 PPO/AMP 协议](reports/R1_speed_tracking_comparison_protocol.md)、[速度跟踪 smoke](reports/R1_speed_tracking_smoke.md)、[seed42 速度对照](reports/R1_speed_tracking_seed42.md)、[奖励漏洞诊断](reports/R1_reward_hacking_audit.md) |
-| R2 G1 单技能 | PARTIAL | 仿真步行验收通过，数据来源与许可待核验。 [冻结评估](reports/R2_g1_single_skill.md) |
-| R3 多技能诊断与消融 | NOT_STARTED | — |
+| R2 G1 单技能 | COMPLETE_WITH_LIMITATIONS | 仿真步行验收通过，原始数据来源与许可待核验。 [冻结评估](reports/R2_g1_single_skill.md) |
+| R3 多技能诊断与消融 | IN_PROGRESS | [阶段路线图](docs/ROADMAP.md#r3--多技能-amp-与分阶段实验) |
 | R4 报告与求职材料 | NOT_STARTED | — |
 
 ## R1 状态字段
