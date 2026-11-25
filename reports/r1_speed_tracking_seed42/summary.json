@@ -1,0 +1,2524 @@
+{
+  "evaluation_seeds": [
+    42000,
+    42001,
+    42002,
+    42003,
+    42004,
+    42005,
+    42006,
+    42007,
+    42008,
+    42009,
+    42010,
+    42011,
+    42012,
+    42013,
+    42014,
+    42015,
+    42016,
+    42017,
+    42018,
+    42019,
+    42020,
+    42021,
+    42022,
+    42023,
+    42024,
+    42025,
+    42026,
+    42027,
+    42028,
+    42029,
+    42030,
+    42031,
+    42032,
+    42033,
+    42034,
+    42035,
+    42036,
+    42037,
+    42038,
+    42039,
+    42040,
+    42041,
+    42042,
+    42043,
+    42044,
+    42045,
+    42046,
+    42047,
+    42048,
+    42049,
+    42050,
+    42051,
+    42052,
+    42053,
+    42054,
+    42055,
+    42056,
+    42057,
+    42058,
+    42059,
+    42060,
+    42061,
+    42062,
+    42063,
+    42064,
+    42065,
+    42066,
+    42067,
+    42068,
+    42069,
+    42070,
+    42071,
+    42072,
+    42073,
+    42074,
+    42075,
+    42076,
+    42077,
+    42078,
+    42079,
+    42080,
+    42081,
+    42082,
+    42083,
+    42084,
+    42085,
+    42086,
+    42087,
+    42088,
+    42089,
+    42090,
+    42091,
+    42092,
+    42093,
+    42094,
+    42095,
+    42096,
+    42097,
+    42098,
+    42099
+  ],
+  "target_vx_mps": 1.5,
+  "reference_motion": {
+    "fps": 60.0,
+    "joint_frames": 154,
+    "gait_frames": 77,
+    "gait": {
+      "estimated_landings": 5,
+      "alternating_steps": 4,
+      "forward_step_frames": [
+        29,
+        44,
+        59,
+        75
+      ],
+      "step_length_m": 0.7935185730457306,
+      "cadence_steps_per_min": 116.12903225806453,
+      "step_length_asymmetry": 0.12460872457120495,
+      "step_time_asymmetry": 0.0
+    },
+    "leg_symmetry": {
+      "rom_asymmetry": 0.21674237389430479,
+      "velocity_rms_asymmetry": 0.23223400115966797
+    },
+    "low_foot_motion_proxy": {
+      "samples": 27,
+      "sample_fraction": 0.17763157894736842,
+      "horizontal_speed_mean_mps": 0.4539530575275421,
+      "horizontal_speed_p95_mps": 2.0080109953880307
+    },
+    "sha256": "91a7af4e7fa59d8a3a2bb2c6e0dad45d73f6e5b5ee1a284d733435e32c418542"
+  },
+  "min_upright_torso_height_m": 0.8,
+  "capacity_amp": [
+    {
+      "path": "runs/r1_speed_tracking_capacity/amp_env256_updates20",
+      "exit_code": 0,
+      "num_envs": 256,
+      "updates": 20,
+      "samples_per_update": 4096,
+      "environment_transitions": 81920,
+      "started_at": "2026-11-25T10:12:16+09:00",
+      "finished_at": "2026-11-25T10:12:36+09:00",
+      "wall_seconds": 19.600856376,
+      "wall_env_steps_per_second": 4179.409227257326,
+      "gpu_samples": 39,
+      "first_used_mib": 1045,
+      "peak_used_mib": 4742,
+      "min_free_mib": 3091,
+      "gpu_samples_below_100_mib_free": 0,
+      "gpu_util_mean_percent": 26.358974358974358,
+      "gpu_util_peak_percent": 64,
+      "compute_apps_before": [
+        "3331, /usr/libexec/gnome-remote-desktop-daemon, 157"
+      ],
+      "compute_apps_after": [
+        "3331, /usr/libexec/gnome-remote-desktop-daemon, 157"
+      ],
+      "all_sampled_training_metrics_finite": true
+    },
+    {
+      "path": "runs/r1_speed_tracking_capacity/amp_env512_updates20",
+      "exit_code": 0,
+      "num_envs": 512,
+      "updates": 20,
+      "samples_per_update": 8192,
+      "environment_transitions": 163840,
+      "started_at": "2026-11-25T10:12:36+09:00",
+      "finished_at": "2026-11-25T10:12:58+09:00",
+      "wall_seconds": 22.396747176,
+      "wall_env_steps_per_second": 7315.34801516036,
+      "gpu_samples": 44,
+      "first_used_mib": 1053,
+      "peak_used_mib": 4982,
+      "min_free_mib": 2851,
+      "gpu_samples_below_100_mib_free": 0,
+      "gpu_util_mean_percent": 35.02272727272727,
+      "gpu_util_peak_percent": 94,
+      "compute_apps_before": [
+        "3331, /usr/libexec/gnome-remote-desktop-daemon, 157"
+      ],
+      "compute_apps_after": [
+        "3331, /usr/libexec/gnome-remote-desktop-daemon, 157"
+      ],
+      "all_sampled_training_metrics_finite": true
+    },
+    {
+      "path": "runs/r1_speed_tracking_capacity/amp_env1024_updates20",
+      "exit_code": 0,
+      "num_envs": 1024,
+      "updates": 20,
+      "samples_per_update": 16384,
+      "environment_transitions": 327680,
+      "started_at": "2026-11-25T10:12:58+09:00",
+      "finished_at": "2026-11-25T10:13:23+09:00",
+      "wall_seconds": 24.558671219,
+      "wall_env_steps_per_second": 13342.741432463492,
+      "gpu_samples": 49,
+      "first_used_mib": 1080,
+      "peak_used_mib": 5312,
+      "min_free_mib": 2520,
+      "gpu_samples_below_100_mib_free": 0,
+      "gpu_util_mean_percent": 38.142857142857146,
+      "gpu_util_peak_percent": 98,
+      "compute_apps_before": [
+        "3331, /usr/libexec/gnome-remote-desktop-daemon, 157"
+      ],
+      "compute_apps_after": [
+        "3331, /usr/libexec/gnome-remote-desktop-daemon, 157"
+      ],
+      "all_sampled_training_metrics_finite": true
+    },
+    {
+      "path": "runs/r1_speed_tracking_capacity/amp_env2048_updates20",
+      "exit_code": 0,
+      "num_envs": 2048,
+      "updates": 20,
+      "samples_per_update": 32768,
+      "environment_transitions": 655360,
+      "started_at": "2026-11-25T10:13:23+09:00",
+      "finished_at": "2026-11-25T10:13:51+09:00",
+      "wall_seconds": 28.699450366,
+      "wall_env_steps_per_second": 22835.28052427093,
+      "gpu_samples": 57,
+      "first_used_mib": 1075,
+      "peak_used_mib": 5781,
+      "min_free_mib": 2052,
+      "gpu_samples_below_100_mib_free": 0,
+      "gpu_util_mean_percent": 35.421052631578945,
+      "gpu_util_peak_percent": 99,
+      "compute_apps_before": [
+        "3331, /usr/libexec/gnome-remote-desktop-daemon, 157"
+      ],
+      "compute_apps_after": [
+        "3331, /usr/libexec/gnome-remote-desktop-daemon, 157"
+      ],
+      "all_sampled_training_metrics_finite": true
+    }
+  ],
+  "training": {
+    "ppo": {
+      "path": "runs/r1_speed_tracking_formal_seed42/ppo",
+      "exit_code": 0,
+      "num_envs": 2048,
+      "updates": 1221,
+      "samples_per_update": 32768,
+      "environment_transitions": 40009728,
+      "started_at": "2026-11-25T10:35:55+09:00",
+      "finished_at": "2026-11-25T10:46:56+09:00",
+      "wall_seconds": 660.825095251,
+      "wall_env_steps_per_second": 60545.109874804584,
+      "gpu_samples": 1313,
+      "first_used_mib": 1204,
+      "peak_used_mib": 5239,
+      "min_free_mib": 2594,
+      "gpu_samples_below_100_mib_free": 0,
+      "gpu_util_mean_percent": 60.162985529322164,
+      "gpu_util_peak_percent": 100,
+      "compute_apps_before": [
+        "3331, /usr/libexec/gnome-remote-desktop-daemon, 157"
+      ],
+      "compute_apps_after": [
+        "3331, /usr/libexec/gnome-remote-desktop-daemon, 157"
+      ],
+      "all_sampled_training_metrics_finite": true,
+      "gpu_trace": "reports/r1_speed_tracking_seed42/ppo_gpu.csv.gz"
+    },
+    "amp": {
+      "path": "runs/r1_speed_tracking_formal_seed42/amp",
+      "exit_code": 0,
+      "num_envs": 2048,
+      "updates": 1221,
+      "samples_per_update": 32768,
+      "environment_transitions": 40009728,
+      "started_at": "2026-11-25T10:21:52+09:00",
+      "finished_at": "2026-11-25T10:35:55+09:00",
+      "wall_seconds": 843.532861353,
+      "wall_env_steps_per_second": 47431.14327025228,
+      "gpu_samples": 1685,
+      "first_used_mib": 1145,
+      "peak_used_mib": 7832,
+      "min_free_mib": 0,
+      "gpu_samples_below_100_mib_free": 56,
+      "gpu_util_mean_percent": 69.52818991097922,
+      "gpu_util_peak_percent": 100,
+      "compute_apps_before": [
+        "3331, /usr/libexec/gnome-remote-desktop-daemon, 157"
+      ],
+      "compute_apps_after": [
+        "3331, /usr/libexec/gnome-remote-desktop-daemon, 157"
+      ],
+      "all_sampled_training_metrics_finite": true,
+      "gpu_trace": "reports/r1_speed_tracking_seed42/amp_gpu.csv.gz"
+    }
+  },
+  "environment_config_sha256": "070eef67fca8901b4e3b01e45e3c801dc2861e887fe315b4533a9499235b9d1e",
+  "shared_agent_settings": {
+    "clip_predicted_values": true,
+    "discount_factor": 0.99,
+    "entropy_loss_scale": 0.0,
+    "grad_norm_clip": 0.0,
+    "lambda": 0.95,
+    "learning_epochs": 6,
+    "learning_rate": 5e-05,
+    "learning_rate_scheduler": null,
+    "learning_rate_scheduler_kwargs": null,
+    "learning_starts": 0,
+    "mini_batches": 2,
+    "random_timesteps": 0,
+    "ratio_clip": 0.2,
+    "rollouts": 16,
+    "state_preprocessor": "RunningStandardScaler",
+    "state_preprocessor_kwargs": null,
+    "time_limit_bootstrap": false,
+    "value_clip": 0.2,
+    "value_loss_scale": 2.5,
+    "value_preprocessor": "RunningStandardScaler",
+    "value_preprocessor_kwargs": null
+  },
+  "policy_and_value_configs": {
+    "policy": {
+      "class": "GaussianMixin",
+      "clip_actions": false,
+      "clip_log_std": true,
+      "min_log_std": -20.0,
+      "max_log_std": 2.0,
+      "initial_log_std": -2.9,
+      "fixed_log_std": true,
+      "network": [
+        {
+          "name": "net",
+          "input": "STATES",
+          "layers": [
+            1024,
+            512
+          ],
+          "activations": "relu"
+        }
+      ],
+      "output": "ACTIONS"
+    },
+    "value": {
+      "class": "DeterministicMixin",
+      "clip_actions": false,
+      "network": [
+        {
+          "name": "net",
+          "input": "STATES",
+          "layers": [
+            1024,
+            512
+          ],
+          "activations": "relu"
+        }
+      ],
+      "output": "ONE"
+    }
+  },
+  "evaluation": {
+    "ppo": {
+      "1m": {
+        "environment_transitions": 983040,
+        "updates": 30,
+        "checkpoint": "logs/skrl/r1_speed_tracking_formal_ppo_seed42/2026-11-25_10-36-03_ppo_torch_env2048_updates1221/checkpoints/agent_480.pt",
+        "checkpoint_sha256": "37a11f78f9eaacc9ef9c2d82c7f802fa02f2744684c2ec0eec6a336b0c81e4b2",
+        "episodes_archive": "reports/r1_speed_tracking_seed42/episodes/ppo/1m.json.gz",
+        "evaluation_status": "exit_code=0",
+        "episodes": 100,
+        "completed": 5,
+        "falls": 95,
+        "complete_forward_motion": 0,
+        "unresolved_upright_walks": 0,
+        "completed_with_forward_progress": 0,
+        "walked": 0,
+        "complete_wilson_95": [
+          0.021543679154367962,
+          0.11175046923191914
+        ],
+        "forward_motion_wilson_95": [
+          0.0,
+          0.03699349820698568
+        ],
+        "walk_wilson_95": [
+          0.0,
+          0.03699349820698568
+        ],
+        "max_terminal_torso_height_completed_m": 0.5184746384620667,
+        "mean_survival_s": 1.483,
+        "mean_forward_dx_m": 0.7355873131752014,
+        "mean_fixed_horizon_vx_mae_mps": 1.4214921418799207,
+        "complete_only_vx_mae_mps": 1.4535768747329711,
+        "complete_only_vx_w1_mps": 1.4555899865500208,
+        "mean_target_angle_violation": 0.0,
+        "mean_target_position_error_rad": 0.24396985375171373,
+        "motion_full_episodes": {
+          "joint_position_w1_rad": {
+            "mean": 0.5905564256692538,
+            "episodes": 5
+          },
+          "joint_velocity_w1_radps": {
+            "mean": 1.165288803279663,
+            "episodes": 5
+          },
+          "gait.step_length_m": {
+            "mean": 0.003269582986831665,
+            "episodes": 2
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": 0.7902489900588989,
+            "episodes": 2
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": 92.85714285714286,
+            "episodes": 2
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": 23.271889400921665,
+            "episodes": 2
+          },
+          "gait.step_length_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_time_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": 0.7472669252672001,
+            "episodes": 5
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": 0.3726046055555344,
+            "episodes": 5
+          },
+          "action_delta.mean_abs": {
+            "mean": 0.0027870355639606713,
+            "episodes": 5
+          },
+          "action_delta.p95_abs": {
+            "mean": 0.011702356021851266,
+            "episodes": 5
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": 0.01773833893239498,
+            "episodes": 5
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": 0.9426174496644295,
+            "episodes": 5
+          }
+        },
+        "motion_forward_episodes": {
+          "joint_position_w1_rad": {
+            "mean": null,
+            "episodes": 0
+          },
+          "joint_velocity_w1_radps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_time_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.mean_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.p95_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": null,
+            "episodes": 0
+          }
+        },
+        "motion_walking_episodes": {
+          "joint_position_w1_rad": {
+            "mean": null,
+            "episodes": 0
+          },
+          "joint_velocity_w1_radps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_time_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.mean_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.p95_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": null,
+            "episodes": 0
+          }
+        }
+      },
+      "4m": {
+        "environment_transitions": 3932160,
+        "updates": 120,
+        "checkpoint": "logs/skrl/r1_speed_tracking_formal_ppo_seed42/2026-11-25_10-36-03_ppo_torch_env2048_updates1221/checkpoints/agent_1920.pt",
+        "checkpoint_sha256": "456d9cf56b9475dc886fa4acfcfcec36a5bb8922b0d941231c2c093bc486b8d1",
+        "episodes_archive": "reports/r1_speed_tracking_seed42/episodes/ppo/4m.json.gz",
+        "evaluation_status": "exit_code=0",
+        "episodes": 100,
+        "completed": 44,
+        "falls": 56,
+        "complete_forward_motion": 0,
+        "unresolved_upright_walks": 0,
+        "completed_with_forward_progress": 0,
+        "walked": 0,
+        "complete_wilson_95": [
+          0.34672026630160796,
+          0.5377189534832303
+        ],
+        "forward_motion_wilson_95": [
+          0.0,
+          0.03699349820698568
+        ],
+        "walk_wilson_95": [
+          0.0,
+          0.03699349820698568
+        ],
+        "max_terminal_torso_height_completed_m": 0.5203282833099365,
+        "mean_survival_s": 4.935666666666667,
+        "mean_forward_dx_m": 0.6360734272003173,
+        "mean_fixed_horizon_vx_mae_mps": 1.4323143250607329,
+        "complete_only_vx_mae_mps": 1.452053351835771,
+        "complete_only_vx_w1_mps": 1.4578546039598348,
+        "mean_target_angle_violation": 0.0,
+        "mean_target_position_error_rad": 0.23333990579583583,
+        "motion_full_episodes": {
+          "joint_position_w1_rad": {
+            "mean": 0.5750012888505844,
+            "episodes": 44
+          },
+          "joint_velocity_w1_radps": {
+            "mean": 1.1606494766862752,
+            "episodes": 44
+          },
+          "gait.step_length_m": {
+            "mean": 0.08065905102661677,
+            "episodes": 7
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": 0.7128595220191138,
+            "episodes": 7
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": 175.62152133580705,
+            "episodes": 7
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": 74.4233646537794,
+            "episodes": 7
+          },
+          "gait.step_length_asymmetry": {
+            "mean": 2.0,
+            "episodes": 1
+          },
+          "gait.step_time_asymmetry": {
+            "mean": 0.0,
+            "episodes": 1
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": 0.6882237394563256,
+            "episodes": 44
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": 0.4258191687139598,
+            "episodes": 44
+          },
+          "action_delta.mean_abs": {
+            "mean": 0.0038263290982947433,
+            "episodes": 44
+          },
+          "action_delta.p95_abs": {
+            "mean": 0.01663268094522537,
+            "episodes": 44
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": 0.0170353267934512,
+            "episodes": 44
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": 0.9479484441732764,
+            "episodes": 44
+          }
+        },
+        "motion_forward_episodes": {
+          "joint_position_w1_rad": {
+            "mean": null,
+            "episodes": 0
+          },
+          "joint_velocity_w1_radps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_time_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.mean_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.p95_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": null,
+            "episodes": 0
+          }
+        },
+        "motion_walking_episodes": {
+          "joint_position_w1_rad": {
+            "mean": null,
+            "episodes": 0
+          },
+          "joint_velocity_w1_radps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_time_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.mean_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.p95_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": null,
+            "episodes": 0
+          }
+        }
+      },
+      "10m": {
+        "environment_transitions": 9994240,
+        "updates": 305,
+        "checkpoint": "logs/skrl/r1_speed_tracking_formal_ppo_seed42/2026-11-25_10-36-03_ppo_torch_env2048_updates1221/checkpoints/agent_4880.pt",
+        "checkpoint_sha256": "54067ec60b8724286866041579167e2c739d53c3a8943e3312ade76d76aec2a7",
+        "episodes_archive": "reports/r1_speed_tracking_seed42/episodes/ppo/10m.json.gz",
+        "evaluation_status": "verified_complete_output",
+        "episodes": 100,
+        "completed": 85,
+        "falls": 15,
+        "complete_forward_motion": 0,
+        "unresolved_upright_walks": 0,
+        "completed_with_forward_progress": 0,
+        "walked": 0,
+        "complete_wilson_95": [
+          0.7671644040916763,
+          0.9069401471634336
+        ],
+        "forward_motion_wilson_95": [
+          0.0,
+          0.03699349820698568
+        ],
+        "walk_wilson_95": [
+          0.0,
+          0.03699349820698568
+        ],
+        "max_terminal_torso_height_completed_m": 0.6423530578613281,
+        "mean_survival_s": 8.617333333333333,
+        "mean_forward_dx_m": 0.5443516781926155,
+        "mean_fixed_horizon_vx_mae_mps": 1.4415589040418133,
+        "complete_only_vx_mae_mps": 1.4430164533502916,
+        "complete_only_vx_w1_mps": 1.4479604560736943,
+        "mean_target_angle_violation": 0.004228006545820853,
+        "mean_target_position_error_rad": 0.22188611757890087,
+        "motion_full_episodes": {
+          "joint_position_w1_rad": {
+            "mean": 0.6017953481129952,
+            "episodes": 85
+          },
+          "joint_velocity_w1_radps": {
+            "mean": 1.1124460958367337,
+            "episodes": 85
+          },
+          "gait.step_length_m": {
+            "mean": 0.05075908683378387,
+            "episodes": 36
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": 0.7427594862119468,
+            "episodes": 36
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": 177.65593282118266,
+            "episodes": 36
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": 70.34069642160917,
+            "episodes": 36
+          },
+          "gait.step_length_asymmetry": {
+            "mean": 1.8000107626840005,
+            "episodes": 10
+          },
+          "gait.step_time_asymmetry": {
+            "mean": 0.5587890055139153,
+            "episodes": 10
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": 0.6660812385613016,
+            "episodes": 85
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": 0.34546472552944635,
+            "episodes": 85
+          },
+          "action_delta.mean_abs": {
+            "mean": 0.00669202424640603,
+            "episodes": 85
+          },
+          "action_delta.p95_abs": {
+            "mean": 0.033424730831209296,
+            "episodes": 85
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": 0.030247348168974415,
+            "episodes": 85
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": 0.8999802605606001,
+            "episodes": 85
+          }
+        },
+        "motion_forward_episodes": {
+          "joint_position_w1_rad": {
+            "mean": null,
+            "episodes": 0
+          },
+          "joint_velocity_w1_radps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_time_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.mean_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.p95_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": null,
+            "episodes": 0
+          }
+        },
+        "motion_walking_episodes": {
+          "joint_position_w1_rad": {
+            "mean": null,
+            "episodes": 0
+          },
+          "joint_velocity_w1_radps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_time_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.mean_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.p95_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": null,
+            "episodes": 0
+          }
+        }
+      },
+      "20m": {
+        "environment_transitions": 19988480,
+        "updates": 610,
+        "checkpoint": "logs/skrl/r1_speed_tracking_formal_ppo_seed42/2026-11-25_10-36-03_ppo_torch_env2048_updates1221/checkpoints/agent_9760.pt",
+        "checkpoint_sha256": "20568604bb5e4eeffe31669708413e7e16c95dff5495ed511c4268ef72a221cb",
+        "episodes_archive": "reports/r1_speed_tracking_seed42/episodes/ppo/20m.json.gz",
+        "evaluation_status": "exit_code=0",
+        "episodes": 100,
+        "completed": 97,
+        "falls": 3,
+        "complete_forward_motion": 65,
+        "unresolved_upright_walks": 0,
+        "completed_with_forward_progress": 65,
+        "walked": 0,
+        "complete_wilson_95": [
+          0.9154806357094722,
+          0.9897454759759611
+        ],
+        "forward_motion_wilson_95": [
+          0.5525444329688797,
+          0.7363575175690247
+        ],
+        "walk_wilson_95": [
+          0.0,
+          0.03699349820698568
+        ],
+        "max_terminal_torso_height_completed_m": 0.6568288207054138,
+        "mean_survival_s": 9.683666666666667,
+        "mean_forward_dx_m": 11.50645003169775,
+        "mean_fixed_horizon_vx_mae_mps": 0.5346019152016145,
+        "complete_only_vx_mae_mps": 0.5065200460940292,
+        "complete_only_vx_w1_mps": 0.41921120815266555,
+        "mean_target_angle_violation": 0.015425897819081866,
+        "mean_target_position_error_rad": 0.34048591912869103,
+        "motion_full_episodes": {
+          "joint_position_w1_rad": {
+            "mean": 0.5617837746568737,
+            "episodes": 97
+          },
+          "joint_velocity_w1_radps": {
+            "mean": 1.3329146506145249,
+            "episodes": 97
+          },
+          "gait.step_length_m": {
+            "mean": 0.3084284663434933,
+            "episodes": 94
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": 0.4863895659516526,
+            "episodes": 94
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": 227.6400384565891,
+            "episodes": 94
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": 111.85417709763233,
+            "episodes": 94
+          },
+          "gait.step_length_asymmetry": {
+            "mean": 0.3487331714144991,
+            "episodes": 87
+          },
+          "gait.step_time_asymmetry": {
+            "mean": 0.18779552790132714,
+            "episodes": 87
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": 0.34309200400218476,
+            "episodes": 97
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": 0.2551091167422914,
+            "episodes": 97
+          },
+          "action_delta.mean_abs": {
+            "mean": 0.10297471314150188,
+            "episodes": 97
+          },
+          "action_delta.p95_abs": {
+            "mean": 0.2855485725274174,
+            "episodes": 97
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": 1.5960968510852647,
+            "episodes": 97
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": 0.20270878018404484,
+            "episodes": 97
+          }
+        },
+        "motion_forward_episodes": {
+          "joint_position_w1_rad": {
+            "mean": 0.5591529874711809,
+            "episodes": 65
+          },
+          "joint_velocity_w1_radps": {
+            "mean": 1.3810160200934312,
+            "episodes": 65
+          },
+          "gait.step_length_m": {
+            "mean": 0.3502408887961612,
+            "episodes": 65
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": 0.44327768424956937,
+            "episodes": 65
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": 231.8388044538198,
+            "episodes": 65
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": 115.70977219575525,
+            "episodes": 65
+          },
+          "gait.step_length_asymmetry": {
+            "mean": 0.2864202956422981,
+            "episodes": 65
+          },
+          "gait.step_time_asymmetry": {
+            "mean": 0.19552840994203208,
+            "episodes": 65
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": 0.3067701946979915,
+            "episodes": 65
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": 0.24378628937097696,
+            "episodes": 65
+          },
+          "action_delta.mean_abs": {
+            "mean": 0.1142517076088832,
+            "episodes": 65
+          },
+          "action_delta.p95_abs": {
+            "mean": 0.3122713942711169,
+            "episodes": 65
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": 1.896521234512329,
+            "episodes": 65
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": 0.11943727413526072,
+            "episodes": 65
+          }
+        },
+        "motion_walking_episodes": {
+          "joint_position_w1_rad": {
+            "mean": null,
+            "episodes": 0
+          },
+          "joint_velocity_w1_radps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_time_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.mean_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.p95_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": null,
+            "episodes": 0
+          }
+        }
+      },
+      "40m": {
+        "environment_transitions": 39976960,
+        "updates": 1220,
+        "checkpoint": "logs/skrl/r1_speed_tracking_formal_ppo_seed42/2026-11-25_10-36-03_ppo_torch_env2048_updates1221/checkpoints/agent_19520.pt",
+        "checkpoint_sha256": "c44a7e64054b9780ca6a9ad5ffb3bf0eb0e39b2ec379565488a9dc7b89b1bb8a",
+        "episodes_archive": "reports/r1_speed_tracking_seed42/episodes/ppo/40m.json.gz",
+        "evaluation_status": "exit_code=0",
+        "episodes": 100,
+        "completed": 91,
+        "falls": 9,
+        "complete_forward_motion": 82,
+        "unresolved_upright_walks": 0,
+        "completed_with_forward_progress": 82,
+        "walked": 0,
+        "complete_wilson_95": [
+          0.8377378714728368,
+          0.9519274599974349
+        ],
+        "forward_motion_wilson_95": [
+          0.7333264161369927,
+          0.8829977450105364
+        ],
+        "walk_wilson_95": [
+          0.0,
+          0.03699349820698568
+        ],
+        "max_terminal_torso_height_completed_m": 0.6264312863349915,
+        "mean_survival_s": 9.159,
+        "mean_forward_dx_m": 13.476613054871558,
+        "mean_fixed_horizon_vx_mae_mps": 0.35754198465060233,
+        "complete_only_vx_mae_mps": 0.2538754689496952,
+        "complete_only_vx_w1_mps": 0.1485864411209518,
+        "mean_target_angle_violation": 0.024218306671807768,
+        "mean_target_position_error_rad": 0.36159997515793435,
+        "motion_full_episodes": {
+          "joint_position_w1_rad": {
+            "mean": 0.5461811994153852,
+            "episodes": 91
+          },
+          "joint_velocity_w1_radps": {
+            "mean": 1.3904184323946218,
+            "episodes": 91
+          },
+          "gait.step_length_m": {
+            "mean": 0.4032502438964748,
+            "episodes": 91
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": 0.3902683291492558,
+            "episodes": 91
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": 218.5405057004064,
+            "episodes": 91
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": 102.41147344234189,
+            "episodes": 91
+          },
+          "gait.step_length_asymmetry": {
+            "mean": 0.63046674144737,
+            "episodes": 90
+          },
+          "gait.step_time_asymmetry": {
+            "mean": 0.18858266848398567,
+            "episodes": 90
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": 0.41831931627271907,
+            "episodes": 91
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": 0.3597414452623535,
+            "episodes": 91
+          },
+          "action_delta.mean_abs": {
+            "mean": 0.1155320213043264,
+            "episodes": 91
+          },
+          "action_delta.p95_abs": {
+            "mean": 0.303607563164781,
+            "episodes": 91
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": 1.9494737687592323,
+            "episodes": 91
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": 0.17552916881775943,
+            "episodes": 91
+          }
+        },
+        "motion_forward_episodes": {
+          "joint_position_w1_rad": {
+            "mean": 0.5462523571173644,
+            "episodes": 82
+          },
+          "joint_velocity_w1_radps": {
+            "mean": 1.4004386265184265,
+            "episodes": 82
+          },
+          "gait.step_length_m": {
+            "mean": 0.41189885590015063,
+            "episodes": 82
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": 0.38161971714557996,
+            "episodes": 82
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": 219.89340133040523,
+            "episodes": 82
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": 103.76436907234071,
+            "episodes": 82
+          },
+          "gait.step_length_asymmetry": {
+            "mean": 0.6187739422853112,
+            "episodes": 82
+          },
+          "gait.step_time_asymmetry": {
+            "mean": 0.18826074504306978,
+            "episodes": 82
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": 0.42161908091880246,
+            "episodes": 82
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": 0.3629513713644772,
+            "episodes": 82
+          },
+          "action_delta.mean_abs": {
+            "mean": 0.11797864389855688,
+            "episodes": 82
+          },
+          "action_delta.p95_abs": {
+            "mean": 0.3085588735232992,
+            "episodes": 82
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": 2.0070241747832878,
+            "episodes": 82
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": 0.15947781961041088,
+            "episodes": 82
+          }
+        },
+        "motion_walking_episodes": {
+          "joint_position_w1_rad": {
+            "mean": null,
+            "episodes": 0
+          },
+          "joint_velocity_w1_radps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_time_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.mean_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.p95_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": null,
+            "episodes": 0
+          }
+        }
+      }
+    },
+    "amp": {
+      "1m": {
+        "environment_transitions": 983040,
+        "updates": 30,
+        "checkpoint": "logs/skrl/r1_speed_tracking_formal_amp_seed42/2026-11-25_10-21-58_amp_torch_env2048_updates1221/checkpoints/agent_480.pt",
+        "checkpoint_sha256": "5ecdc1a5a7c63ac1b8f8cdb7838989eda0cbfa38b4b5531bcbc3fb64eea0a6d8",
+        "episodes_archive": "reports/r1_speed_tracking_seed42/episodes/amp/1m.json.gz",
+        "evaluation_status": "exit_code=0",
+        "episodes": 100,
+        "completed": 0,
+        "falls": 100,
+        "complete_forward_motion": 0,
+        "unresolved_upright_walks": 0,
+        "completed_with_forward_progress": 0,
+        "walked": 0,
+        "complete_wilson_95": [
+          0.0,
+          0.03699349820698568
+        ],
+        "forward_motion_wilson_95": [
+          0.0,
+          0.03699349820698568
+        ],
+        "walk_wilson_95": [
+          0.0,
+          0.03699349820698568
+        ],
+        "max_terminal_torso_height_completed_m": null,
+        "mean_survival_s": 1.0043333333333333,
+        "mean_forward_dx_m": 0.8348413951694965,
+        "mean_fixed_horizon_vx_mae_mps": 1.412452424489535,
+        "complete_only_vx_mae_mps": null,
+        "complete_only_vx_w1_mps": null,
+        "mean_target_angle_violation": 0.0,
+        "mean_target_position_error_rad": 0.24149253790677597,
+        "motion_full_episodes": {
+          "joint_position_w1_rad": {
+            "mean": null,
+            "episodes": 0
+          },
+          "joint_velocity_w1_radps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_time_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.mean_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.p95_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": null,
+            "episodes": 0
+          }
+        },
+        "motion_forward_episodes": {
+          "joint_position_w1_rad": {
+            "mean": null,
+            "episodes": 0
+          },
+          "joint_velocity_w1_radps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_time_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.mean_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.p95_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": null,
+            "episodes": 0
+          }
+        },
+        "motion_walking_episodes": {
+          "joint_position_w1_rad": {
+            "mean": null,
+            "episodes": 0
+          },
+          "joint_velocity_w1_radps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_time_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.mean_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.p95_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": null,
+            "episodes": 0
+          }
+        }
+      },
+      "4m": {
+        "environment_transitions": 3932160,
+        "updates": 120,
+        "checkpoint": "logs/skrl/r1_speed_tracking_formal_amp_seed42/2026-11-25_10-21-58_amp_torch_env2048_updates1221/checkpoints/agent_1920.pt",
+        "checkpoint_sha256": "28f6bf5f4ba9351fd1b57468a6e159002e63cdf89d5529ceb3cb2e0ee319109c",
+        "episodes_archive": "reports/r1_speed_tracking_seed42/episodes/amp/4m.json.gz",
+        "evaluation_status": "exit_code=0",
+        "episodes": 100,
+        "completed": 52,
+        "falls": 48,
+        "complete_forward_motion": 0,
+        "unresolved_upright_walks": 0,
+        "completed_with_forward_progress": 0,
+        "walked": 0,
+        "complete_wilson_95": [
+          0.4231657776522396,
+          0.615354482419481
+        ],
+        "forward_motion_wilson_95": [
+          0.0,
+          0.03699349820698568
+        ],
+        "walk_wilson_95": [
+          0.0,
+          0.03699349820698568
+        ],
+        "max_terminal_torso_height_completed_m": 0.518811047077179,
+        "mean_survival_s": 5.618,
+        "mean_forward_dx_m": 0.6690514612197876,
+        "mean_fixed_horizon_vx_mae_mps": 1.4302202070158063,
+        "complete_only_vx_mae_mps": 1.4475332773648775,
+        "complete_only_vx_w1_mps": 1.453112435001527,
+        "mean_target_angle_violation": 5.0014701610446294e-05,
+        "mean_target_position_error_rad": 0.23964181908890161,
+        "motion_full_episodes": {
+          "joint_position_w1_rad": {
+            "mean": 0.5914868149784774,
+            "episodes": 52
+          },
+          "joint_velocity_w1_radps": {
+            "mean": 1.159096167688213,
+            "episodes": 52
+          },
+          "gait.step_length_m": {
+            "mean": 0.08942596334964037,
+            "episodes": 12
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": 0.7040926096960902,
+            "episodes": 12
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": 182.21638655462183,
+            "episodes": 12
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": 70.48330622571608,
+            "episodes": 12
+          },
+          "gait.step_length_asymmetry": {
+            "mean": 2.0,
+            "episodes": 1
+          },
+          "gait.step_time_asymmetry": {
+            "mean": 0.22222222222222218,
+            "episodes": 1
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": 0.6692623084762775,
+            "episodes": 52
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": 0.35506564378738403,
+            "episodes": 52
+          },
+          "action_delta.mean_abs": {
+            "mean": 0.0032638876672046115,
+            "episodes": 52
+          },
+          "action_delta.p95_abs": {
+            "mean": 0.01791463761339678,
+            "episodes": 52
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": 0.018647312383668926,
+            "episodes": 52
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": 0.9473089829633454,
+            "episodes": 52
+          }
+        },
+        "motion_forward_episodes": {
+          "joint_position_w1_rad": {
+            "mean": null,
+            "episodes": 0
+          },
+          "joint_velocity_w1_radps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_time_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.mean_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.p95_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": null,
+            "episodes": 0
+          }
+        },
+        "motion_walking_episodes": {
+          "joint_position_w1_rad": {
+            "mean": null,
+            "episodes": 0
+          },
+          "joint_velocity_w1_radps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_time_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.mean_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.p95_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": null,
+            "episodes": 0
+          }
+        }
+      },
+      "10m": {
+        "environment_transitions": 9994240,
+        "updates": 305,
+        "checkpoint": "logs/skrl/r1_speed_tracking_formal_amp_seed42/2026-11-25_10-21-58_amp_torch_env2048_updates1221/checkpoints/agent_4880.pt",
+        "checkpoint_sha256": "976c5ba165c1cd91df499504665595afb7678716ac69417a49ee8cc171970ec2",
+        "episodes_archive": "reports/r1_speed_tracking_seed42/episodes/amp/10m.json.gz",
+        "evaluation_status": "exit_code=0",
+        "episodes": 100,
+        "completed": 79,
+        "falls": 21,
+        "complete_forward_motion": 0,
+        "unresolved_upright_walks": 0,
+        "completed_with_forward_progress": 0,
+        "walked": 0,
+        "complete_wilson_95": [
+          0.7002003116591013,
+          0.858343459380847
+        ],
+        "forward_motion_wilson_95": [
+          0.0,
+          0.03699349820698568
+        ],
+        "walk_wilson_95": [
+          0.0,
+          0.03699349820698568
+        ],
+        "max_terminal_torso_height_completed_m": 0.5551928877830505,
+        "mean_survival_s": 8.130666666666666,
+        "mean_forward_dx_m": 0.650341402888298,
+        "mean_fixed_horizon_vx_mae_mps": 1.4337652660133846,
+        "complete_only_vx_mae_mps": 1.4387676685671262,
+        "complete_only_vx_w1_mps": 1.4444351215733415,
+        "mean_target_angle_violation": 0.0001559853701353786,
+        "mean_target_position_error_rad": 0.2432891881035969,
+        "motion_full_episodes": {
+          "joint_position_w1_rad": {
+            "mean": 0.6003819166042962,
+            "episodes": 79
+          },
+          "joint_velocity_w1_radps": {
+            "mean": 1.1395940796028177,
+            "episodes": 79
+          },
+          "gait.step_length_m": {
+            "mean": 0.14326427907993397,
+            "episodes": 22
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": 0.6691758941125238,
+            "episodes": 22
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": 218.1129340878557,
+            "episodes": 22
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": 110.9101835569628,
+            "episodes": 22
+          },
+          "gait.step_length_asymmetry": {
+            "mean": 1.322298731168986,
+            "episodes": 2
+          },
+          "gait.step_time_asymmetry": {
+            "mean": 0.6363636363636365,
+            "episodes": 2
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": 0.709376060607334,
+            "episodes": 79
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": 0.3531822786678242,
+            "episodes": 79
+          },
+          "action_delta.mean_abs": {
+            "mean": 0.007091789627211947,
+            "episodes": 79
+          },
+          "action_delta.p95_abs": {
+            "mean": 0.03774877163357556,
+            "episodes": 79
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": 0.018975186703986006,
+            "episodes": 79
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": 0.9411477359612608,
+            "episodes": 79
+          }
+        },
+        "motion_forward_episodes": {
+          "joint_position_w1_rad": {
+            "mean": null,
+            "episodes": 0
+          },
+          "joint_velocity_w1_radps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_time_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.mean_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.p95_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": null,
+            "episodes": 0
+          }
+        },
+        "motion_walking_episodes": {
+          "joint_position_w1_rad": {
+            "mean": null,
+            "episodes": 0
+          },
+          "joint_velocity_w1_radps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_time_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.mean_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.p95_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": null,
+            "episodes": 0
+          }
+        }
+      },
+      "20m": {
+        "environment_transitions": 19988480,
+        "updates": 610,
+        "checkpoint": "logs/skrl/r1_speed_tracking_formal_amp_seed42/2026-11-25_10-21-58_amp_torch_env2048_updates1221/checkpoints/agent_9760.pt",
+        "checkpoint_sha256": "a054ea98b0269feb4d6accdb84ac01559c0c2c10f58868bbf9b8d5857b8f65f2",
+        "episodes_archive": "reports/r1_speed_tracking_seed42/episodes/amp/20m.json.gz",
+        "evaluation_status": "exit_code=0",
+        "episodes": 100,
+        "completed": 57,
+        "falls": 43,
+        "complete_forward_motion": 0,
+        "unresolved_upright_walks": 0,
+        "completed_with_forward_progress": 0,
+        "walked": 0,
+        "complete_wilson_95": [
+          0.4721538954921231,
+          0.6626670147588988
+        ],
+        "forward_motion_wilson_95": [
+          0.0,
+          0.03699349820698568
+        ],
+        "walk_wilson_95": [
+          0.0,
+          0.03699349820698568
+        ],
+        "max_terminal_torso_height_completed_m": 0.5234217643737793,
+        "mean_survival_s": 6.285,
+        "mean_forward_dx_m": 0.7534319113194943,
+        "mean_fixed_horizon_vx_mae_mps": 1.4279244597301037,
+        "complete_only_vx_mae_mps": 1.4504775624526174,
+        "complete_only_vx_w1_mps": 1.455606501085563,
+        "mean_target_angle_violation": 0.0024636113901447348,
+        "mean_target_position_error_rad": 0.2526492567571491,
+        "motion_full_episodes": {
+          "joint_position_w1_rad": {
+            "mean": 0.5831094327942419,
+            "episodes": 57
+          },
+          "joint_velocity_w1_radps": {
+            "mean": 1.0373583501779378,
+            "episodes": 57
+          },
+          "gait.step_length_m": {
+            "mean": 0.18958739451083698,
+            "episodes": 19
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": 0.6039311785348936,
+            "episodes": 19
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": 180.40088522730915,
+            "episodes": 19
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": 74.80131402052731,
+            "episodes": 19
+          },
+          "gait.step_length_asymmetry": {
+            "mean": 1.7105263447953556,
+            "episodes": 4
+          },
+          "gait.step_time_asymmetry": {
+            "mean": 0.273186899471006,
+            "episodes": 4
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": 0.6369345501696865,
+            "episodes": 57
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": 0.2845161344137108,
+            "episodes": 57
+          },
+          "action_delta.mean_abs": {
+            "mean": 0.016171289624221492,
+            "episodes": 57
+          },
+          "action_delta.p95_abs": {
+            "mean": 0.08793286120747781,
+            "episodes": 57
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": 0.04055473683892112,
+            "episodes": 57
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": 0.9052454962910632,
+            "episodes": 57
+          }
+        },
+        "motion_forward_episodes": {
+          "joint_position_w1_rad": {
+            "mean": null,
+            "episodes": 0
+          },
+          "joint_velocity_w1_radps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_time_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.mean_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.p95_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": null,
+            "episodes": 0
+          }
+        },
+        "motion_walking_episodes": {
+          "joint_position_w1_rad": {
+            "mean": null,
+            "episodes": 0
+          },
+          "joint_velocity_w1_radps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_time_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.mean_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.p95_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": null,
+            "episodes": 0
+          }
+        }
+      },
+      "40m": {
+        "environment_transitions": 39976960,
+        "updates": 1220,
+        "checkpoint": "logs/skrl/r1_speed_tracking_formal_amp_seed42/2026-11-25_10-21-58_amp_torch_env2048_updates1221/checkpoints/agent_19520.pt",
+        "checkpoint_sha256": "3ec7e37f62c917eaa06a62bd97e1a5ce525dd8e3f1ca2d9e44f907ab4e9bbd21",
+        "episodes_archive": "reports/r1_speed_tracking_seed42/episodes/amp/40m.json.gz",
+        "evaluation_status": "exit_code=0",
+        "episodes": 100,
+        "completed": 71,
+        "falls": 29,
+        "complete_forward_motion": 0,
+        "unresolved_upright_walks": 0,
+        "completed_with_forward_progress": 0,
+        "walked": 0,
+        "complete_wilson_95": [
+          0.6146110882442887,
+          0.7898516425087773
+        ],
+        "forward_motion_wilson_95": [
+          0.0,
+          0.03699349820698568
+        ],
+        "walk_wilson_95": [
+          0.0,
+          0.03699349820698568
+        ],
+        "max_terminal_torso_height_completed_m": 0.545594334602356,
+        "mean_survival_s": 7.617333333333334,
+        "mean_forward_dx_m": 1.2380172795057296,
+        "mean_fixed_horizon_vx_mae_mps": 1.3873706243987067,
+        "complete_only_vx_mae_mps": 1.3852831074889278,
+        "complete_only_vx_w1_mps": 1.388710538955881,
+        "mean_target_angle_violation": 0.021189416609470556,
+        "mean_target_position_error_rad": 0.29534595345958786,
+        "motion_full_episodes": {
+          "joint_position_w1_rad": {
+            "mean": 0.5273638278584564,
+            "episodes": 71
+          },
+          "joint_velocity_w1_radps": {
+            "mean": 0.9865894120145304,
+            "episodes": 71
+          },
+          "gait.step_length_m": {
+            "mean": 0.035353459877521906,
+            "episodes": 64
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": 0.7581651131682087,
+            "episodes": 64
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": 158.02644652447486,
+            "episodes": 64
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": 45.58565344258478,
+            "episodes": 64
+          },
+          "gait.step_length_asymmetry": {
+            "mean": 1.6791039091096638,
+            "episodes": 40
+          },
+          "gait.step_time_asymmetry": {
+            "mean": 0.43380034084470215,
+            "episodes": 40
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": 0.41668684105498244,
+            "episodes": 71
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": 0.2886207275827166,
+            "episodes": 71
+          },
+          "action_delta.mean_abs": {
+            "mean": 0.06935130791659926,
+            "episodes": 71
+          },
+          "action_delta.p95_abs": {
+            "mean": 0.24654875027251905,
+            "episodes": 71
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": 0.14372526830665663,
+            "episodes": 71
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": 0.5570469798657718,
+            "episodes": 71
+          }
+        },
+        "motion_forward_episodes": {
+          "joint_position_w1_rad": {
+            "mean": null,
+            "episodes": 0
+          },
+          "joint_velocity_w1_radps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_time_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.mean_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.p95_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": null,
+            "episodes": 0
+          }
+        },
+        "motion_walking_episodes": {
+          "joint_position_w1_rad": {
+            "mean": null,
+            "episodes": 0
+          },
+          "joint_velocity_w1_radps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_m_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.cadence_steps_per_min_abs_error": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_length_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "gait.step_time_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.rom_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "leg_symmetry.velocity_rms_asymmetry": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.mean_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "action_delta.p95_abs": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.horizontal_speed_mean_mps": {
+            "mean": null,
+            "episodes": 0
+          },
+          "low_foot_motion_proxy.sample_fraction": {
+            "mean": null,
+            "episodes": 0
+          }
+        }
+      }
+    }
+  },
+  "paired": {
+    "1m": {
+      "initial_hash_matches": 100,
+      "both_completed": 0,
+      "both_walked": 0,
+      "full_episode_vx_mae_ppo_mps": null,
+      "full_episode_vx_mae_amp_mps": null
+    },
+    "4m": {
+      "initial_hash_matches": 100,
+      "both_completed": 33,
+      "both_walked": 0,
+      "full_episode_vx_mae_ppo_mps": 1.453640139464176,
+      "full_episode_vx_mae_amp_mps": 1.4488073695789685
+    },
+    "10m": {
+      "initial_hash_matches": 100,
+      "both_completed": 71,
+      "both_walked": 0,
+      "full_episode_vx_mae_ppo_mps": 1.446443688701576,
+      "full_episode_vx_mae_amp_mps": 1.4396704334608266
+    },
+    "20m": {
+      "initial_hash_matches": 100,
+      "both_completed": 57,
+      "both_walked": 0,
+      "full_episode_vx_mae_ppo_mps": 0.49126614551795156,
+      "full_episode_vx_mae_amp_mps": 1.4504775624526174
+    },
+    "40m": {
+      "initial_hash_matches": 100,
+      "both_completed": 66,
+      "both_walked": 0,
+      "full_episode_vx_mae_ppo_mps": 0.22062708934148154,
+      "full_episode_vx_mae_amp_mps": 1.3863127376094009
+    }
+  },
+  "first_sampled_threshold_steps": {
+    "ppo": {
+      "completed": {
+        "50": 9994240,
+        "90": 19988480
+      },
+      "complete_forward_motion": {
+        "50": 19988480,
+        "90": null
+      },
+      "walked": {
+        "50": null,
+        "90": null
+      }
+    },
+    "amp": {
+      "completed": {
+        "50": 3932160,
+        "90": null
+      },
+      "complete_forward_motion": {
+        "50": null,
+        "90": null
+      },
+      "walked": {
+        "50": null,
+        "90": null
+      }
+    }
+  }
+}

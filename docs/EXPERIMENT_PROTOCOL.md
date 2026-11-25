@@ -91,6 +91,7 @@ peak_gpu_mem_mb, code_sha, checkpoint_path, notes
 - Actor/Critic 网络固定为 `[1024, 512]`，共享 rollouts=16、learning epochs=6、mini-batches=2、learning rate=5e-5、gamma=0.99、GAE lambda=0.95、PPO clip=0.2、RunningStandardScaler 和动作方差配置。
 - PPO 只优化 `r_task`。AMP 使用相同 `r_task`，并设置 `task_reward_weight=1`、`style_reward_weight=1`，保留官方判别器和专家动作数据。
 - Smoke 固定 seed42、2 环境、50 次更新、每组 1,600 环境交互步。Smoke 只验证奖励注入、入口、日志、checkpoint 和有限性。
-- 正式趋势阶段固定训练 seeds 42、43、44，采用 256 个并行环境，每个 seed 和算法 256 次更新，即 1,048,576 个环境交互步，检查点为 64、128、256 次更新。
-- Smoke 评估固定 seeds 42000–42009。正式评估固定 seeds 42000–42099，每个最终 checkpoint 100 回合。
-- 评估报告完整率、跌倒率、存活时间、+X 位移、目标速度 MAE、目标速度偏差、`|vx-target| < 0.2 m/s` 比例、参考速度 W1、动作有限性、目标角超限比例、关节跟踪误差和视频。目标速度 MAE 与参考速度 W1 分开解释。
+- 先测新入口在 256、512、1024、2048 环境下的资源。单种子对照使用 seed42，从随机初始化开始，两组采用同样的并行度及交互预算。约 1M 步用于观察早期趋势，后续检查点约为 4M、10M、20M、40M。seed43、44 留给单种子结果审查后的复验。
+- Smoke 评估固定 seeds 42000–42009。正式评估固定 seeds 42000–42099，每个阶段 checkpoint 100 回合，配对核对初始观测 SHA256。
+- 评估报告跑满率、持续前进率、直立行走率、跌倒率、存活时间、+X 位移、速度跟踪 MAE、关节目标超限和代表视频。固定窗口内跌倒后的速度按零计。直立判据结合躯干高度和倾角、手及小腿位置。运动描述包含参考速度 W1、关节角及角速度差异、足端周期、动作变化与对称性。
+- [速度任务预算和指标定义](../reports/R1_speed_tracking_comparison_protocol.md)

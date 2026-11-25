@@ -1,12 +1,9 @@
 # Project Status
 
-- **状态：PARTIAL**
-- **日期：2026-11-25**
-- **当前阶段为 R1，已完成官方 Humanoid AMP Walk 的 40.96M 环境交互步单种子训练、带边界恢复和冻结评估**
-- **当前 40.96M checkpoint 已满足本阶段稳定行走验收标准，新增 100 个独立评估回合中 97 个完整运行约 10 秒，95% Wilson 区间下限约 91.5%**
-- **R1 总状态仍为 PARTIAL，因为公平的 PPO 对照尚未完成，且恢复训练不是严格意义的无缝连续训练**
-- **本轮结果基于后续归档提交，历史 2 环境短训和全跌倒实验仅作为早期链路/预算诊断，不代表当前模型状态**
-
+- **R1 / PARTIAL，更新于 2026-11-25**
+- **官方纯风格 AMP 行走已通过基础验收。40.96M checkpoint 已冻结，100 个独立初态中有 97 个跑满约 10 秒。**
+- **1.5 m/s 速度任务的 seed42 对照已完成。** 两组各采样 40,009,728 步。约 40M 的评估 checkpoint 上，PPO 持续前进 82/100，AMP 为 0/100。实景回放显示 PPO 代表回合采用低姿爬行。两组直立行走均为 0/100。 [seed42 对照报告](reports/R1_speed_tracking_seed42.md)
+- **跨训练 seed 复现待验证。** 已完成同一训练 seed 下五档、每组每档 100 个固定初态的评估。
 
 ## 本轮完成
 
@@ -94,20 +91,21 @@
 - 完成 seed42、2 环境、50 次更新的 PPO/AMP smoke，每组 1,600 环境交互步，均退出码 0 并保存 checkpoint。AMP 训练任务奖励均值 1.504，PPO 为 1.419；AMP 记录判别器 loss，PPO 记录 policy/value loss。
 - 两组 smoke checkpoint 用相同 42000–42009 评估 seed 各运行 10 回合，均在短预算下全回合跌倒。AMP 平均存活 0.547 s，PPO 0.807 s。该结果仅确认速度奖励、训练入口、评估入口和日志链路可运行，不作为算法性能结论。
 - Smoke AMP 峰值显存 7212 MiB、最低空闲 620 MiB；PPO 峰值显存 6440 MiB、最低空闲 1392 MiB。两组均无 OOM、NaN、Inf 或非有限动作。
+- 速度入口的 AMP 容量测试覆盖 256、512、1024、2048 环境。先前 smoke 有约 2.6 GiB 的额外整卡基线占用，排查见到并行 Isaac Sim 进程约占 2671 MiB。2048 环境容量测试吞吐约 22,835 步/s，整卡峰值 5781 MiB。
+- 使用 2048 环境、seed42 从随机初始化各训练 1221 次更新，AMP 与 PPO 环境交互预算相同。实测训练耗时为 AMP 843.53 s、PPO 660.83 s。AMP 长跑曾采到 0 MiB 空闲显存，两组正常退出。
+- 两组在约 1M、4M、10M、20M、40M 的 checkpoint 上各完成 100 个固定初态评估。约 40M 步时，PPO 跑满 91 回合、持续前进 82 回合、平均前进 13.48 m。AMP 跑满 71 回合、持续前进 0 回合、平均前进 1.24 m。五档评估合计 1,000 回合。所有跑满回合的终止躯干高度低于 0.66 m，均低于直立判据。 [独立评价数据](reports/r1_speed_tracking_seed42/summary.json)
 
 ## 下一步
 
-1. 保留当前 40.96M 官方 AMP checkpoint 作为 R1 稳定行走基线。
-2. 先审查速度跟踪 smoke 的日志和奖励尺度，再按已冻结协议启动 256 环境、seed42/43/44、每组每 seed 1,048,576 交互步的正式趋势阶段。
-3. 正式阶段继续使用固定评估 seeds 42000–42099 和相同的目标速度指标。
-4. 保持 PhysX 参数搜索、G1 迁移和多技能实验暂停。
+1. 直立步态样本效率与运动风格比较仍待验证。seed43、44 留待两组共同的速度任务定义审查后再决定。
+2. 保留原始官方 AMP 40.96M 基线与此次速度任务数据，供后续对比使用。
 
 ## 阶段记录
 
 | 阶段 | 状态 | 证据 |
 |---|---|---|
 | R0 环境与上游审计 | PARTIAL | `reports/R0_environment_audit.md`、项目外部 `../r0_smoke_output.txt`、官方 v2.1.1 Walk smoke 日志 |
-| R1 官方 AMP baseline | PARTIAL | [R1 报告](reports/R1_amp_baseline.md)、[路线纠偏](reports/R1_reassessment.md)、[容量与小样本审计](reports/R1_capacity_and_small_batch.md)、[高并行容量补测](reports/r1_capacity_sweep_high_20261124.json)、[20.48M 冻结评估](reports/R1_eval_freeze_20m.md)、[20.48M 到 40.96M 恢复报告](reports/R1_resume_to_40m.md)、[40.96M 冻结评估](reports/R1_eval_freeze_40m.md)、[速度跟踪 PPO/AMP 协议](reports/R1_speed_tracking_comparison_protocol.md)、[速度跟踪 smoke](reports/R1_speed_tracking_smoke.md)、[速度跟踪对照章节](docs/EXPERIMENT_PROTOCOL.md#7-r1-明确速度跟踪-ppoamp-对照) |
+| R1 官方 AMP baseline | PARTIAL | [R1 报告](reports/R1_amp_baseline.md)、[路线纠偏](reports/R1_reassessment.md)、[容量与小样本审计](reports/R1_capacity_and_small_batch.md)、[高并行容量补测](reports/r1_capacity_sweep_high_20261124.json)、[20.48M 冻结评估](reports/R1_eval_freeze_20m.md)、[20.48M 到 40.96M 恢复报告](reports/R1_resume_to_40m.md)、[40.96M 冻结评估](reports/R1_eval_freeze_40m.md)、[速度跟踪 PPO/AMP 协议](reports/R1_speed_tracking_comparison_protocol.md)、[速度跟踪 smoke](reports/R1_speed_tracking_smoke.md)、[seed42 速度对照](reports/R1_speed_tracking_seed42.md) |
 | R2 G1 单技能 | BLOCKED | G1 动作/USD 对象需要 Git LFS，数据来源和授权尚未闭合，候选版本面向 Isaac Lab 2.3.x / Isaac Sim 5.1 |
 | R3 多技能诊断与消融 | NOT_STARTED | — |
 | R4 报告与求职材料 | NOT_STARTED | — |
@@ -116,15 +114,16 @@
 
 ```text
 date: 2026-11-25
-stage: R1 — 官方 AMP 40.96M 基线与速度跟踪 PPO/AMP smoke
+stage: R1 — 官方 AMP 40.96M 基线与 seed42 速度跟踪 PPO/AMP 对照
 status: PARTIAL
-code_sha: b7875fa
+training_code_sha: d853659
 environment: Ubuntu 22.04.5; RTX 3070 8 GiB; driver 580.178.04; Isaac Sim 4.5.0; official Isaac Lab v2.1.1; Kit Python 3.10.15; torch 2.5.1+cu118; isolated venv skrl 1.4.3; gymnasium 0.29.1; hydra-core 1.3.2; numpy 1.26.0; tensorboard 2.19.0; flatdict 4.0.1; h5py 3.13.0
-commands_run: prior AMP baseline and resume; speed-tracking wrapper smoke with AMP/PPO --num_envs 2 --seed 42 --max_iterations 50; frozen smoke evaluations with seeds 42000–42009 and --target-vx 1.5; official AMP baseline evaluations with seeds 42000–42099
+commands_run: r1_speed_tracking_capacity.sh; r1_speed_tracking_formal_seed42.sh; r1_speed_tracking_stage_eval.sh; r1_summarize_speed_tracking.py
 evidence_paths: reports/R1_eval_freeze_20m.md; reports/r1_eval_freeze_20m/summary.json; reports/r1_resume_checkpoint_audit_20m.json; reports/R1_resume_to_40m.md; reports/r1_resume_to_40m_summary.json; reports/R1_eval_freeze_40m.md; reports/r1_eval_freeze_40m/summary.json; reports/r1_monitor_joint_smoke_20261125.json; reports/R1_speed_tracking_comparison_protocol.md; reports/R1_speed_tracking_smoke.md; reports/r1_speed_tracking_smoke_summary.json; reports/R1_speed_tracking_smoke_eval/amp/episodes.json; reports/R1_speed_tracking_smoke_eval/ppo/episodes.json; scripts/r1_speed_tracking_train.py; scripts/r1_speed_tracking_smoke.sh; configs/r1/skrl_ppo_speed_tracking.yaml; runs/r1_resume_seed42_env2048_to4096_updates625/; logs/skrl/r1_amp_resume_seed42_20251125/; logs/skrl/r1_amp_resume_seed42_20251125_final5/; final_checkpoint: logs/skrl/r1_amp_resume_seed42_20251125_final5/2026-11-25_02-40-09_amp_torch_resume40m_final5/checkpoints/agent_80.pt; final_checkpoint_sha256: 22f389039512e97a542403702e391b3d7efde619a78008026d849144dadd860c
 speed_smoke_metrics: seed42; 2 environments; 50 updates; 1,600 transitions per group; AMP task reward mean 1.504, training torso vx 1.004 m/s, target MAE 0.639 m/s; PPO task reward mean 1.419, training torso vx 0.777 m/s, target MAE 0.811 m/s; smoke eval 0/10 complete for both groups; AMP peak 7212 MiB and PPO peak 6440 MiB; no OOM/NaN/Inf
 key_metrics: 40.96M cumulative environment transitions; new independent evaluation 97/100 complete, 3 falls, 97.0% complete rate, Wilson 95% CI 91.5%–99.0%; pooled baseline plus new evaluation 106/110 complete, 96.4%, Wilson 95% CI 91.0%–98.6%; new-set mean survival 9.71 s, forward distance 11.26 m, mean speed 1.13 m/s, reference-speed W1 0.354 m/s; mean target-angle violation 0.777%, maximum episode 2.029%; all actions finite and failures were torso-height termination; resumed segment peak 7832 MiB, sampled minimum free 0 MiB, GPU utilization max 98%, no OOM/NaN/Inf
 resume_boundary: policy, value, discriminator, optimizer and running preprocessors restored; motion dataset and reply buffer were absent from checkpoint and reinitialized; final 5 updates used the official entrypoint without extra monitor forwards; this is bounded resume training, not strict seamless continuity
-blockers: speed-tracking PPO/AMP smoke is complete but formal three-seed comparison is pending; official pre-trained Humanoid AMP checkpoint remains unavailable; G1 assets/data still require LFS and separate license/hash verification
-next_action: review the locked speed-tracking smoke artifacts, then run the formal 256-environment seed42/43/44 trend stage; keep 81.92M, PhysX search, G1 migration and multi-skill work paused
+speed_comparison: seed42, 2048 envs, 1221 updates, 40009728 transitions per algorithm; 100 paired initial states per checkpoint; final evaluated checkpoint 39976960 transitions; PPO 82/100 sustained forward, 9/100 height terminations, fixed-horizon MAE 0.358 m/s; AMP 0/100 sustained forward, 29/100 height terminations, fixed-horizon MAE 1.387 m/s; zero upright walking episodes in both groups
+speed_comparison_evidence: reports/R1_speed_tracking_seed42.md; reports/r1_speed_tracking_seed42/summary.json
+pending: training-seed replication; matched sustained walking samples for gait-style comparisons; separate G1 asset and data verification
 ```

@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 
 from isaaclab.app import AppLauncher
@@ -16,6 +17,8 @@ def main():
     parser.add_argument("--seed", type=int, default=1000, help="Seed for the first evaluation reset")
     parser.add_argument("--target-vx", type=float, default=None, help="Optional fixed world +X speed target in m/s")
     parser.add_argument("--video", action="store_true", help="Render a side-view skeleton of the first episode")
+    parser.add_argument("--render-video", action="store_true", help="Record the Isaac Sim viewport of the first episode")
+    parser.add_argument("--motion-metrics", action="store_true", help="Record independent gait and tracking metrics")
     parser.add_argument(
         "--action-range-correction",
         action="store_true",
@@ -25,6 +28,12 @@ def main():
     args = parser.parse_args()
     if args.episodes < 1 or not 0 <= args.seed <= 2**31 - args.episodes:
         parser.error("expected positive episodes and non-negative 31-bit episode seeds")
+    if args.target_vx is not None and not math.isfinite(args.target_vx):
+        parser.error("--target-vx must be finite")
+    if args.motion_metrics and (args.target_vx is None or args.target_vx <= 0):
+        parser.error("--motion-metrics requires a positive --target-vx")
+    if args.render_video:
+        args.enable_cameras = True
     args.checkpoint = args.checkpoint.resolve(strict=True)
     agent_config = args.checkpoint.parents[1] / "params" / "agent.yaml"
     if not agent_config.is_file():
@@ -37,7 +46,7 @@ def main():
         app.close()
 
 
-def record_skeleton(body_names, poses, path, dt):
+def record_skeleton(body_names, poses, path, dt, follow_torso=False):
     import cv2
     import numpy as np
 
@@ -52,6 +61,11 @@ def record_skeleton(body_names, poses, path, dt):
     poses = np.asarray(poses)[..., [0, 2]]
     if not np.isfinite(poses).all():
         raise ValueError("non-finite skeleton coordinates")
+    travel = None
+    if follow_torso:
+        torso_x = poses[:, body_names.index("torso"), 0].copy()
+        travel = torso_x - torso_x[0]
+        poses[..., 0] -= torso_x[:, None]
     scale = min(480 / max(float(np.ptp(poses[..., 0])), 1), 250 / max(float(poses[..., 1].max()), 1))
     x_center = (poses[..., 0].max() + poses[..., 0].min()) / 2
     pixels = np.rint((poses - [x_center, 0]) * [scale, -scale] + [320, 315]).astype(np.int32)
@@ -64,11 +78,29 @@ def record_skeleton(body_names, poses, path, dt):
             cv2.line(frame, (20, 315), (620, 315), (140, 140, 140), 1, cv2.LINE_AA)
             for chain, color in zip(chains, [(235, 235, 235), (185, 135, 75), (95, 200, 240)] * 2):
                 cv2.polylines(frame, [pose[chain]], False, color, 4, cv2.LINE_AA)
-            cv2.putText(frame, f"t = {step * dt:.2f} s    +X >", (22, 338), cv2.FONT_HERSHEY_SIMPLEX,
+            label = f"t = {step * dt:.2f} s    +X >"
+            if travel is not None:
+                label = f"t = {step * dt:.2f} s    torso X: {travel[step]:+.2f} m    +X >"
+            cv2.putText(frame, label, (22, 338), cv2.FONT_HERSHEY_SIMPLEX,
                         0.55, (220, 220, 220), 1, cv2.LINE_AA)
             writer.write(frame)
     finally:
         writer.release()
+
+
+def record_viewport_frame(env, writer, position):
+    import cv2
+    from pxr import Gf
+
+    x, y = position[:2].tolist()
+    eye = Gf.Vec3d(x + 1.2, y - 3.2, 1.55)
+    target = Gf.Vec3d(x, y, 0.85)
+    view = Gf.Matrix4d(1.0).SetLookAt(eye, target, Gf.Vec3d(0, 0, 1))
+    env.render_camera_transform.Set(view.GetInverse())
+    env.sim.render()
+    rgb = env.render(recompute=True)
+    if rgb.any():
+        writer.write(cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR))
 
 
 def evaluate(args, agent_config):
@@ -81,6 +113,17 @@ def evaluate(args, agent_config):
     from skrl.resources.preprocessors.torch import RunningStandardScaler
     from skrl.utils.model_instantiators.torch import gaussian_model
 
+    if args.motion_metrics:
+        from r1_walk_motion_metrics import (
+            FOOT_NAMES,
+            POSTURE_BODY_NAMES,
+            episode_motion,
+            is_complete_forward_motion,
+            reference_motion,
+            upright_posture,
+            walking_windows,
+        )
+
     if args.action_range_correction:
         from r1_action_range_patch import apply_action_range_patch
 
@@ -91,7 +134,14 @@ def evaluate(args, agent_config):
             # DirectRLEnv auto-resets before returning the terminal step.
             self.step_positions = self.robot.data.body_pos_w[0].clone()
             self.step_velocity = self.robot.data.body_lin_vel_w[0, self.ref_body_index].clone()
+            if args.motion_metrics:
+                self.step_joint_state = torch.stack((self.robot.data.joint_pos[0], self.robot.data.joint_vel[0]))
+                self.step_torso_quaternion = self.robot.data.body_quat_w[0, self.ref_body_index].clone()
+            if self.viewport_writer is not None:
+                record_viewport_frame(self, self.viewport_writer, self.step_positions[self.ref_body_index])
             return super()._get_dones()
+
+        viewport_writer = None
 
     config = yaml.safe_load(agent_config.read_text())
     policy_cfg = config["models"]["policy"].copy()
@@ -101,7 +151,11 @@ def evaluate(args, agent_config):
     task = "Isaac-Humanoid-AMP-Walk-Direct-v0"
     env_cfg = parse_env_cfg(task, device=args.device, num_envs=1)
     env_cfg.seed = args.seed
-    env = EvaluationWalkEnv(env_cfg)
+    if args.render_video:
+        env_cfg.viewer.resolution = (640, 360)
+        env_cfg.viewer.cam_prim_path = "/World/R1EvaluationCamera"
+    env = EvaluationWalkEnv(env_cfg, render_mode="rgb_array" if args.render_video else None)
+    viewport_writer = None
     try:
         obs_space = env.single_observation_space["policy"]
         policy = gaussian_model(
@@ -117,6 +171,32 @@ def evaluate(args, agent_config):
         policy.eval()
         normalizer.eval()
 
+        joint_names = list(env.robot.data.joint_names)
+        with np.load(env_cfg.motion_file, allow_pickle=False) as motion:
+            torso = motion["body_names"].tolist().index(env_cfg.reference_body)
+            reference_vx = motion["body_linear_velocities"][:, torso, 0]
+            if args.motion_metrics:
+                reference = reference_motion(motion, joint_names, env.step_dt)
+                foot_indices = [env.robot.data.body_names.index(name) for name in FOOT_NAMES]
+                posture_indices = [env.robot.data.body_names.index(name) for name in POSTURE_BODY_NAMES]
+
+        if args.render_video:
+            import cv2
+            from pxr import UsdGeom
+
+            camera = UsdGeom.Camera.Define(env.sim.stage, env_cfg.viewer.cam_prim_path)
+            camera.CreateFocalLengthAttr(18.0)
+            env.render_camera_transform = UsdGeom.Xformable(camera.GetPrim()).AddTransformOp()
+            viewport_writer = cv2.VideoWriter(
+                str(args.output / "viewport_001.mp4"), cv2.VideoWriter_fourcc(*"mp4v"),
+                1 / env.step_dt, env_cfg.viewer.resolution,
+            )
+            if not viewport_writer.isOpened():
+                raise RuntimeError("could not open the viewport video")
+            env.viewport_writer = viewport_writer
+
+        # HumanoidAmpEnv ends an episode at max_episode_length - 1.
+        horizon_steps = env.max_episode_length - 1
         episodes = []
         with torch.inference_mode():
             for index in range(args.episodes):
@@ -125,7 +205,18 @@ def evaluate(args, agent_config):
                 initial_obs = obs["policy"].cpu().numpy().copy()
                 initial_position = env.robot.data.body_pos_w[0, env.ref_body_index].clone()
                 poses = [env.robot.data.body_pos_w[0].clone()] if args.video and index == 0 else None
+                if env.viewport_writer is not None:
+                    # Initialize the annotator and draw the initial pose before the first action.
+                    env.render()
+                    record_viewport_frame(env, viewport_writer, initial_position)
                 speeds = []
+                if args.motion_metrics:
+                    joint_states = []
+                    action_samples = []
+                    foot_positions = []
+                    torso_x = [initial_position[0]]
+                    body_heights = []
+                    torso_quaternions = []
                 target_violation_count = torch.zeros(env.robot.num_joints, device=env.device)
                 target_error_sum = 0.0
                 target_error_max = 0.0
@@ -145,6 +236,13 @@ def evaluate(args, agent_config):
                     speeds.append(env.step_velocity[:2])
                     if poses is not None:
                         poses.append(env.step_positions)
+                    if args.motion_metrics:
+                        joint_states.append(env.step_joint_state)
+                        action_samples.append(actions[0])
+                        foot_positions.append(env.step_positions[foot_indices])
+                        torso_x.append(env.step_positions[env.ref_body_index, 0])
+                        body_heights.append(env.step_positions[posture_indices, 2])
+                        torso_quaternions.append(env.step_torso_quaternion)
                     if terminated.item() or truncated.item():
                         break
                 else:
@@ -155,7 +253,9 @@ def evaluate(args, agent_config):
                         torch.stack(poses).cpu().numpy(),
                         args.output / "episode_001.mp4",
                         env.step_dt,
+                        follow_torso=args.motion_metrics,
                     )
+                env.viewport_writer = None
 
                 terminal_position = env.step_positions[env.ref_body_index]
                 delta = (terminal_position - initial_position).cpu().tolist()
@@ -181,7 +281,7 @@ def evaluate(args, agent_config):
                     "target_angle_violation_ratio": float(target_violation_count.sum().item() / max(target_sample_count * env.robot.num_joints, 1)),
                     "target_angle_violation_by_joint": {
                         name: float(value / max(target_sample_count, 1))
-                        for name, value in zip(env.robot.data.joint_names, target_violation_count.cpu().tolist())
+                        for name, value in zip(joint_names, target_violation_count.cpu().tolist())
                     },
                     "target_position_error_mean_rad": float(target_error_sum / max(target_sample_count, 1)),
                     "target_position_error_max_rad": float(target_error_max),
@@ -192,13 +292,37 @@ def evaluate(args, agent_config):
                     result["target_vx_mae_mps"] = float(abs(speed_error).mean())
                     result["target_vx_bias_mps"] = float(speed_error.mean())
                     result["target_vx_within_0_2_ratio"] = float((abs(speed_error) < 0.2).mean())
+                if args.motion_metrics:
+                    if step > horizon_steps or (bool(truncated.item()) != (step == horizon_steps)):
+                        raise RuntimeError("unexpected time limit for the fixed-horizon metrics")
+                    joint_pos, joint_vel = torch.stack(joint_states, dim=1).cpu().numpy()
+                    result["motion"] = episode_motion(
+                        joint_pos, joint_vel, torch.stack(action_samples).cpu().numpy(),
+                        torch.stack(foot_positions).cpu().numpy(), reference, joint_names, env.step_dt,
+                    )
+                    windows = walking_windows(torch.stack(torso_x).cpu().numpy(), env.step_dt)
+                    complete = result["truncated"] and not result["terminated"]
+                    result["motion"]["forward_window_speed_mps"] = windows
+                    result["complete_forward_motion"] = is_complete_forward_motion(
+                        complete, windows, result["motion"]["gait"]["forward_step_frames"], step, args.target_vx,
+                    )
+                    posture = upright_posture(
+                        torch.stack(body_heights).cpu().numpy(), torch.stack(torso_quaternions).cpu().numpy(),
+                    )
+                    result["motion"]["posture"] = posture
+                    result["posture_samples_available"] = True
+                    result["complete_walk"] = (
+                        result["complete_forward_motion"] and posture["terminal_upright"]
+                        and posture["upright_fraction"] >= 0.95
+                    )
+                    result["target_vx_fixed_horizon_mae_mps"] = float(
+                        (abs(speed_error).sum() + (horizon_steps - step) * args.target_vx) / horizon_steps
+                    )
+                    result["reference_vx_wasserstein_mps"] = float(wasserstein_distance(torso_vx, reference_vx))
                 print(json.dumps({key: value for key, value in result.items() if key != "torso_vx_mps"},
                                  allow_nan=False), flush=True)
                 episodes.append(result)
 
-        with np.load(env_cfg.motion_file, allow_pickle=False) as motion:
-            torso = motion["body_names"].tolist().index(env_cfg.reference_body)
-            reference_vx = motion["body_linear_velocities"][:, torso, 0]
         rollout_vx = np.concatenate([episode["torso_vx_mps"] for episode in episodes])
         with args.checkpoint.open("rb") as checkpoint_file:
             checkpoint_sha256 = hashlib.sha256(checkpoint_file.read()).hexdigest()
@@ -217,8 +341,14 @@ def evaluate(args, agent_config):
             result["target_vx_mae_mps"] = float(abs(target_error).mean())
             result["target_vx_bias_mps"] = float(target_error.mean())
             result["target_vx_within_0_2_ratio"] = float((abs(target_error) < 0.2).mean())
+        if args.motion_metrics:
+            result["horizon_steps"] = horizon_steps
+            result["reference_motion"] = reference[2]
+            result["reference_motion"]["sha256"] = hashlib.sha256(Path(env_cfg.motion_file).read_bytes()).hexdigest()
         (args.output / "episodes.json").write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")
     finally:
+        if viewport_writer is not None:
+            viewport_writer.release()
         env.close()
 
 

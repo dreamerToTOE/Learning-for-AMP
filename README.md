@@ -1,6 +1,6 @@
 # Learning-for-AMP
 
-> **状态：PLANNING / 尚未开始训练** · 研究对象：AMP（Adversarial Motion Priors）与人形机器人运动模仿学习 · 更新：2026-11-22
+> **状态为 R1 / PARTIAL** · 官方 Humanoid AMP 行走基线已验收 · 速度跟踪 PPO/AMP 已完成 seed42 对照 · 更新于 2026-11-25
 
 ## 项目目标
 
@@ -33,6 +33,7 @@
 | [docs/HANDOFF.md](docs/HANDOFF.md) | 新 Codex 窗口接手指令、首轮执行范围、禁止事项 |
 | [docs/REFERENCES.md](docs/REFERENCES.md) | 原始论文、Isaac Lab 与候选仓库、版本审计要求 |
 | [PROJECT_STATUS.md](PROJECT_STATUS.md) | 项目状态和下一动作（后续每步维护） |
+| [R1 速度跟踪对照](reports/R1_speed_tracking_seed42.md) | seed42 的阶段评估、资源、运动视频与学习曲线 |
 
 ## 规划中的目录结构（不代表已有实现）
 
@@ -63,7 +64,7 @@ Learning-for-AMP/
 - 有针对性的消融实验（若进入 R3）；
 - 仿真结果与真实机器人结果严格分开陈述。
 
-**下一动作：** 在新 Codex 窗口中严格按 [docs/HANDOFF.md](docs/HANDOFF.md) 开始 **R0 环境与上游审计**，不要直接进入长训。
+当前实验记录与后续阶段安排见 [项目状态](PROJECT_STATUS.md)。
 
 ## 术语提示
 

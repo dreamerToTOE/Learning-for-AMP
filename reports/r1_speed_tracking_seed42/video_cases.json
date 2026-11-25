@@ -1,0 +1,94 @@
+[
+  {
+    "video": "ppo_low_forward.mp4",
+    "algorithm": "PPO",
+    "seed": 42000,
+    "frames": 300,
+    "fps": 30.0,
+    "sha256": "b5bf5387c3618f9d31e116ad05e0bdb7e4efda8b9ffa3cbbd055d2139c1b7803",
+    "checkpoint_sha256": "c44a7e64054b9780ca6a9ad5ffb3bf0eb0e39b2ec379565488a9dc7b89b1bb8a",
+    "initial_observation_sha256": "02b84f191f254a284b4c7828d3a697474579c1e055df5e57c3be9a899c8d30af",
+    "end_reason": "timeout",
+    "replay": {
+      "steps": 299,
+      "duration_s": 9.966666666666667,
+      "forward_dx_m": 14.986950874328613,
+      "terminal_torso_height_m": 0.5724624991416931
+    },
+    "evaluation": {
+      "steps": 299,
+      "duration_s": 9.966666666666667,
+      "forward_dx_m": 14.986950874328613,
+      "terminal_torso_height_m": 0.5724624991416931
+    }
+  },
+  {
+    "video": "amp_low_support.mp4",
+    "algorithm": "AMP",
+    "seed": 42000,
+    "frames": 300,
+    "fps": 30.0,
+    "sha256": "3be959897fce640be11862bc8db313b5c3eef86d60267760e22674ee7486738a",
+    "checkpoint_sha256": "3ec7e37f62c917eaa06a62bd97e1a5ce525dd8e3f1ca2d9e44f907ab4e9bbd21",
+    "initial_observation_sha256": "02b84f191f254a284b4c7828d3a697474579c1e055df5e57c3be9a899c8d30af",
+    "end_reason": "timeout",
+    "replay": {
+      "steps": 299,
+      "duration_s": 9.966666666666667,
+      "forward_dx_m": 1.3457471132278442,
+      "terminal_torso_height_m": 0.5309590101242065
+    },
+    "evaluation": {
+      "steps": 299,
+      "duration_s": 9.966666666666667,
+      "forward_dx_m": 1.3457471132278442,
+      "terminal_torso_height_m": 0.5309590101242065
+    }
+  },
+  {
+    "video": "ppo_torso_height_termination.mp4",
+    "algorithm": "PPO",
+    "seed": 42008,
+    "frames": 56,
+    "fps": 30.0,
+    "sha256": "c7b2e0776d56f7d342daf140fc114808384337f514948a14610b533c2b339527",
+    "checkpoint_sha256": "c44a7e64054b9780ca6a9ad5ffb3bf0eb0e39b2ec379565488a9dc7b89b1bb8a",
+    "initial_observation_sha256": "f15204e510f7d5cb341c711bf09d36b6f751df9b6a892f48ba193e819e7925e9",
+    "end_reason": "fall",
+    "replay": {
+      "steps": 55,
+      "duration_s": 1.8333333333333333,
+      "forward_dx_m": 2.0062897205352783,
+      "terminal_torso_height_m": 0.4944900870323181
+    },
+    "evaluation": {
+      "steps": 53,
+      "duration_s": 1.7666666666666666,
+      "forward_dx_m": 1.8938043117523193,
+      "terminal_torso_height_m": 0.47411221265792847
+    }
+  },
+  {
+    "video": "amp_torso_height_termination.mp4",
+    "algorithm": "AMP",
+    "seed": 42002,
+    "frames": 46,
+    "fps": 30.0,
+    "sha256": "43e20f50a21595b1f93a00af0267fdf6d32ffb8325be243a72e203a1d4a0818f",
+    "checkpoint_sha256": "3ec7e37f62c917eaa06a62bd97e1a5ce525dd8e3f1ca2d9e44f907ab4e9bbd21",
+    "initial_observation_sha256": "7b4c273ebf2b336f77de27a3c41ac2a1a38ae073492b985e91e996137647bcd3",
+    "end_reason": "fall",
+    "replay": {
+      "steps": 45,
+      "duration_s": 1.5,
+      "forward_dx_m": 1.2937933206558228,
+      "terminal_torso_height_m": 0.46900391578674316
+    },
+    "evaluation": {
+      "steps": 45,
+      "duration_s": 1.5,
+      "forward_dx_m": 1.2937933206558228,
+      "terminal_torso_height_m": 0.46900391578674316
+    }
+  }
+]
