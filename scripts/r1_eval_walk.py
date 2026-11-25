@@ -19,6 +19,10 @@ def main():
     parser.add_argument("--video", action="store_true", help="Render a side-view skeleton of the first episode")
     parser.add_argument("--render-video", action="store_true", help="Record the Isaac Sim viewport of the first episode")
     parser.add_argument("--motion-metrics", action="store_true", help="Record independent gait and tracking metrics")
+    parser.add_argument("--reward-audit", action="store_true", help="Record pre-reset pose and task reward components")
+    parser.add_argument("--ground-contacts", action="store_true", help="Record floor-filtered PhysX contact forces")
+    parser.add_argument("--upright-task", action="store_true", help="Enable the shared posture and contact rules")
+    parser.add_argument("--style-reference", action="append", default=[], metavar="NAME=CHECKPOINT")
     parser.add_argument(
         "--action-range-correction",
         action="store_true",
@@ -32,6 +36,15 @@ def main():
         parser.error("--target-vx must be finite")
     if args.motion_metrics and (args.target_vx is None or args.target_vx <= 0):
         parser.error("--motion-metrics requires a positive --target-vx")
+    if (args.ground_contacts or args.style_reference) and not args.reward_audit:
+        parser.error("--ground-contacts and --style-reference require --reward-audit")
+    style_references = {}
+    for value in args.style_reference:
+        name, separator, filename = value.partition("=")
+        if not separator or not name.isidentifier() or name in style_references or not Path(filename).is_file():
+            parser.error("--style-reference requires a unique NAME=CHECKPOINT")
+        style_references[name] = Path(filename).resolve()
+    args.style_reference = list(style_references.items())
     if args.render_video:
         args.enable_cameras = True
     args.checkpoint = args.checkpoint.resolve(strict=True)
@@ -40,10 +53,8 @@ def main():
         parser.error(f"missing saved agent configuration: {agent_config}")
     args.output.mkdir(parents=True, exist_ok=True)
     app = AppLauncher(args).app
-    try:
-        evaluate(args, agent_config)
-    finally:
-        app.close()
+    evaluate(args, agent_config)
+    app.close()
 
 
 def record_skeleton(body_names, poses, path, dt, follow_torso=False):
@@ -129,7 +140,19 @@ def evaluate(args, agent_config):
 
         apply_action_range_patch()
 
-    class EvaluationWalkEnv(HumanoidAmpEnv):
+    base_env = HumanoidAmpEnv
+    speed_task_options = {}
+    if args.reward_audit or args.upright_task:
+        from r1_speed_task import RULE_NAMES, SpeedTrackingWalkEnv, TARGET_VX_MPS, task_rule_parameters
+
+        if args.target_vx is not None and args.target_vx != TARGET_VX_MPS:
+            raise ValueError(f"the speed task uses a fixed target of {TARGET_VX_MPS} m/s")
+        base_env = SpeedTrackingWalkEnv
+        speed_task_options = {
+            "reward_audit": args.reward_audit, "ground_contacts": args.ground_contacts, "upright_task": args.upright_task,
+        }
+
+    class EvaluationWalkEnv(base_env):
         def _get_dones(self):
             # DirectRLEnv auto-resets before returning the terminal step.
             self.step_positions = self.robot.data.body_pos_w[0].clone()
@@ -154,7 +177,9 @@ def evaluate(args, agent_config):
     if args.render_video:
         env_cfg.viewer.resolution = (640, 360)
         env_cfg.viewer.cam_prim_path = "/World/R1EvaluationCamera"
-    env = EvaluationWalkEnv(env_cfg, render_mode="rgb_array" if args.render_video else None)
+    env = EvaluationWalkEnv(
+        env_cfg, render_mode="rgb_array" if args.render_video else None, **speed_task_options,
+    )
     viewport_writer = None
     try:
         obs_space = env.single_observation_space["policy"]
@@ -170,6 +195,11 @@ def evaluate(args, agent_config):
         normalizer.load_state_dict(checkpoint["state_preprocessor"])
         policy.eval()
         normalizer.eval()
+        reward_audit = None
+        if args.reward_audit:
+            from r1_reward_audit import RewardAudit
+
+            reward_audit = RewardAudit(env, args.style_reference)
 
         joint_names = list(env.robot.data.joint_names)
         with np.load(env_cfg.motion_file, allow_pickle=False) as motion:
@@ -202,6 +232,8 @@ def evaluate(args, agent_config):
             for index in range(args.episodes):
                 seed = args.seed + index
                 obs, _ = env.reset(seed=seed)
+                if reward_audit is not None:
+                    reward_audit.reset()
                 initial_obs = obs["policy"].cpu().numpy().copy()
                 initial_position = env.robot.data.body_pos_w[0, env.ref_body_index].clone()
                 poses = [env.robot.data.body_pos_w[0].clone()] if args.video and index == 0 else None
@@ -232,7 +264,9 @@ def evaluate(args, agent_config):
                     target_error_sum += target_error.mean().item()
                     target_error_max = max(target_error_max, target_error.max().item())
                     target_sample_count += 1
-                    obs, _, terminated, truncated, _ = env.step(actions)
+                    obs, _, terminated, truncated, info = env.step(actions)
+                    if reward_audit is not None:
+                        reward_audit.record(info)
                     speeds.append(env.step_velocity[:2])
                     if poses is not None:
                         poses.append(env.step_positions)
@@ -262,6 +296,10 @@ def evaluate(args, agent_config):
                 elapsed = step * env.step_dt
                 speeds = torch.stack(speeds)
                 torso_vx = speeds[:, 0].cpu().numpy()
+                failed = bool(terminated.item())
+                failure_reason = "torso_height_below_0.5m" if failed else "timeout_10s"
+                if args.upright_task and failed and not env.original_terminated[0].item():
+                    failure_reason = "upright_task_rule"
                 result = {
                     "episode": index + 1,
                     "seed": seed,
@@ -272,7 +310,7 @@ def evaluate(args, agent_config):
                     "terminated": bool(terminated.item()),
                     "truncated": bool(truncated.item()),
                     "end_reason": "fall" if terminated.item() else "timeout",
-                    "failure_reason": "torso_height_below_0.5m" if terminated.item() else "timeout_10s",
+                    "failure_reason": failure_reason,
                     "forward_dx_m": delta[0],
                     "net_forward_speed_mps": delta[0] / elapsed,
                     "mean_xy_speed_mps": speeds.norm(dim=1).mean().item(),
@@ -319,7 +357,13 @@ def evaluate(args, agent_config):
                         (abs(speed_error).sum() + (horizon_steps - step) * args.target_vx) / horizon_steps
                     )
                     result["reference_vx_wasserstein_mps"] = float(wasserstein_distance(torso_vx, reference_vx))
-                print(json.dumps({key: value for key, value in result.items() if key != "torso_vx_mps"},
+                if reward_audit is not None:
+                    result["reward_audit"] = reward_audit.finish()
+                if args.upright_task:
+                    result["termination_rule_reasons"] = [
+                        name for name, active in zip(RULE_NAMES, env.rule_terminated[0].tolist()) if active
+                    ]
+                print(json.dumps({key: value for key, value in result.items() if key not in ("torso_vx_mps", "reward_audit")},
                                  allow_nan=False), flush=True)
                 episodes.append(result)
 
@@ -345,6 +389,13 @@ def evaluate(args, agent_config):
             result["horizon_steps"] = horizon_steps
             result["reference_motion"] = reference[2]
             result["reference_motion"]["sha256"] = hashlib.sha256(Path(env_cfg.motion_file).read_bytes()).hexdigest()
+        if reward_audit is not None:
+            result["reward_audit"] = {
+                "upright_task": args.upright_task,
+                "ground_contact_sensor": env.use_ground_sensor,
+                "rules": task_rule_parameters(),
+                "style_references": reward_audit.references,
+            }
         (args.output / "episodes.json").write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")
     finally:
         if viewport_writer is not None:

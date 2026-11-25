@@ -1,0 +1,70 @@
+{
+  "experiment_commit": "2998bdafd320e10f0cde4f44f9c3415ff4a3488e",
+  "models": {
+    "official_amp_40_96m": {
+      "environment_interactions": 40960000,
+      "original": "logs/skrl/r1_amp_resume_seed42_20251125_final5/2026-11-25_02-40-09_amp_torch_resume40m_final5/checkpoints/agent_80.pt",
+      "frozen_copy": "artifacts/r1_reward_hacking/frozen_models/official_amp_40_96m/checkpoints/agent_80.pt",
+      "checkpoint_sha256": "22f389039512e97a542403702e391b3d7efde619a78008026d849144dadd860c",
+      "file_sha256": {
+        "checkpoints/agent_80.pt": "22f389039512e97a542403702e391b3d7efde619a78008026d849144dadd860c",
+        "params/agent.yaml": "7ecd8868be05c68fe1fecaa11c4f8d72502eb1558989bd5557054486348d8710",
+        "params/env.yaml": "070eef67fca8901b4e3b01e45e3c801dc2861e887fe315b4533a9499235b9d1e",
+        "params/env.pkl": "c191bd784ac04584375ff8e33d1039d5992bbcc14a8547820b516c382697c2e3",
+        "params/agent.pkl": "e86cb0726e734979f2b538a96d69e1c8b909b6db27fd290d6e5ea5ea40c126e6"
+      }
+    },
+    "speed_ppo_40m": {
+      "environment_interactions": 39976960,
+      "original": "logs/skrl/r1_speed_tracking_formal_ppo_seed42/2026-11-25_10-36-03_ppo_torch_env2048_updates1221/checkpoints/agent_19520.pt",
+      "frozen_copy": "artifacts/r1_reward_hacking/frozen_models/speed_ppo_40m/checkpoints/agent_19520.pt",
+      "checkpoint_sha256": "c44a7e64054b9780ca6a9ad5ffb3bf0eb0e39b2ec379565488a9dc7b89b1bb8a",
+      "file_sha256": {
+        "checkpoints/agent_19520.pt": "c44a7e64054b9780ca6a9ad5ffb3bf0eb0e39b2ec379565488a9dc7b89b1bb8a",
+        "params/agent.yaml": "433c8e6fa514f9255b919c992da1936bbd254b604bc6740a9f488d5a0c4a107a",
+        "params/env.yaml": "070eef67fca8901b4e3b01e45e3c801dc2861e887fe315b4533a9499235b9d1e",
+        "params/env.pkl": "c191bd784ac04584375ff8e33d1039d5992bbcc14a8547820b516c382697c2e3",
+        "params/agent.pkl": "e43a8c98de15ee5925d53d1aa4d9da328876546148e92d72ce7df4c6a0ad6ca3"
+      }
+    },
+    "speed_amp_40m": {
+      "environment_interactions": 39976960,
+      "original": "logs/skrl/r1_speed_tracking_formal_amp_seed42/2026-11-25_10-21-58_amp_torch_env2048_updates1221/checkpoints/agent_19520.pt",
+      "frozen_copy": "artifacts/r1_reward_hacking/frozen_models/speed_amp_40m/checkpoints/agent_19520.pt",
+      "checkpoint_sha256": "3ec7e37f62c917eaa06a62bd97e1a5ce525dd8e3f1ca2d9e44f907ab4e9bbd21",
+      "file_sha256": {
+        "checkpoints/agent_19520.pt": "3ec7e37f62c917eaa06a62bd97e1a5ce525dd8e3f1ca2d9e44f907ab4e9bbd21",
+        "params/agent.yaml": "78ef88e3cee4c9b65057f8869e2f8ce1f6a601362dbe19494f76ef6df47f5bad",
+        "params/env.yaml": "070eef67fca8901b4e3b01e45e3c801dc2861e887fe315b4533a9499235b9d1e",
+        "params/env.pkl": "c191bd784ac04584375ff8e33d1039d5992bbcc14a8547820b516c382697c2e3",
+        "params/agent.pkl": "52ee015ca5b1ead16b1690beb17010239d498b0d549d2040395a587f6bb61190"
+      }
+    }
+  },
+  "local_experiment_archive": {
+    "path": "artifacts/r1_reward_hacking/seed42_evidence_2998bda.tar.gz",
+    "sha256": "57e16bbb3a09b280a5f8066ac95bac2372ef96fc539a2e68c8b963c6607738af"
+  },
+  "local_reference_videos": [
+    {
+      "original": "reports/r1_eval_freeze_20m/failure_45009/episode_001.mp4",
+      "copy": "artifacts/r1_reward_hacking/frozen_videos/r1_eval_freeze_20m/failure_45009/episode_001.mp4",
+      "sha256": "549512c9eeb5dc4fe72943a2883a1f57f68e518740417636ba6b2ac72a11cedb"
+    },
+    {
+      "original": "reports/r1_eval_freeze_20m/success_45000/episode_001.mp4",
+      "copy": "artifacts/r1_reward_hacking/frozen_videos/r1_eval_freeze_20m/success_45000/episode_001.mp4",
+      "sha256": "99229d6808ba7953f195b04ebfb0a354213fc7e0860ebe702a26ccbf27c3972d"
+    },
+    {
+      "original": "reports/r1_eval_freeze_40m/failure_45033/episode_001.mp4",
+      "copy": "artifacts/r1_reward_hacking/frozen_videos/r1_eval_freeze_40m/failure_45033/episode_001.mp4",
+      "sha256": "b8ee993472e6f9923bd6f3e4c70156720b1f5da419c7a413cfa989c26314a68f"
+    },
+    {
+      "original": "reports/r1_eval_freeze_40m/success_45000/episode_001.mp4",
+      "copy": "artifacts/r1_reward_hacking/frozen_videos/r1_eval_freeze_40m/success_45000/episode_001.mp4",
+      "sha256": "aac362ed80e9f322fc9cd8e9c2a431f8e5514fe1bf3948830a01ddaa7cfe4863"
+    }
+  ]
+}

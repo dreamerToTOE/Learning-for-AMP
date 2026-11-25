@@ -1,9 +1,10 @@
 # Project Status
 
-- **R1 / PARTIAL，更新于 2026-11-25**
+- **当前阶段 R2 / IN_PROGRESS，更新于 2026-11-25**
+- **R1 / COMPLETE_WITH_LIMITATIONS。** 训练、推理与独立评估链路已复现。R1 对照训练、PPO 奖励修改和 seed43、44 复验已取消。
 - **官方纯风格 AMP 行走已通过基础验收。40.96M checkpoint 已冻结，100 个独立初态中有 97 个跑满约 10 秒。**
 - **1.5 m/s 速度任务的 seed42 对照已完成。** 两组各采样 40,009,728 步。约 40M 的评估 checkpoint 上，PPO 持续前进 82/100，AMP 为 0/100。实景回放显示 PPO 代表回合采用低姿爬行。两组直立行走均为 0/100。 [seed42 对照报告](reports/R1_speed_tracking_seed42.md)
-- **跨训练 seed 复现待验证。** 已完成同一训练 seed 下五档、每组每档 100 个固定初态的评估。
+- **R1 结论限于已完成的实验。** 现有结果不足以判定 AMP 在公平的直立行走任务中全面优于 PPO。这个限制不影响开展 G1 单技能 AMP。 [奖励漏洞诊断与冻结证据](reports/R1_reward_hacking_audit.md)
 
 ## 本轮完成
 
@@ -94,19 +95,20 @@
 - 速度入口的 AMP 容量测试覆盖 256、512、1024、2048 环境。先前 smoke 有约 2.6 GiB 的额外整卡基线占用，排查见到并行 Isaac Sim 进程约占 2671 MiB。2048 环境容量测试吞吐约 22,835 步/s，整卡峰值 5781 MiB。
 - 使用 2048 环境、seed42 从随机初始化各训练 1221 次更新，AMP 与 PPO 环境交互预算相同。实测训练耗时为 AMP 843.53 s、PPO 660.83 s。AMP 长跑曾采到 0 MiB 空闲显存，两组正常退出。
 - 两组在约 1M、4M、10M、20M、40M 的 checkpoint 上各完成 100 个固定初态评估。约 40M 步时，PPO 跑满 91 回合、持续前进 82 回合、平均前进 13.48 m。AMP 跑满 71 回合、持续前进 0 回合、平均前进 1.24 m。五档评估合计 1,000 回合。所有跑满回合的终止躯干高度低于 0.66 m，均低于直立判据。 [独立评价数据](reports/r1_speed_tracking_seed42/summary.json)
+- 在同初态回放中实测地面法向力，确认 PPO 爬行和速度 AMP 低姿支撑存在非足端接触。诊断原型在另一组 20 个初态保留了官方 AMP 的完整回放，并提前终止两个低姿策略。短训试跑因显存余量不足中止，等待重启的任务随 R1 收尾取消。 [冻结模型和诊断数据](reports/R1_reward_hacking_audit.md)
 
 ## 下一步
 
-1. 直立步态样本效率与运动风格比较仍待验证。seed43、44 留待两组共同的速度任务定义审查后再决定。
-2. 保留原始官方 AMP 40.96M 基线与此次速度任务数据，供后续对比使用。
+1. 核对 G1 AMP 候选的机器人资产、行走专家数据、checkpoint、各自许可、软件版本与复现证据。
+2. 使用独立运行环境验证选定 G1 工程的单技能行走，优先从兼容 checkpoint 推理开始。
 
 ## 阶段记录
 
 | 阶段 | 状态 | 证据 |
 |---|---|---|
 | R0 环境与上游审计 | PARTIAL | `reports/R0_environment_audit.md`、项目外部 `../r0_smoke_output.txt`、官方 v2.1.1 Walk smoke 日志 |
-| R1 官方 AMP baseline | PARTIAL | [R1 报告](reports/R1_amp_baseline.md)、[路线纠偏](reports/R1_reassessment.md)、[容量与小样本审计](reports/R1_capacity_and_small_batch.md)、[高并行容量补测](reports/r1_capacity_sweep_high_20261124.json)、[20.48M 冻结评估](reports/R1_eval_freeze_20m.md)、[20.48M 到 40.96M 恢复报告](reports/R1_resume_to_40m.md)、[40.96M 冻结评估](reports/R1_eval_freeze_40m.md)、[速度跟踪 PPO/AMP 协议](reports/R1_speed_tracking_comparison_protocol.md)、[速度跟踪 smoke](reports/R1_speed_tracking_smoke.md)、[seed42 速度对照](reports/R1_speed_tracking_seed42.md) |
-| R2 G1 单技能 | BLOCKED | G1 动作/USD 对象需要 Git LFS，数据来源和授权尚未闭合，候选版本面向 Isaac Lab 2.3.x / Isaac Sim 5.1 |
+| R1 官方 AMP baseline | COMPLETE_WITH_LIMITATIONS | [R1 报告](reports/R1_amp_baseline.md)、[路线纠偏](reports/R1_reassessment.md)、[容量与小样本审计](reports/R1_capacity_and_small_batch.md)、[高并行容量补测](reports/r1_capacity_sweep_high_20261124.json)、[20.48M 冻结评估](reports/R1_eval_freeze_20m.md)、[20.48M 到 40.96M 恢复报告](reports/R1_resume_to_40m.md)、[40.96M 冻结评估](reports/R1_eval_freeze_40m.md)、[速度跟踪 PPO/AMP 协议](reports/R1_speed_tracking_comparison_protocol.md)、[速度跟踪 smoke](reports/R1_speed_tracking_smoke.md)、[seed42 速度对照](reports/R1_speed_tracking_seed42.md)、[奖励漏洞诊断](reports/R1_reward_hacking_audit.md) |
+| R2 G1 单技能 | IN_PROGRESS | 候选工程与独立环境核查 |
 | R3 多技能诊断与消融 | NOT_STARTED | — |
 | R4 报告与求职材料 | NOT_STARTED | — |
 
@@ -115,7 +117,7 @@
 ```text
 date: 2026-11-25
 stage: R1 — 官方 AMP 40.96M 基线与 seed42 速度跟踪 PPO/AMP 对照
-status: PARTIAL
+status: COMPLETE_WITH_LIMITATIONS
 training_code_sha: d853659
 environment: Ubuntu 22.04.5; RTX 3070 8 GiB; driver 580.178.04; Isaac Sim 4.5.0; official Isaac Lab v2.1.1; Kit Python 3.10.15; torch 2.5.1+cu118; isolated venv skrl 1.4.3; gymnasium 0.29.1; hydra-core 1.3.2; numpy 1.26.0; tensorboard 2.19.0; flatdict 4.0.1; h5py 3.13.0
 commands_run: r1_speed_tracking_capacity.sh; r1_speed_tracking_formal_seed42.sh; r1_speed_tracking_stage_eval.sh; r1_summarize_speed_tracking.py
@@ -125,5 +127,6 @@ key_metrics: 40.96M cumulative environment transitions; new independent evaluati
 resume_boundary: policy, value, discriminator, optimizer and running preprocessors restored; motion dataset and reply buffer were absent from checkpoint and reinitialized; final 5 updates used the official entrypoint without extra monitor forwards; this is bounded resume training, not strict seamless continuity
 speed_comparison: seed42, 2048 envs, 1221 updates, 40009728 transitions per algorithm; 100 paired initial states per checkpoint; final evaluated checkpoint 39976960 transitions; PPO 82/100 sustained forward, 9/100 height terminations, fixed-horizon MAE 0.358 m/s; AMP 0/100 sustained forward, 29/100 height terminations, fixed-horizon MAE 1.387 m/s; zero upright walking episodes in both groups
 speed_comparison_evidence: reports/R1_speed_tracking_seed42.md; reports/r1_speed_tracking_seed42/summary.json
-pending: training-seed replication; matched sustained walking samples for gait-style comparisons; separate G1 asset and data verification
+limitations: single training seed for the speed comparison; zero matched upright walking episodes; no evidence for general AMP superiority on a fair upright task
+closed: additional R1 reward changes and comparisons cancelled; seed43 and seed44 replication cancelled; artifacts retained; R2 allowed to proceed
 ```

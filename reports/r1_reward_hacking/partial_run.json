@@ -1,0 +1,24 @@
+{
+  "algorithm": "AMP",
+  "seed": 42,
+  "num_envs": 256,
+  "updates_logged": 89,
+  "paired_ppo_started": false,
+  "exit": "exit_code=143",
+  "gpu_peak_used_mib": 7689,
+  "gpu_min_free_mib": 143,
+  "status": "interrupted_diagnostic_trial",
+  "local_run": "runs/r1_reward_hacking/short_train_seed42_env256_retry",
+  "local_checkpoints": [
+    {
+      "path": "logs/skrl/r1_upright_20261125_121538_short_train_seed42_env256_retry/2026-11-25_12-15-44_amp_torch_amp/checkpoints/agent_1024.pt",
+      "sha256": "495a0120bdaaf75be3cf22479dbd8c31944c9a60b3f19a0cc1fa99e21352ae22"
+    },
+    {
+      "path": "logs/skrl/r1_upright_20261125_121538_short_train_seed42_env256_retry/2026-11-25_12-15-44_amp_torch_amp/checkpoints/agent_512.pt",
+      "sha256": "3b04f78b063741e1ab7db6ff9c31fd7e060e69a4e6c736c62bb562363f871dc5"
+    }
+  ],
+  "follow_up_cancelled": true,
+  "training_seeds_43_44_cancelled": true
+}

@@ -1,6 +1,6 @@
 # Learning-for-AMP
 
-> **状态为 R1 / PARTIAL** · 官方 Humanoid AMP 行走基线已验收 · 速度跟踪 PPO/AMP 已完成 seed42 对照 · 更新于 2026-11-25
+> **当前阶段为 R2 / G1 单技能 AMP** · R1 已归档为 COMPLETE_WITH_LIMITATIONS · 更新于 2026-11-25
 
 ## 项目目标
 
@@ -18,7 +18,7 @@
 ## 当前边界与优先级
 
 - **本仓库只负责 AMP 仿真实验**，不修改既有 PegInsert、FR3 双臂及机械臂 Sim2Real 仓库。
-- 与现有机械臂 Sim2Real 项目并行规划，但 **R0 先验证环境与算法；不直接开启 G1 大规模训练**。
+- G1 基线优先复用成熟开源工程，先核查资产、步态数据和权重，再做独立环境的小规模验证。
 - 当前已知本地设备：RTX 4070 12GB（主要）／RTX 3070 8GB（备用），Ubuntu 22.04，Isaac Sim 4.5 / Isaac Lab 2.1.1 历史环境。以上为用户既有环境信息，**接手时必须重新实测确认**。
 - 如 G1 上游项目需要其他 Isaac Lab / RSL-RL 版本，请使用独立环境，不能直接升级/污染旧环境。
 - 本项目仿真优先；**不以真实宇树机器人部署为验收条件**，除非后续新增硬件、授权和独立安全门禁。
@@ -34,6 +34,7 @@
 | [docs/REFERENCES.md](docs/REFERENCES.md) | 原始论文、Isaac Lab 与候选仓库、版本审计要求 |
 | [PROJECT_STATUS.md](PROJECT_STATUS.md) | 项目状态和下一动作（后续每步维护） |
 | [R1 速度跟踪对照](reports/R1_speed_tracking_seed42.md) | seed42 的阶段评估、资源、运动视频与学习曲线 |
+| [R1 奖励漏洞诊断与归档](reports/R1_reward_hacking_audit.md) | 接触实测、冻结模型及阶段限制 |
 
 ## 规划中的目录结构（不代表已有实现）
 
