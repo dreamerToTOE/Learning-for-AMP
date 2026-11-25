@@ -120,7 +120,7 @@
 
 ## 下一步
 
-1. R5-0 核对已有 G1 DeepMimic 的源配置、跟踪奖励、权重和数据出处，单独初审 BeyondMimic 的可复现入口。R5-1 准备有明确使用许可的重定向小样本。
+1. R5-0 已选定本机 MimicKit DeepMimic，复核历史五回合并在 CPU 验证跟踪奖励。R5-1 准备许可明确的重定向小样本，之后补充闭环跟踪误差评估。 [R5-0 实测与命令](reports/R5_0_motion_tracking_entry.md)
 2. R6 补齐独立推理、Sim2Sim、DR、HIM/RMA 及部署基础。R1–R3 的训练和参数搜索已经关闭，冻结权重及失败记录作为后续参照。
 3. R7 在相关学习及基本复现就绪后，以冻结 R2/R3 基线恢复。预先冻结量化门槛，再由 R8 按实测判定是否作为简历核心项目。 [路线图](docs/ROADMAP.md#r7--amp-g1-第二轮综合完善)
 
@@ -133,7 +133,7 @@
 | R2 G1 单技能 | COMPLETE_WITH_LIMITATIONS | 仿真步行验收通过，原始数据来源与许可待核验。 [冻结评估](reports/R2_g1_single_skill.md) |
 | R3 多技能诊断与消融 | COMPLETE_WITH_LIMITATIONS | R3-0 完成，R3-1/2 为 `PARTIAL`。R3-3 完成同预算对照，在持续慢跑及完整走跑切换上为 `NEGATIVE_RESULT`。 [混合 AMP 独立评估](reports/R3_walk_jog_baseline.md) · [条件判别器对照](reports/R3_speed_amp.md) |
 | R4 AMP 第一轮中期归档 | INTERIM_ARCHIVED | [第一轮总结](reports/FINAL_REPORT.md) · [逐文件证据](reports/amp_g1_archive/local_artifacts.json) |
-| R5 Motion Tracking / BeyondMimic | READY · R5-0 | [当前学习路线](docs/ROADMAP.md#r5--g1-motion-tracking--beyondmimic当前主线) |
+| R5 Motion Tracking / BeyondMimic | IN_PROGRESS · R5-0 审计完成 | [上游、现有推理与奖励校验](reports/R5_0_motion_tracking_entry.md) |
 | R6 鲁棒运控与部署 | NOT_STARTED | [路线图](docs/ROADMAP.md) |
 | R7 AMP-G1 第二轮综合完善 | WAITING_PREREQUISITES | [技术与恢复入口](docs/AMP_G1_FUTURE_PLAN.md#二轮恢复入口) |
 | R8 最终工程验收与求职材料 | NOT_STARTED | [验收表](docs/ROADMAP.md#r8--最终工程验收与求职材料) |

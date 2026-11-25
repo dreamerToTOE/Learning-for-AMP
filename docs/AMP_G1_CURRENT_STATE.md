@@ -8,7 +8,7 @@
 | 第一轮模型 | 已冻结。七份主 checkpoint 在本机有校验记录 |
 | AMP-G1 最终性能目标 | 尚未达到 |
 | 简历核心项目验收 | 尚未通过。可作为算法学习、复现及诊断经历 |
-| 当前工作 | R5 Motion Tracking / Motion Retargeting 学习及基础复现 |
+| 当前工作 | R5 Motion Tracking / Motion Retargeting 学习及基础复现。已完成 R5-0 源码、环境和 CPU 奖励核验。 [R5-0 报告](../reports/R5_0_motion_tracking_entry.md) |
 | AMP-G1 第二轮 | R7 等待 R5/R6 所需技术与复现产物就绪，届时从冻结基线接手 |
 
 `R3 COMPLETE_WITH_LIMITATIONS` 是第一轮多技能实验的阶段状态。全项目的性能与交付验收归 R8。 [阶段划分](ROADMAP.md) · [第一轮总结](../reports/FINAL_REPORT.md)

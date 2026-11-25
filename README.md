@@ -32,6 +32,7 @@
 | [技术债务与第二轮计划](docs/AMP_G1_FUTURE_PLAN.md) | 先决技能、最小恢复实验、验收指标 |
 | [面试复习](docs/AMP_G1_INTERVIEW_GUIDE.md) | 以实际实验为例的算法和工程问答 |
 | [工件与复现索引](docs/AMP_G1_ARTIFACT_INDEX.md) | 本地文件、字节数、SHA-256、远程副本及复跑命令 |
+| [R5-0 Motion Tracking 入门](reports/R5_0_motion_tracking_entry.md) | 参考跟踪入口、CPU 奖励检查、既有闭环与下一步重定向 |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | R0–R8 分阶段任务、优先级、停止条件 |
 | [docs/EXPERIMENT_PROTOCOL.md](docs/EXPERIMENT_PROTOCOL.md) | 公平对照、训练日志、统一评估、诊断与消融 |
 | [docs/HANDOFF.md](docs/HANDOFF.md) | 新 Codex 窗口接手、R5 当前入口、R7 恢复顺序 |
